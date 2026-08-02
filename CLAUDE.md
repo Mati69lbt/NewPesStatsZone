@@ -27,8 +27,16 @@ No hay test runner configurado.
 
 - `src/main.jsx` — entry point, monta `<App />`.
 - `src/App.jsx` — componente raíz (contenido boilerplate de Vite, a reemplazar).
+- `src/components/` — UI pura, sin lógica de acceso a datos.
+- `src/services/` — servicios de Firebase (auth, Firestore, storage, etc.).
+- `src/hooks/` — hooks personalizados (lógica de estado y efectos reutilizable).
+- `src/pages/` — componentes de nivel página/ruta.
+- `src/config/` — configuración de la app (p. ej. inicialización de Firebase).
+- `src/utils/` — funciones utilitarias puras.
 - `public/icons.svg` — sprite SVG referenciado vía `<use href="/icons.svg#...">` en JSX.
 - `index.html` — HTML raíz de Vite.
+
+Cada carpeta de `src/` tiene un `index.js` placeholder para mantener la estructura; reemplazar por barrel exports reales a medida que se agreguen módulos.
 
 ## Reglas de Desarrollo y Arquitectura
 
@@ -37,6 +45,13 @@ No hay test runner configurado.
    - `src/services/` — servicios de Firebase (auth, Firestore, storage, etc.).
    - `src/hooks/` — hooks personalizados (lógica de estado y efectos reutilizable).
    - `src/components/` — UI pura, sin lógica de acceso a datos.
+   - `src/pages/` — componentes de nivel página/ruta, componen componentes + hooks + servicios.
+   - `src/config/` — configuración e inicialización (p. ej. Firebase app config).
+   - `src/utils/` — funciones utilitarias puras, sin estado ni dependencias de React.
 3. **Estética**: deportiva, minimalista y limpia, usando Tailwind CSS v4 (config CSS-first en `src/index.css`).
 4. **Notificaciones**: combinar Notiflix y React-Toastify según la spec del proyecto.
 5. **Diseño 100% responsive**: toda interfaz y componente debe estar optimizado tanto para desktop/monitor como para celular, usando las clases adaptativas de Tailwind CSS (`sm:`, `md:`, `lg:`, etc.).
+
+## Preferencias de trabajo
+
+- Al finalizar cualquier tarea larga o ejecución de comandos en la terminal, notificar la finalización con un bip sonoro del sistema.
