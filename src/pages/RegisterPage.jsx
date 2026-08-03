@@ -31,7 +31,7 @@ function RegisterPage({ onSwitchToLogin }) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 py-10">
+    <div className="flex min-h-dvh w-full items-center justify-center overflow-x-hidden px-4 py-10">
       <RegisterForm
         email={email}
         password={password}

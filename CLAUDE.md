@@ -54,4 +54,4 @@ Cada carpeta de `src/` tiene un `index.js` placeholder para mantener la estructu
 
 ## Preferencias de trabajo
 
-- Al finalizar cualquier tarea larga o ejecución de comandos en la terminal, notificar la finalización con un bip sonoro del sistema.
+- Regla de notificación sonora (bip) definida globalmente en `~/.claude/CLAUDE.md`.
