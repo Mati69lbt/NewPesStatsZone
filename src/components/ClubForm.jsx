@@ -28,7 +28,7 @@ function ClubForm({ club, onSave, saving }) {
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Ej: River Plate"
+          placeholder="Ej: Sacachispas FC"
           className="w-full rounded-lg border border-zinc-700 bg-zinc-100 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
         />
         <button
