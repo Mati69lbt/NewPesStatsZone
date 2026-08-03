@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { auth } from '../config/firebase'
 import RegisterForm from '../components/RegisterForm'
 
-function RegisterPage({ onSwitchToLogin }) {
+function RegisterPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -23,6 +25,7 @@ function RegisterPage({ onSwitchToLogin }) {
     try {
       await createUserWithEmailAndPassword(auth, email, password)
       toast.success('Cuenta creada correctamente')
+      navigate('/formacion')
     } catch {
       toast.error('No se pudo crear la cuenta')
     } finally {
@@ -40,7 +43,7 @@ function RegisterPage({ onSwitchToLogin }) {
         onPasswordChange={setPassword}
         onConfirmPasswordChange={setConfirmPassword}
         onSubmit={handleSubmit}
-        onSwitchToLogin={onSwitchToLogin}
+        onSwitchToLogin={() => navigate('/login')}
         loading={loading}
       />
       <ToastContainer theme="dark" position="top-right" />

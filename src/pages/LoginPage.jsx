@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { auth } from '../config/firebase'
 import LoginForm from '../components/LoginForm'
 
-function LoginPage({ onSwitchToRegister }) {
+function LoginPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -16,6 +18,7 @@ function LoginPage({ onSwitchToRegister }) {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       toast.success('Sesión iniciada correctamente')
+      navigate('/formacion')
     } catch {
       toast.error('Email o contraseña incorrectos')
     } finally {
@@ -31,7 +34,7 @@ function LoginPage({ onSwitchToRegister }) {
         onEmailChange={setEmail}
         onPasswordChange={setPassword}
         onSubmit={handleSubmit}
-        onSwitchToRegister={onSwitchToRegister}
+        onSwitchToRegister={() => navigate('/register')}
         loading={loading}
       />
       <ToastContainer theme="dark" position="top-right" />
