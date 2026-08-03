@@ -1,85 +1,121 @@
 import { useState } from 'react'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Navbar from '../components/Navbar'
+import ClubForm from '../components/ClubForm'
+import PlayerForm from '../components/PlayerForm'
+import PlayerList from '../components/PlayerList'
+import useCurrentUser from '../hooks/useCurrentUser'
+import useClub from '../hooks/useClub'
+import usePlayers from '../hooks/usePlayers'
+import { updateClub } from '../services/clubService'
+import { addPlayer, deletePlayer, updatePlayer } from '../services/playersService'
+import { toTitleCase } from '../utils/textFormat'
+
+const EMPTY_PLAYER_FORM = { nombre: '', dorsal: '', posicion: '' }
 
 function FormacionPage() {
-  const [form, setForm] = useState({ nombre: '', posicion: '', nivel: '' })
+  const user = useCurrentUser()
+  const club = useClub(user?.uid)
+  const players = usePlayers(user?.uid)
 
-  const handleChange = (field) => (e) =>
-    setForm((prev) => ({ ...prev, [field]: e.target.value }))
+  const [savingClub, setSavingClub] = useState(false)
+  const [savingPlayer, setSavingPlayer] = useState(false)
+  const [playerForm, setPlayerForm] = useState(EMPTY_PLAYER_FORM)
+  const [editingPlayerId, setEditingPlayerId] = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSaveClub = async (nombreClub) => {
+    if (!user) return
+    setSavingClub(true)
+    try {
+      await updateClub(user.uid, nombreClub)
+      toast.success('Club actualizado')
+    } catch {
+      toast.error('No se pudo actualizar el club')
+    } finally {
+      setSavingClub(false)
+    }
+  }
+
+  const handleEditPlayer = (player) => {
+    setEditingPlayerId(player.id)
+    setPlayerForm({ nombre: player.nombre, dorsal: String(player.dorsal), posicion: player.posicion })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPlayerId(null)
+    setPlayerForm(EMPTY_PLAYER_FORM)
+  }
+
+  const handleDeletePlayer = async (player) => {
+    if (!user) return
+    if (!window.confirm(`¿Eliminar a ${player.nombre}?`)) return
+
+    try {
+      await deletePlayer(user.uid, player.id)
+      toast.success('Jugador eliminado')
+      if (editingPlayerId === player.id) handleCancelEdit()
+    } catch {
+      toast.error('No se pudo eliminar el jugador')
+    }
+  }
+
+  const handleSubmitPlayer = async (e) => {
     e.preventDefault()
+    if (!user) return
+
+    const data = {
+      nombre: toTitleCase(playerForm.nombre),
+      dorsal: Number(playerForm.dorsal),
+      posicion: playerForm.posicion,
+    }
+
+    setSavingPlayer(true)
+    try {
+      if (editingPlayerId) {
+        await updatePlayer(user.uid, editingPlayerId, data)
+        toast.success('Jugador actualizado')
+      } else {
+        await addPlayer(user.uid, data)
+        toast.success('Jugador agregado')
+      }
+      handleCancelEdit()
+    } catch {
+      toast.error('No se pudo guardar el jugador')
+    } finally {
+      setSavingPlayer(false)
+    }
   }
 
   return (
-    <div className="flex min-h-dvh w-full flex-col overflow-x-hidden bg-neutral-50 dark:bg-neutral-950">
+    <div className="flex min-h-dvh w-full flex-col overflow-x-hidden bg-zinc-100 dark:bg-zinc-950">
       <Navbar />
 
-      <main className="flex flex-1 items-center justify-center px-4 py-10">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl sm:p-8 dark:border-neutral-800 dark:bg-neutral-900/60"
-        >
-          <h1 className="mb-1 text-center text-2xl font-black uppercase tracking-wide text-neutral-900 dark:text-white">
-            Formación
-          </h1>
-          <p className="mb-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            Completá tus datos deportivos
-          </p>
+      <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10">
+        <ClubForm club={club} onSave={handleSaveClub} saving={savingClub} />
 
-          <div className="mb-4">
-            <label htmlFor="nombre" className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-              Nombre
-            </label>
-            <input
-              id="nombre"
-              type="text"
-              value={form.nombre}
-              onChange={handleChange('nombre')}
-              placeholder="Tu nombre"
-              className="w-full rounded-lg border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-500"
-            />
-          </div>
+        <PlayerForm
+          nombre={playerForm.nombre}
+          dorsal={playerForm.dorsal}
+          posicion={playerForm.posicion}
+          onNombreChange={(nombre) => setPlayerForm((prev) => ({ ...prev, nombre }))}
+          onDorsalChange={(dorsal) => setPlayerForm((prev) => ({ ...prev, dorsal }))}
+          onPosicionChange={(posicion) => setPlayerForm((prev) => ({ ...prev, posicion }))}
+          onSubmit={handleSubmitPlayer}
+          saving={savingPlayer}
+          isEditing={Boolean(editingPlayerId)}
+          onCancelEdit={handleCancelEdit}
+        />
 
-          <div className="mb-4">
-            <label htmlFor="posicion" className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-              Posición
-            </label>
-            <input
-              id="posicion"
-              type="text"
-              value={form.posicion}
-              onChange={handleChange('posicion')}
-              placeholder="Ej: Delantero"
-              className="w-full rounded-lg border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-neutral-900 placeholder-neutral-400 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-500"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="nivel" className="mb-1 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-              Nivel
-            </label>
-            <select
-              id="nivel"
-              value={form.nivel}
-              onChange={handleChange('nivel')}
-              className="w-full rounded-lg border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-neutral-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
-            >
-              <option value="">Seleccioná un nivel</option>
-              <option value="inicial">Inicial</option>
-              <option value="intermedio">Intermedio</option>
-              <option value="avanzado">Avanzado</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-lime-400 py-2.5 font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300"
-          >
-            Guardar
-          </button>
-        </form>
+        <div className="w-full max-w-5xl">
+          <h2 className="mb-4 text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
+            Plantel Profesional {club ? ` ${club}` : ' del club'}
+          </h2>
+          <PlayerList players={players} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
+        </div>
       </main>
+
+      <ToastContainer theme="dark" position="top-right" />
     </div>
   )
 }
