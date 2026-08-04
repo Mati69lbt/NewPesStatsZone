@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 
-const NAV_LINKS = [{ to: '/formacion', label: 'Formación' }]
+const NAV_LINKS = [
+  { to: '/formacion', label: 'Formación' },
+  { to: '/registrar-partido', label: 'Registrar Partido' },
+  { to: '/partidos', label: 'Partidos' },
+]
 
 function NavLinkItem({ to, label, onClick }) {
   return (

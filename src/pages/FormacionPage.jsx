@@ -38,17 +38,37 @@ function FormacionPage() {
   const [titulares, setTitulares] = useState([])
   const [savingFormation, setSavingFormation] = useState(false)
 
+  const [clubCleared, setClubCleared] = useState(false)
+  const displayedClub = clubCleared ? '' : club
+
   const handleSaveClub = async (nombreClub) => {
     if (!user) return
     setSavingClub(true)
     try {
       await updateClub(user.uid, nombreClub)
+      setClubCleared(false)
       toast.success('Club actualizado')
     } catch {
       toast.error('No se pudo actualizar el club')
     } finally {
       setSavingClub(false)
     }
+  }
+
+  const handleNewContract = () => {
+    Confirm.show(
+      'Nuevo contrato',
+      '¿Cambiaste de equipo?',
+      'Sí',
+      'Cancelar',
+      () => {
+        setClubCleared(true)
+        handleCancelEdit()
+        handleCancelFormation()
+      },
+      undefined,
+      { titleColor: '#a3e635', okButtonBackground: '#a3e635' }
+    )
   }
 
   const handleEditPlayer = (player) => {
@@ -220,7 +240,7 @@ function FormacionPage() {
       <Navbar />
 
       <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10">
-        <ClubForm club={club} onSave={handleSaveClub} saving={savingClub} />
+        <ClubForm club={displayedClub} onSave={handleSaveClub} saving={savingClub} />
 
         <PlayerForm
           nombre={playerForm.nombre}
@@ -235,64 +255,76 @@ function FormacionPage() {
           onCancelEdit={handleCancelEdit}
         />
 
-        <div className="w-full max-w-5xl">
-          <h2 className="mb-4 text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-            Plantel Profesional {club ? ` ${club}` : ' del club'}{' '}
-            <span className="text-zinc-400 dark:text-zinc-500">({players.length} jugadores)</span>
-          </h2>
-          <PlayerList players={players} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
-        </div>
-
-        <div className="w-full max-w-5xl">
-          <div className="mb-4 flex items-center justify-center gap-4">
-            <h2 className="text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-              Formaciones
-            </h2>
-            {!showFormationEditor && (
-              <button
-                type="button"
-                onClick={handleOpenNewFormation}
-                className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300"
-              >
-                Nueva formación
-              </button>
-            )}
-          </div>
-
-          {showFormationEditor && (
-            <div className="mb-8 flex justify-center">
-              <FormationEditor
-                players={players}
-                capitanId={capitanId}
-                titulares={titulares}
-                onCaptainChange={handleCaptainChange}
-                onAddPlayer={handleAddTitular}
-                onRemovePlayer={handleRemoveTitular}
-                onSave={handleSaveFormation}
-                onCancel={handleCancelFormation}
-                saving={savingFormation}
-                isEditing={Boolean(editingFormationId)}
-              />
+        {!clubCleared && (
+          <>
+            <div className="w-full max-w-5xl">
+              <h2 className="mb-4 text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
+                Plantel Profesional {club ? ` ${club}` : ' del club'}{' '}
+                <span className="text-zinc-400 dark:text-zinc-500">({players.length} jugadores)</span>
+              </h2>
+              <PlayerList players={players} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
             </div>
-          )}
 
-          {formations.length === 0 ? (
-            <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-              Todavía no hay formaciones guardadas.
-            </p>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
-              {formations.map((formation) => (
-                <FormationCard
-                  key={formation.id}
-                  formation={formation}
-                  onEdit={handleEditFormation}
-                  onDelete={handleDeleteFormation}
-                />
-              ))}
+            <div className="w-full max-w-5xl">
+              <div className="mb-4 flex items-center justify-center gap-4">
+                <h2 className="text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
+                  Formaciones
+                </h2>
+                {!showFormationEditor && (
+                  <button
+                    type="button"
+                    onClick={handleOpenNewFormation}
+                    className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300"
+                  >
+                    Nueva formación
+                  </button>
+                )}
+              </div>
+
+              {showFormationEditor && (
+                <div className="mb-8 flex justify-center">
+                  <FormationEditor
+                    players={players}
+                    capitanId={capitanId}
+                    titulares={titulares}
+                    onCaptainChange={handleCaptainChange}
+                    onAddPlayer={handleAddTitular}
+                    onRemovePlayer={handleRemoveTitular}
+                    onSave={handleSaveFormation}
+                    onCancel={handleCancelFormation}
+                    saving={savingFormation}
+                    isEditing={Boolean(editingFormationId)}
+                  />
+                </div>
+              )}
+
+              {formations.length === 0 ? (
+                <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+                  Todavía no hay formaciones guardadas.
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
+                  {formations.map((formation) => (
+                    <FormationCard
+                      key={formation.id}
+                      formation={formation}
+                      onEdit={handleEditFormation}
+                      onDelete={handleDeleteFormation}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={handleNewContract}
+          className="rounded-lg border border-zinc-300 bg-zinc-50 px-6 py-2.5 text-sm font-bold uppercase tracking-wide text-zinc-700 transition hover:bg-zinc-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        >
+          Nuevo Contrato
+        </button>
       </main>
 
       <ToastContainer theme="dark" position="top-right" />
