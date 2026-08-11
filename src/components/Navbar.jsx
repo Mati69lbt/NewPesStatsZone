@@ -9,6 +9,8 @@ const NAV_LINKS = [
   { to: '/versus', label: 'Versus' },
   { to: '/next-match', label: 'Próximo Partido' },
   { to: '/temporadas', label: 'Temporadas' },
+  { to: '/ultimos-10', label: 'Últimos 10' },
+  { to: '/capitanes', label: 'Capitanes' },
 ]
 
 function NavLinkItem({ to, label, onClick }) {

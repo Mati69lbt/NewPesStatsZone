@@ -7,6 +7,9 @@ import PartidosPage from './pages/PartidosPage'
 import VersusPage from './pages/VersusPage'
 import NextMatchPage from './pages/NextMatchPage'
 import TemporadasPage from './pages/TemporadasPage'
+import ClubesPage from './pages/ClubesPage'
+import Ultimos10Page from './pages/Ultimos10Page'
+import CapitanesPage from './pages/CapitanesPage'
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
         <Route path="/versus" element={<VersusPage />} />
         <Route path="/next-match" element={<NextMatchPage />} />
         <Route path="/temporadas" element={<TemporadasPage />} />
+        <Route path="/clubes" element={<ClubesPage />} />
+        <Route path="/ultimos-10" element={<Ultimos10Page />} />
+        <Route path="/capitanes" element={<CapitanesPage />} />
       </Routes>
     </div>
   )

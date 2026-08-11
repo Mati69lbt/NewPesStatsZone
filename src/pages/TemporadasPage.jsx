@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import TemporadaGroup from '../components/TemporadaGroup'
@@ -124,6 +125,15 @@ function TemporadasPage() {
           <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
             Rendimiento por año y club dirigido
           </p>
+          <Link
+            to="/clubes"
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-lime-500 transition hover:text-lime-400 dark:text-lime-400 dark:hover:text-lime-300"
+          >
+            Ver comparativa de clubes
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
         </div>
 
         <div className="flex w-full max-w-6xl flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex-row sm:items-end sm:justify-between">
