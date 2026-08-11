@@ -6,6 +6,9 @@ const NAV_LINKS = [
   { to: '/formacion', label: 'Formación' },
   { to: '/registrar-partido', label: 'Registrar Partido' },
   { to: '/partidos', label: 'Partidos' },
+  { to: '/versus', label: 'Versus' },
+  { to: '/next-match', label: 'Próximo Partido' },
+  { to: '/temporadas', label: 'Temporadas' },
 ]
 
 function NavLinkItem({ to, label, onClick }) {

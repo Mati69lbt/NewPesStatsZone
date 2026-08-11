@@ -1,7 +1,7 @@
-import { formatDateShort } from '../utils/dateFormat'
+import InlineDateEditor from './InlineDateEditor'
 import { RESULT_CLASSES, buildGoleadoresLabel, getMatchResultado, getScoreboard } from '../utils/matchDisplay'
 
-function MatchRow({ match, onEdit, onDelete }) {
+function MatchRow({ match, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
   const { nombreLocal, golesLocal, golesVisitante, nombreVisitante } = getScoreboard(match)
   const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub)
@@ -10,7 +10,11 @@ function MatchRow({ match, onEdit, onDelete }) {
   return (
     <tr className="border-b border-zinc-100 last:border-0 dark:border-zinc-800">
       <td className="whitespace-nowrap px-3 py-3 text-sm font-semibold text-zinc-600 dark:text-zinc-300">
-        {formatDateShort(match.fecha)}
+        <InlineDateEditor
+          fecha={match.fecha}
+          isDuplicate={isDuplicateDate}
+          onSave={(newFecha) => onDateChange(match, newFecha)}
+        />
       </td>
       <td className="px-3 py-3">
         <span

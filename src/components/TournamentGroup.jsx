@@ -10,10 +10,25 @@ const TIPOS = [
   { value: 'europeo', label: 'Europeo' },
 ]
 
-function TournamentGroup({ torneo, matches, resultado, tipo, onResultadoChange, onTipoChange, onEdit, onDelete }) {
+function TournamentGroup({
+  torneo,
+  matches,
+  resultado,
+  tipo,
+  onResultadoChange,
+  onTipoChange,
+  onEdit,
+  onDelete,
+  onDateChange,
+}) {
   const [collapsed, setCollapsed] = useState(false)
   const isCampeon = resultado === 'Campeón'
   const tipoActual = tipo || 'europeo'
+
+  const fechaCounts = matches.reduce((counts, m) => {
+    counts.set(m.fecha, (counts.get(m.fecha) || 0) + 1)
+    return counts
+  }, new Map())
 
   const primeraFecha = matches.reduce(
     (min, m) => (!min || m.fecha < min ? m.fecha : min),
@@ -117,7 +132,14 @@ function TournamentGroup({ torneo, matches, resultado, tipo, onResultadoChange, 
               </thead>
               <tbody>
                 {matches.map((match) => (
-                  <MatchRow key={match.id} match={match} onEdit={onEdit} onDelete={onDelete} />
+                  <MatchRow
+                    key={match.id}
+                    match={match}
+                    isDuplicateDate={fechaCounts.get(match.fecha) > 1}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onDateChange={onDateChange}
+                  />
                 ))}
               </tbody>
             </table>
@@ -129,8 +151,10 @@ function TournamentGroup({ torneo, matches, resultado, tipo, onResultadoChange, 
                 key={match.id}
                 match={match}
                 jornada={matches.length - index}
+                isDuplicateDate={fechaCounts.get(match.fecha) > 1}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onDateChange={onDateChange}
               />
             ))}
           </div>

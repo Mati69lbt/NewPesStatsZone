@@ -9,7 +9,7 @@ import TournamentGroup from '../components/TournamentGroup'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useMatches from '../hooks/useMatches'
 import useTournamentResults from '../hooks/useTournamentResults'
-import { deleteMatch } from '../services/matchesService'
+import { deleteMatch, updateMatch } from '../services/matchesService'
 import { updateTournamentResult, updateTournamentTipo } from '../services/tournamentsService'
 
 function PartidosPage() {
@@ -51,6 +51,16 @@ function PartidosPage() {
       toast.success('Tipo de temporada actualizado')
     } catch {
       toast.error('No se pudo guardar el tipo de temporada')
+    }
+  }
+
+  const handleDateChange = async (match, fecha) => {
+    if (!user) return
+    try {
+      await updateMatch(user.uid, match.id, { fecha })
+      toast.success('Fecha actualizada')
+    } catch {
+      toast.error('No se pudo actualizar la fecha')
     }
   }
 
@@ -110,6 +120,7 @@ function PartidosPage() {
                 onTipoChange={handleTipoChange}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onDateChange={handleDateChange}
               />
             ))}
           </div>

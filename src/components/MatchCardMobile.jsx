@@ -1,7 +1,7 @@
-import { formatDateShort } from '../utils/dateFormat'
+import InlineDateEditor from './InlineDateEditor'
 import { RESULT_CLASSES, buildGoleadoresLabel, getMatchResultado, getScoreboard } from '../utils/matchDisplay'
 
-function MatchCardMobile({ match, jornada, onEdit, onDelete }) {
+function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
   const { nombreLocal, golesLocal, golesVisitante, nombreVisitante } = getScoreboard(match)
   const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub)
@@ -10,7 +10,13 @@ function MatchCardMobile({ match, jornada, onEdit, onDelete }) {
   return (
     <div className="px-3 py-2">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">{formatDateShort(match.fecha)}</span>
+        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
+          <InlineDateEditor
+            fecha={match.fecha}
+            isDuplicate={isDuplicateDate}
+            onSave={(newFecha) => onDateChange(match, newFecha)}
+          />
+        </span>
         <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-300">Fecha: {jornada}</span>
         <div className="flex shrink-0 items-center gap-1">
           <button

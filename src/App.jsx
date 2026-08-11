@@ -4,6 +4,9 @@ import RegisterPage from './pages/RegisterPage'
 import FormacionPage from './pages/FormacionPage'
 import RegistrarPartidoPage from './pages/RegistrarPartidoPage'
 import PartidosPage from './pages/PartidosPage'
+import VersusPage from './pages/VersusPage'
+import NextMatchPage from './pages/NextMatchPage'
+import TemporadasPage from './pages/TemporadasPage'
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
         <Route path="/formacion" element={<FormacionPage />} />
         <Route path="/registrar-partido" element={<RegistrarPartidoPage />} />
         <Route path="/partidos" element={<PartidosPage />} />
+        <Route path="/versus" element={<VersusPage />} />
+        <Route path="/next-match" element={<NextMatchPage />} />
+        <Route path="/temporadas" element={<TemporadasPage />} />
       </Routes>
     </div>
   )
