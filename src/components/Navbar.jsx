@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { to: '/capitanes', label: 'Capitanes' },
   { to: '/goleadores', label: 'Goleadores' },
   { to: '/asistencias', label: 'Asistencias' },
+  { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
 ]
 
 const DROPDOWNS = [
@@ -35,6 +36,7 @@ const DROPDOWNS = [
       { to: '/temporadas', label: 'Temporadas' },
       { to: '/goleadores', label: 'Goleadores' },
       { to: '/asistencias', label: 'Asistencias' },
+      { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
     ],
   },
   {

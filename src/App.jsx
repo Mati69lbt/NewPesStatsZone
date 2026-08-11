@@ -14,6 +14,7 @@ import CapitanesResumenPage from './pages/CapitanesResumenPage'
 import CampeonatosPage from './pages/CampeonatosPage'
 import GoleadoresPage from './pages/GoleadoresPage'
 import AsistenciasPage from './pages/AsistenciasPage'
+import GoleadoresCampeonatoPage from './pages/GoleadoresCampeonatoPage'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/campeonatos" element={<CampeonatosPage />} />
         <Route path="/goleadores" element={<GoleadoresPage />} />
         <Route path="/asistencias" element={<AsistenciasPage />} />
+        <Route path="/goleadores-campeonato" element={<GoleadoresCampeonatoPage />} />
       </Routes>
     </div>
   )
