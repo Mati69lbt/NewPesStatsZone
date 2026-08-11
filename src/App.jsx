@@ -10,6 +10,7 @@ import TemporadasPage from './pages/TemporadasPage'
 import ClubesPage from './pages/ClubesPage'
 import Ultimos10Page from './pages/Ultimos10Page'
 import CapitanesPage from './pages/CapitanesPage'
+import CapitanesResumenPage from './pages/CapitanesResumenPage'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/clubes" element={<ClubesPage />} />
         <Route path="/ultimos-10" element={<Ultimos10Page />} />
         <Route path="/capitanes" element={<CapitanesPage />} />
+        <Route path="/capitanes/resumen" element={<CapitanesResumenPage />} />
       </Routes>
     </div>
   )

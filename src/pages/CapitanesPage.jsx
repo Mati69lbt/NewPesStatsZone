@@ -113,7 +113,7 @@ function CapitanesPage() {
 
             <div className="flex overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
               <Link
-                to="/temporadas"
+                to="/capitanes/resumen"
                 className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-zinc-600 transition hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-600"
               >
                 🔎 Resumen
