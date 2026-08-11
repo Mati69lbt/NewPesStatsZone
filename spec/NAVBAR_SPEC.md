@@ -30,9 +30,12 @@ Organizar la navegación principal de la aplicación mediante menús desplegable
 
 ---
 
-## 3. Comportamiento Visual (Desktop)
-* **Hover / Click Dropdown:** Al pasar el mouse o hacer click en una categoría, se despliega una tarjeta oscura Flotante (`absolute top-full bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl py-2 z-50`) con los links correspondiente.
-* **Indicador de Ruta Activa:** Si el usuario está dentro de `/campeonatos`, la categoría `Torneos y Clubes` debe resaltarse en color activo (ej. verde del proyecto).
+## 3. Comportamiento Interactivo de Dropdowns (Modo Click)
+* **Apertura/Cierre por Click:** Los menús desplegables (`Partidos ▾`, `Estadísticas ▾`, `Torneos y Clubes ▾`) abren y cierran al hacer **click** sobre la categoría principal.
+* **Cierre Automático:** 
+  * Se cierra automáticamente cuando el usuario hace click en cualquiera de las sub-rutas.
+  * Se cierra si el usuario hace click fuera del menú (evento `click outside`).
+  * Solo puede haber un menú desplegable abierto a la vez.
 
 ---
 

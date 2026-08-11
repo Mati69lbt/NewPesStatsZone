@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
-import GoleadoresSortBar from '../components/GoleadoresSortBar'
-import GoleadoresTable from '../components/GoleadoresTable'
+import AsistenciasSortBar from '../components/AsistenciasSortBar'
+import AsistenciasTable from '../components/AsistenciasTable'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
-import { buildScorersRows } from '../utils/versusStats'
+import { buildAssistsRows } from '../utils/versusStats'
 import { VISTAS } from '../utils/estadisticasVistas'
 
 const FIELD_CLASSES =
@@ -30,7 +30,7 @@ function sortRows(rows, sortKey, sortDir) {
   return sortDir === 'desc' ? sorted : sorted.reverse()
 }
 
-function GoleadoresPage() {
+function AsistenciasPage() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
   const matches = useMatches(user?.uid)
@@ -38,7 +38,7 @@ function GoleadoresPage() {
 
   const [selectedClub, setSelectedClub] = useState('')
   const [condicion, setCondicion] = useState('general')
-  const [sortKey, setSortKey] = useState('goles')
+  const [sortKey, setSortKey] = useState('asistencias')
   const [sortDir, setSortDir] = useState('desc')
 
   const clubes = useMemo(() => {
@@ -62,7 +62,7 @@ function GoleadoresPage() {
     [clubMatches, condicion]
   )
 
-  const rows = useMemo(() => buildScorersRows(condicionMatches, 'incidenciasClub'), [condicionMatches])
+  const rows = useMemo(() => buildAssistsRows(condicionMatches, 'incidenciasClub'), [condicionMatches])
   const sortedRows = useMemo(() => sortRows(rows, sortKey, sortDir), [rows, sortKey, sortDir])
 
   function handleSort(key) {
@@ -79,7 +79,7 @@ function GoleadoresPage() {
       <div className="flex min-h-dvh w-full max-w-full flex-col overflow-x-hidden bg-zinc-100 dark:bg-zinc-950">
         <Navbar />
         <main className="flex flex-1 flex-col items-center px-4 py-10">
-          <Loader label="Cargando goleadores…" />
+          <Loader label="Cargando asistencias…" />
         </main>
       </div>
     )
@@ -97,13 +97,18 @@ function GoleadoresPage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M12 3.75l2.317 4.694 5.183.753-3.75 3.656.885 5.164L12 15.5l-4.635 2.517.885-5.164-3.75-3.656 5.183-.753L12 3.75z"
+                  d="M15.75 15.75l3.75 3.75M8.25 12a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 12a9 9 0 1112.53 8.28"
                 />
               </svg>
-              Goleadores
+              Asistencias
             </h1>
             <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-              {sortedRows.length} {sortedRows.length === 1 ? 'goleador' : 'goleadores'}
+              {sortedRows.length} {sortedRows.length === 1 ? 'asistidor' : 'asistidores'}
             </p>
           </div>
 
@@ -123,7 +128,7 @@ function GoleadoresPage() {
 
               <div>
                 <label className={LABEL_CLASSES}>Vista</label>
-                <select value="/goleadores" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
+                <select value="/asistencias" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
                   {VISTAS.map((v) => (
                     <option key={v.value} value={v.value}>
                       {v.label}
@@ -155,15 +160,15 @@ function GoleadoresPage() {
 
             <div>
               <label className={LABEL_CLASSES}>Ordenar por</label>
-              <GoleadoresSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
+              <AsistenciasSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
             </div>
           </div>
 
-          <GoleadoresTable rows={sortedRows} />
+          <AsistenciasTable rows={sortedRows} />
         </div>
       </main>
     </div>
   )
 }
 
-export default GoleadoresPage
+export default AsistenciasPage

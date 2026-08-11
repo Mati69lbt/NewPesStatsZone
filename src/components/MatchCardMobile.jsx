@@ -1,10 +1,17 @@
 import InlineDateEditor from './InlineDateEditor'
-import { RESULT_CLASSES, buildGoleadoresLabel, getMatchResultado, getScoreboard } from '../utils/matchDisplay'
+import {
+  RESULT_CLASSES,
+  buildAsistentesLabel,
+  buildGoleadoresLabel,
+  getMatchResultado,
+  getScoreboard,
+} from '../utils/matchDisplay'
 
 function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
   const { nombreLocal, golesLocal, golesVisitante, nombreVisitante } = getScoreboard(match)
   const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub)
+  const asistentesPropios = buildAsistentesLabel(match.incidenciasClub)
   const goleadoresRivales = buildGoleadoresLabel(match.incidenciasRival)
 
   return (
@@ -63,6 +70,9 @@ function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, on
             Goles {match.club}
           </p>
           <p className="truncate text-xs text-zinc-700 dark:text-zinc-300">{goleadoresPropios}</p>
+          {asistentesPropios && (
+            <p className="truncate text-[10px] text-zinc-400 dark:text-zinc-500">🎯 {asistentesPropios}</p>
+          )}
         </div>
         <div>
           <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">

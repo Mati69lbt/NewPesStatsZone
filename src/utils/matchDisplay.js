@@ -31,3 +31,10 @@ export function buildGoleadoresLabel(incidencias) {
     .map((i) => (i.goles > 1 ? `${i.nombre} (${i.goles})` : i.nombre))
   return goleadores.length > 0 ? goleadores.join(', ') : '-'
 }
+
+export function buildAsistentesLabel(incidencias) {
+  const asistentes = (incidencias ?? [])
+    .filter((i) => i.asistencias > 0)
+    .map((i) => (i.asistencias > 1 ? `${i.nombre} (${i.asistencias})` : i.nombre))
+  return asistentes.length > 0 ? asistentes.join(', ') : null
+}

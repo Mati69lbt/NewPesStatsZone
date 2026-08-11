@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { to: '/ultimos-10', label: 'Últimos 10' },
   { to: '/capitanes', label: 'Capitanes' },
   { to: '/goleadores', label: 'Goleadores' },
+  { to: '/asistencias', label: 'Asistencias' },
 ]
 
 const DROPDOWNS = [
@@ -33,6 +34,7 @@ const DROPDOWNS = [
       { to: '/capitanes', label: 'Capitanes' },
       { to: '/temporadas', label: 'Temporadas' },
       { to: '/goleadores', label: 'Goleadores' },
+      { to: '/asistencias', label: 'Asistencias' },
     ],
   },
   {
@@ -64,12 +66,7 @@ function NavDropdown({ label, items, isActive, openKey, setOpenKey }) {
   }, [isOpen, setOpenKey])
 
   return (
-    <div
-      ref={containerRef}
-      className="relative"
-      onMouseEnter={() => setOpenKey(dropdownKey)}
-      onMouseLeave={() => setOpenKey(null)}
-    >
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         onClick={() => setOpenKey(isOpen ? null : dropdownKey)}

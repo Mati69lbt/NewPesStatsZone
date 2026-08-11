@@ -41,3 +41,21 @@ export function buildScorersRows(matches, field) {
     .map((row) => ({ ...row, promedio: row.pj > 0 ? row.goles / row.pj : 0 }))
     .sort((a, b) => b.goles - a.goles || a.nombre.localeCompare(b.nombre))
 }
+
+export function buildAssistsRows(matches, field) {
+  const byPlayer = new Map()
+
+  for (const match of matches) {
+    const incidencias = (match[field] ?? []).filter((i) => i.asistencias > 0)
+    for (const incidencia of incidencias) {
+      const row = byPlayer.get(incidencia.nombre) ?? { nombre: incidencia.nombre, pj: 0, asistencias: 0 }
+      row.pj += 1
+      row.asistencias += incidencia.asistencias
+      byPlayer.set(incidencia.nombre, row)
+    }
+  }
+
+  return [...byPlayer.values()]
+    .map((row) => ({ ...row, promedio: row.pj > 0 ? row.asistencias / row.pj : 0 }))
+    .sort((a, b) => b.asistencias - a.asistencias || a.nombre.localeCompare(b.nombre))
+}

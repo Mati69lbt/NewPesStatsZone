@@ -1,10 +1,17 @@
 import InlineDateEditor from './InlineDateEditor'
-import { RESULT_CLASSES, buildGoleadoresLabel, getMatchResultado, getScoreboard } from '../utils/matchDisplay'
+import {
+  RESULT_CLASSES,
+  buildAsistentesLabel,
+  buildGoleadoresLabel,
+  getMatchResultado,
+  getScoreboard,
+} from '../utils/matchDisplay'
 
 function MatchRow({ match, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
   const { nombreLocal, golesLocal, golesVisitante, nombreVisitante } = getScoreboard(match)
   const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub)
+  const asistentesPropios = buildAsistentesLabel(match.incidenciasClub)
   const goleadoresRivales = buildGoleadoresLabel(match.incidenciasRival)
 
   return (
@@ -37,7 +44,14 @@ function MatchRow({ match, isDuplicateDate, onEdit, onDelete, onDateChange }) {
         </button>
       </td>
       <td className="px-3 py-3 text-sm text-zinc-700 dark:text-zinc-300">{match.capitanNombre || '-'}</td>
-      <td className="px-3 py-3 text-sm text-zinc-700 dark:text-zinc-300">{goleadoresPropios}</td>
+      <td className="px-3 py-3 text-sm text-zinc-700 dark:text-zinc-300">
+        <p>{goleadoresPropios}</p>
+        {asistentesPropios && (
+          <p className="mt-0.5 text-xs font-normal text-zinc-400 dark:text-zinc-500">
+            🎯 {asistentesPropios}
+          </p>
+        )}
+      </td>
       <td className="px-3 py-3 text-sm text-zinc-700 dark:text-zinc-300">{goleadoresRivales}</td>
       <td className="px-3 py-3">
         <button
