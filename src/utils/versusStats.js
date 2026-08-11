@@ -37,5 +37,7 @@ export function buildScorersRows(matches, field) {
     }
   }
 
-  return [...byPlayer.values()].sort((a, b) => b.goles - a.goles || a.nombre.localeCompare(b.nombre))
+  return [...byPlayer.values()]
+    .map((row) => ({ ...row, promedio: row.pj > 0 ? row.goles / row.pj : 0 }))
+    .sort((a, b) => b.goles - a.goles || a.nombre.localeCompare(b.nombre))
 }
