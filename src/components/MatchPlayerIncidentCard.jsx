@@ -1,10 +1,31 @@
+const GOLES_POR_MARCADOR = { golMarcado: 1, dobleteMarcado: 2, hatTrickMarcado: 3 }
+
 function MatchPlayerIncidentCard({ incidencia, onUpdate, onRemove }) {
-  const setGoles = (value) => onUpdate(incidencia.id, { goles: incidencia.goles === value ? 0 : value })
+  const toggleMarcador = (key) => {
+    const marcadores = {
+      golMarcado: incidencia.golMarcado,
+      dobleteMarcado: incidencia.dobleteMarcado,
+      hatTrickMarcado: incidencia.hatTrickMarcado,
+      [key]: !incidencia[key],
+    }
+    const goles = Object.entries(marcadores).reduce(
+      (sum, [k, activo]) => sum + (activo ? GOLES_POR_MARCADOR[k] : 0),
+      0
+    )
+    onUpdate(incidencia.id, { ...marcadores, goles })
+  }
 
   return (
     <div className="rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{incidencia.nombre}</span>
+        <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+          {incidencia.nombre}
+          {incidencia.goles > 0 && (
+            <span className="ml-2 rounded-full bg-lime-100 px-2 py-0.5 text-[11px] font-bold text-lime-700 dark:bg-lime-500/20 dark:text-lime-300">
+              {incidencia.goles} {incidencia.goles === 1 ? 'gol' : 'goles'}
+            </span>
+          )}
+        </span>
         <button
           type="button"
           onClick={() => onRemove(incidencia.id)}
@@ -20,15 +41,23 @@ function MatchPlayerIncidentCard({ incidencia, onUpdate, onRemove }) {
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-700 dark:text-zinc-300">
         <label className="flex items-center gap-1.5">
-          <input type="checkbox" checked={incidencia.goles === 1} onChange={() => setGoles(1)} />
+          <input type="checkbox" checked={!!incidencia.golMarcado} onChange={() => toggleMarcador('golMarcado')} />
           Gol
         </label>
         <label className="flex items-center gap-1.5">
-          <input type="checkbox" checked={incidencia.goles === 2} onChange={() => setGoles(2)} />
+          <input
+            type="checkbox"
+            checked={!!incidencia.dobleteMarcado}
+            onChange={() => toggleMarcador('dobleteMarcado')}
+          />
           Doblete
         </label>
         <label className="flex items-center gap-1.5">
-          <input type="checkbox" checked={incidencia.goles === 3} onChange={() => setGoles(3)} />
+          <input
+            type="checkbox"
+            checked={!!incidencia.hatTrickMarcado}
+            onChange={() => toggleMarcador('hatTrickMarcado')}
+          />
           Hat Trick
         </label>
         <label className="flex items-center gap-1.5">

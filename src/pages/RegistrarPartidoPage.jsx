@@ -15,7 +15,14 @@ import { toTitleCase } from '../utils/textFormat'
 
 const DEFAULT_DATE = '2018-07-31'
 
-const EMPTY_INCIDENCIA_CLUB = { goles: 0, expulsado: false, asistencias: 0 }
+const EMPTY_INCIDENCIA_CLUB = {
+  goles: 0,
+  golMarcado: false,
+  dobleteMarcado: false,
+  hatTrickMarcado: false,
+  expulsado: false,
+  asistencias: 0,
+}
 
 function RegistrarPartidoPage() {
   const user = useCurrentUser()
@@ -87,6 +94,10 @@ function RegistrarPartidoPage() {
     .map((i) => (i.goles > 1 ? `${i.nombre} (${i.goles})` : i.nombre))
   const expulsadosClub = incidenciasClub.filter((i) => i.expulsado).map((i) => i.nombre)
   const expulsadosRival = incidenciasRival.filter((i) => i.expulsado).map((i) => i.nombre)
+  const asistentesClub = incidenciasClub
+    .filter((i) => i.asistencias > 0)
+    .map((i) => (i.asistencias > 1 ? `${i.nombre} (${i.asistencias})` : i.nombre))
+  const asistentesRival = []
 
   useEffect(() => {
     if (!editingMatchId || loadedMatchIdRef.current === editingMatchId) return
@@ -282,6 +293,8 @@ function RegistrarPartidoPage() {
               goleadoresRival={goleadoresRival}
               expulsadosClub={expulsadosClub}
               expulsadosRival={expulsadosRival}
+              asistentesClub={asistentesClub}
+              asistentesRival={asistentesRival}
             />
           </div>
         )}

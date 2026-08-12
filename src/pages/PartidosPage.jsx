@@ -11,6 +11,7 @@ import useMatches from '../hooks/useMatches'
 import useTournamentResults from '../hooks/useTournamentResults'
 import { deleteMatch, updateMatch } from '../services/matchesService'
 import { updateTournamentResult, updateTournamentTipo } from '../services/tournamentsService'
+import { getTemporadaLabel } from '../utils/dateFormat'
 
 function PartidosPage() {
   const user = useCurrentUser()
@@ -22,17 +23,20 @@ function PartidosPage() {
     const groups = new Map()
     for (const match of matches) {
       const torneo = match.torneo || 'Sin torneo'
-      if (!groups.has(torneo)) groups.set(torneo, [])
-      groups.get(torneo).push(match)
+      const tipo = tournamentResults[torneo]?.tipo || 'europeo'
+      const temporada = getTemporadaLabel(match.fecha, tipo)
+      const key = `${torneo}|||${temporada}`
+      if (!groups.has(key)) groups.set(key, { torneo, matches: [] })
+      groups.get(key).matches.push(match)
     }
 
-    return [...groups.entries()]
-      .map(([torneo, torneoMatches]) => ({
+    return [...groups.values()]
+      .map(({ torneo, matches: torneoMatches }) => ({
         torneo,
         matches: [...torneoMatches].sort((a, b) => b.fecha.localeCompare(a.fecha)),
       }))
       .sort((a, b) => b.matches[0].fecha.localeCompare(a.matches[0].fecha))
-  }, [matches])
+  }, [matches, tournamentResults])
 
   const handleResultadoChange = async (torneo, resultado) => {
     if (!user) return
@@ -111,7 +115,7 @@ function PartidosPage() {
           <div className="flex w-full max-w-5xl flex-col gap-8">
             {groupedTournaments.map(({ torneo, matches: torneoMatches }) => (
               <TournamentGroup
-                key={torneo}
+                key={`${torneo}-${torneoMatches[0].fecha}`}
                 torneo={torneo}
                 matches={torneoMatches}
                 resultado={tournamentResults[torneo]?.resultado}

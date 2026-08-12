@@ -21,7 +21,7 @@ function TournamentGroup({
   onDelete,
   onDateChange,
 }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const isCampeon = resultado === 'Campeón'
   const tipoActual = tipo || 'europeo'
 
