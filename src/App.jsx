@@ -15,6 +15,9 @@ import CampeonatosPage from './pages/CampeonatosPage'
 import GoleadoresPage from './pages/GoleadoresPage'
 import AsistenciasPage from './pages/AsistenciasPage'
 import GoleadoresCampeonatoPage from './pages/GoleadoresCampeonatoPage'
+import EstadisticasPeriodoPage from './pages/EstadisticasPeriodoPage'
+import RachasSequiaPage from './pages/RachasSequiaPage'
+import VillanosPage from './pages/VillanosPage'
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
         <Route path="/goleadores" element={<GoleadoresPage />} />
         <Route path="/asistencias" element={<AsistenciasPage />} />
         <Route path="/goleadores-campeonato" element={<GoleadoresCampeonatoPage />} />
+        <Route path="/estadisticas-periodo" element={<EstadisticasPeriodoPage />} />
+        <Route path="/rachas-sequia" element={<RachasSequiaPage />} />
+        <Route path="/villanos" element={<VillanosPage />} />
       </Routes>
     </div>
   )

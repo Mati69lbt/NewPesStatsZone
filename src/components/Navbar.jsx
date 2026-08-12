@@ -15,6 +15,9 @@ const NAV_LINKS = [
   { to: '/goleadores', label: 'Goleadores' },
   { to: '/asistencias', label: 'Asistencias' },
   { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
+  { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
+  { to: '/rachas-sequia', label: 'Rachas de Sequía' },
+  { to: '/villanos', label: 'Villanos' },
 ]
 
 const DROPDOWNS = [
@@ -37,6 +40,9 @@ const DROPDOWNS = [
       { to: '/goleadores', label: 'Goleadores' },
       { to: '/asistencias', label: 'Asistencias' },
       { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
+      { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
+      { to: '/rachas-sequia', label: 'Rachas de Sequía' },
+      { to: '/villanos', label: 'Villanos' },
     ],
   },
   {
