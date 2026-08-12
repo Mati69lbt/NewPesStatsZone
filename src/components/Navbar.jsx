@@ -18,6 +18,8 @@ const NAV_LINKS = [
   { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
   { to: '/rachas-sequia', label: 'Rachas de Sequía' },
   { to: '/villanos', label: 'Villanos' },
+  { to: '/expulsiones', label: 'Expulsiones' },
+  { to: '/palmares', label: 'Palmarés' },
 ]
 
 const DROPDOWNS = [
@@ -43,6 +45,8 @@ const DROPDOWNS = [
       { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
       { to: '/rachas-sequia', label: 'Rachas de Sequía' },
       { to: '/villanos', label: 'Villanos' },
+      { to: '/expulsiones', label: 'Expulsiones' },
+      { to: '/palmares', label: 'Palmarés', icon: 'crown' },
     ],
   },
   {
@@ -106,11 +110,20 @@ function NavDropdown({ label, items, isActive, openKey, setOpenKey }) {
               to={item.to}
               onClick={() => setOpenKey(null)}
               className={({ isActive: isItemActive }) =>
-                `block px-4 py-2 text-sm font-medium transition ${
+                `flex items-center gap-2 px-4 py-2 text-sm font-medium transition ${
                   isItemActive ? 'text-lime-400' : 'text-neutral-300 hover:text-lime-400'
                 }`
               }
             >
+              {item.icon === 'crown' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 flex-shrink-0 text-amber-400">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 5.25l3.75 3 3-4.5 3 4.5 3-4.5 3 4.5 3.75-3-1.5 12.75a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5L2.25 5.25z"
+                  />
+                </svg>
+              )}
               {item.label}
             </NavLink>
           ))}

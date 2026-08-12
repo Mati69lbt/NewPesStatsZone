@@ -1,34 +1,38 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
-import GoleadoresSortBar from '../components/GoleadoresSortBar'
-import GoleadoresTable from '../components/GoleadoresTable'
+import GoleadoresHistoricoTable from '../components/GoleadoresHistoricoTable'
+import GoleadoresStatSection from '../components/GoleadoresStatSection'
+import MejoresAniosTable from '../components/MejoresAniosTable'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
-import { buildScorersRows } from '../utils/versusStats'
 import { VISTAS } from '../utils/estadisticasVistas'
+import {
+  buildMejoresAniosGoleadores,
+  buildTopGoleadoresHistorico,
+  buildTopPJHistorico,
+  buildTopPromedioHistorico,
+} from '../utils/goleadoresHistoricoStats'
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
 
 const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
 
-const CONDICIONES = [
-  { value: 'general', label: 'Gral' },
-  { value: 'local', label: 'Loc' },
-  { value: 'visitante', label: 'Vis' },
-  { value: 'neutral', label: 'Neu' },
+const TODOS_CLUBES = 'Todos los clubes'
+
+const FORMATOS = [
+  { value: 'anual', label: 'Est. Anuales' },
+  { value: 'europeo', label: 'Est. Europeo' },
 ]
 
-function sortRows(rows, sortKey, sortDir) {
-  const sorted = [...rows].sort((a, b) => {
-    if (sortKey === 'nombre') return a.nombre.localeCompare(b.nombre)
-    return b[sortKey] - a[sortKey] || a.nombre.localeCompare(b.nombre)
-  })
-  return sortDir === 'desc' ? sorted : sorted.reverse()
-}
+const CONDICIONES = [
+  { value: 'general', label: 'General' },
+  { value: 'local', label: 'Local' },
+  { value: 'visitante', label: 'Visitante' },
+]
 
 function GoleadoresPage() {
   const user = useCurrentUser()
@@ -36,10 +40,8 @@ function GoleadoresPage() {
   const matches = useMatches(user?.uid)
   const navigate = useNavigate()
 
-  const [selectedClub, setSelectedClub] = useState('')
-  const [condicion, setCondicion] = useState('general')
-  const [sortKey, setSortKey] = useState('goles')
-  const [sortDir, setSortDir] = useState('desc')
+  const [selectedClub, setSelectedClub] = useState(TODOS_CLUBES)
+  const [formato, setFormato] = useState('anual')
 
   const clubes = useMemo(() => {
     const set = new Set(matches.map((m) => m.club).filter(Boolean))
@@ -47,32 +49,38 @@ function GoleadoresPage() {
     return [...set].sort((a, b) => a.localeCompare(b))
   }, [matches, club])
 
-  useEffect(() => {
-    if (selectedClub || clubes.length === 0) return
-    setSelectedClub(club && clubes.includes(club) ? club : clubes[0])
-  }, [club, clubes, selectedClub])
-
   const clubMatches = useMemo(
-    () => matches.filter((m) => m.club === selectedClub),
+    () => (selectedClub === TODOS_CLUBES ? matches : matches.filter((m) => m.club === selectedClub)),
     [matches, selectedClub]
   )
 
-  const condicionMatches = useMemo(
-    () => (condicion === 'general' ? clubMatches : clubMatches.filter((m) => m.condicion === condicion)),
-    [clubMatches, condicion]
+  const matchesPorCondicion = useMemo(
+    () => ({
+      general: clubMatches,
+      local: clubMatches.filter((m) => m.condicion === 'local'),
+      visitante: clubMatches.filter((m) => m.condicion === 'visitante'),
+    }),
+    [clubMatches]
   )
 
-  const rows = useMemo(() => buildScorersRows(condicionMatches, 'incidenciasClub'), [condicionMatches])
-  const sortedRows = useMemo(() => sortRows(rows, sortKey, sortDir), [rows, sortKey, sortDir])
-
-  function handleSort(key) {
-    if (key === sortKey) {
-      setSortDir((prev) => (prev === 'desc' ? 'asc' : 'desc'))
-    } else {
-      setSortKey(key)
-      setSortDir('desc')
+  const dataPorMetrica = useMemo(() => {
+    const result = { topGoleadores: {}, topPromedio: {}, topPJ: {}, mejoresAnios: {} }
+    for (const { value } of CONDICIONES) {
+      const condicionMatches = matchesPorCondicion[value]
+      result.topGoleadores[value] = buildTopGoleadoresHistorico(condicionMatches, formato)
+      result.topPromedio[value] = buildTopPromedioHistorico(condicionMatches, formato)
+      result.topPJ[value] = buildTopPJHistorico(condicionMatches, formato)
+      result.mejoresAnios[value] = buildMejoresAniosGoleadores(condicionMatches, formato)
     }
-  }
+    return result
+  }, [matchesPorCondicion, formato])
+
+  const ACORDEONES = [
+    { key: 'topGoleadores', title: 'Top 15 Goleadores', Table: GoleadoresHistoricoTable },
+    { key: 'topPromedio', title: 'Top 15 Promedio', Table: GoleadoresHistoricoTable },
+    { key: 'topPJ', title: 'Top 15 Más PJ', Table: GoleadoresHistoricoTable },
+    { key: 'mejoresAnios', title: 'Mejores Años Goleadores', Table: MejoresAniosTable },
+  ]
 
   if (!user) {
     return (
@@ -89,8 +97,8 @@ function GoleadoresPage() {
     <div className="flex min-h-dvh w-full max-w-full flex-col overflow-x-hidden bg-zinc-100 dark:bg-zinc-950">
       <Navbar />
 
-      <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-4 py-10">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+      <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-1 py-6 sm:px-4 sm:py-10">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 sm:gap-6">
           <div className="text-center">
             <h1 className="flex items-center justify-center gap-2 text-3xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-7 w-7 text-lime-500">
@@ -103,7 +111,7 @@ function GoleadoresPage() {
               Goleadores
             </h1>
             <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-              {sortedRows.length} {sortedRows.length === 1 ? 'goleador' : 'goleadores'}
+              Estadísticas históricas de goleadores
             </p>
           </div>
 
@@ -112,7 +120,7 @@ function GoleadoresPage() {
               <div>
                 <label className={LABEL_CLASSES}>Club</label>
                 <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
-                  {clubes.length === 0 && <option value="">Sin clubes</option>}
+                  <option value={TODOS_CLUBES}>{TODOS_CLUBES}</option>
                   {clubes.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -122,7 +130,7 @@ function GoleadoresPage() {
               </div>
 
               <div>
-                <label className={LABEL_CLASSES}>Vista</label>
+                <label className={LABEL_CLASSES}>Ir a</label>
                 <select value="/goleadores" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
                   {VISTAS.map((v) => (
                     <option key={v.value} value={v.value}>
@@ -134,15 +142,15 @@ function GoleadoresPage() {
             </div>
 
             <div>
-              <label className={LABEL_CLASSES}>Condición</label>
-              <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-                {CONDICIONES.map(({ value, label }) => (
+              <label className={LABEL_CLASSES}>Vista</label>
+              <div className="flex w-full overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+                {FORMATOS.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setCondicion(value)}
-                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
-                      condicion === value
+                    onClick={() => setFormato(value)}
+                    className={`flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wide transition sm:text-sm ${
+                      formato === value
                         ? 'bg-lime-400 text-zinc-900'
                         : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
                     }`}
@@ -152,14 +160,19 @@ function GoleadoresPage() {
                 ))}
               </div>
             </div>
-
-            <div>
-              <label className={LABEL_CLASSES}>Ordenar por</label>
-              <GoleadoresSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-            </div>
           </div>
 
-          <GoleadoresTable rows={sortedRows} />
+          <div className="flex w-full flex-col gap-3">
+            {ACORDEONES.map(({ key, title, Table }, index) => (
+              <GoleadoresStatSection
+                key={key}
+                title={title}
+                Table={Table}
+                dataPorCondicion={dataPorMetrica[key]}
+                defaultOpen={index === 0}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </div>

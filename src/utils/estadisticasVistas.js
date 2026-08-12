@@ -5,4 +5,5 @@ export const VISTAS = [
   { value: '/estadisticas-periodo', label: 'Por Período' },
   { value: '/rachas-sequia', label: 'Rachas de Sequía' },
   { value: '/villanos', label: 'Villanos' },
+  { value: '/expulsiones', label: 'Expulsiones' },
 ]

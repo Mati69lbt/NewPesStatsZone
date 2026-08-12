@@ -27,7 +27,7 @@ function Accordion({ title, subtitle, defaultOpen = false, children }) {
         </svg>
       </button>
 
-      {open && <div className="flex flex-col gap-6 bg-zinc-50 px-5 py-5 dark:bg-zinc-900">{children}</div>}
+      {open && <div className="flex flex-col gap-4 bg-zinc-50 px-2 py-3 dark:bg-zinc-900 sm:gap-6 sm:px-5 sm:py-5">{children}</div>}
     </div>
   )
 }
