@@ -14,12 +14,14 @@ const NAV_LINKS = [
   { to: '/capitanes', label: 'Capitanes' },
   { to: '/goleadores', label: 'Goleadores' },
   { to: '/asistencias', label: 'Asistencias' },
+  { to: '/goleadores-global', label: 'Goleadores/Asist. Global' },
   { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
   { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
   { to: '/rachas-sequia', label: 'Rachas de Sequía' },
   { to: '/villanos', label: 'Villanos' },
   { to: '/expulsiones', label: 'Expulsiones' },
   { to: '/palmares', label: 'Palmarés' },
+  { to: '/record', label: 'Récord Personal' },
 ]
 
 const DROPDOWNS = [
@@ -41,12 +43,14 @@ const DROPDOWNS = [
       { to: '/temporadas', label: 'Temporadas' },
       { to: '/goleadores', label: 'Goleadores' },
       { to: '/asistencias', label: 'Asistencias' },
+      { to: '/goleadores-global', label: 'Goleadores/Asist. Global' },
       { to: '/goleadores-campeonato', label: 'Goleadores por Campeonato' },
       { to: '/estadisticas-periodo', label: 'Estadísticas por Período' },
       { to: '/rachas-sequia', label: 'Rachas de Sequía' },
       { to: '/villanos', label: 'Villanos' },
       { to: '/expulsiones', label: 'Expulsiones' },
       { to: '/palmares', label: 'Palmarés', icon: 'crown' },
+      { to: '/record', label: 'Récord Personal', icon: 'chart' },
     ],
   },
   {
@@ -124,6 +128,11 @@ function NavDropdown({ label, items, isActive, openKey, setOpenKey }) {
                   />
                 </svg>
               )}
+              {item.icon === 'chart' && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 flex-shrink-0 text-lime-400">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18M7 15l4-5 3 3 5-7" />
+                </svg>
+              )}
               {item.label}
             </NavLink>
           ))}
@@ -133,13 +142,13 @@ function NavDropdown({ label, items, isActive, openKey, setOpenKey }) {
   )
 }
 
-function NavLinkItem({ to, label, onClick }) {
+function NavLinkItem({ to, label, onClick, className = '' }) {
   return (
     <NavLink
       to={to}
       onClick={onClick}
       className={({ isActive }) =>
-        `text-sm font-semibold uppercase tracking-wide transition ${
+        `block font-semibold uppercase tracking-wide transition ${className} ${
           isActive
             ? 'text-lime-500 dark:text-lime-400'
             : 'text-neutral-600 hover:text-lime-500 dark:text-neutral-300 dark:hover:text-lime-400'
@@ -174,7 +183,7 @@ function Navbar() {
               setOpenKey={setOpenDropdown}
             />
           ))}
-          <NavLinkItem to="/formacion" label="Formación" />
+          <NavLinkItem to="/formacion" label="Formación" className="text-sm" />
           <NavLink
             to="/registrar-partido"
             className="rounded-lg bg-lime-500 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-950 transition hover:bg-lime-400"
@@ -204,9 +213,16 @@ function Navbar() {
       {isOpen && (
         <div className="border-t border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-950 md:hidden">
           <nav className="flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <NavLinkItem key={link.to} {...link} onClick={() => setIsOpen(false)} />
-            ))}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              {NAV_LINKS.map((link, index) => (
+                <NavLinkItem
+                  key={link.to}
+                  {...link}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-xs sm:text-sm ${index % 2 === 0 ? 'text-left' : 'text-right'}`}
+                />
+              ))}
+            </div>
             <div className="pt-2">
               <ThemeToggle />
             </div>
