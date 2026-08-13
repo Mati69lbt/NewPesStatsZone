@@ -145,13 +145,13 @@ function EstadisticasPeriodoPage() {
 
           <div>
             <label className={LABEL_CLASSES}>Condición</label>
-            <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+            <div className="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
               {CONDICIONES.map(({ value, label }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setCondicion(value)}
-                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                  className={`px-3 py-2 text-xs font-bold uppercase tracking-wide transition sm:text-sm ${
                     condicion === value
                       ? 'bg-lime-400 text-zinc-900'
                       : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'

@@ -22,32 +22,43 @@ export function buildPeriodoGroups(matches, formato) {
 
 export function buildJugadoresRows(matches, metrica) {
   const isGoles = metrica === 'goleadores'
+  const roster = new Map()
   const byPlayer = new Map()
 
   for (const match of matches) {
+    const plantel = [...(match.titulares ?? []), ...(match.suplentes ?? [])]
+    for (const jugador of plantel) {
+      const key = jugador?.id ?? jugador?.nombre
+      if (!key) continue
+      const rosterRow = roster.get(key) ?? { nombre: jugador.nombre, clubes: new Set(), pj: 0 }
+      rosterRow.pj += 1
+      if (match.club) rosterRow.clubes.add(match.club)
+      roster.set(key, rosterRow)
+    }
+
     const incidencias = (match.incidenciasClub ?? []).filter((i) => (isGoles ? i.goles > 0 : i.asistencias > 0))
     for (const incidencia of incidencias) {
-      const row =
-        byPlayer.get(incidencia.nombre) ??
-        { nombre: incidencia.nombre, clubes: new Set(), pj: 0, goles: 0, asistencias: 0 }
-      row.pj += 1
-      if (match.club) row.clubes.add(match.club)
+      const key = incidencia.id ?? incidencia.nombre
+      const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, goles: 0, asistencias: 0 }
       if (isGoles) row.goles += incidencia.goles
       else row.asistencias += incidencia.asistencias
-      byPlayer.set(incidencia.nombre, row)
+      byPlayer.set(key, row)
     }
   }
 
-  return [...byPlayer.values()]
-    .map((row) => {
+  return [...byPlayer.entries()]
+    .map(([key, row]) => {
+      const rosterRow = roster.get(key)
+      const pj = rosterRow?.pj ?? 0
+      const club = rosterRow ? [...rosterRow.clubes].sort((a, b) => a.localeCompare(b)).join(', ') : ''
       const valor = isGoles ? row.goles : row.asistencias
       return {
         nombre: row.nombre,
-        club: [...row.clubes].sort((a, b) => a.localeCompare(b)).join(', '),
-        pj: row.pj,
+        club,
+        pj,
         goles: row.goles,
         asistencias: row.asistencias,
-        promedio: row.pj > 0 ? valor / row.pj : 0,
+        promedio: pj > 0 ? valor / pj : 0,
       }
     })
     .sort((a, b) => {
