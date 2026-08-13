@@ -13,7 +13,7 @@ import { VISTAS } from '../utils/estadisticasVistas'
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
 
-const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
+const LABEL_CLASSES = 'mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 sm:mb-1 sm:text-xs'
 
 const CONDICIONES = [
   { value: 'general', label: 'Gral' },
@@ -112,8 +112,8 @@ function AsistenciasPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex w-full flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-2.5 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:gap-4 sm:p-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
               <div>
                 <label className={LABEL_CLASSES}>Club</label>
                 <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
@@ -140,13 +140,13 @@ function AsistenciasPage() {
 
             <div>
               <label className={LABEL_CLASSES}>Condición</label>
-              <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+              <div className="flex w-full overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
                 {CONDICIONES.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setCondicion(value)}
-                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                    className={`flex-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide transition sm:px-4 sm:py-2 sm:text-xs ${
                       condicion === value
                         ? 'bg-lime-400 text-zinc-900'
                         : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'

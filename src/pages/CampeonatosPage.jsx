@@ -105,7 +105,7 @@ function CampeonatosPage() {
           </p>
         </div>
 
-        <div className="flex w-full max-w-7xl flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex-row sm:items-end sm:justify-between">
+        <div className="grid w-full max-w-7xl grid-cols-2 gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex sm:flex-row sm:items-end sm:justify-between">
           <div className="w-full sm:w-64">
             <label className={LABEL_CLASSES}>Club</label>
             <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>

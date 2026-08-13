@@ -8,9 +8,10 @@ import useMatches from '../hooks/useMatches'
 import useFormations from '../hooks/useFormations'
 
 const FIELD_CLASSES =
-  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
+  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-1.5 py-1.5 text-[11px] text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 sm:px-3 sm:py-2 sm:text-sm'
 
-const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
+const LABEL_CLASSES =
+  'mb-1 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 sm:text-xs'
 
 const AMBITOS_BASE = [
   { value: 'general', label: 'General' },
@@ -48,6 +49,23 @@ function computeStats(matches) {
   }
 
   return { g, e, p, pj: matches.length, gf, gc, df: gf - gc, gp: g - p }
+}
+
+function SortButton({ value, label, active, orden, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onClick(value)}
+      className={`inline-flex w-full items-center justify-center gap-1 rounded-full border px-1 py-1.5 text-center text-[10px] font-semibold uppercase tracking-wider transition sm:text-xs ${
+        active
+          ? 'border-lime-400 bg-lime-400/10 text-lime-500 dark:text-lime-400'
+          : 'border-zinc-300 text-zinc-500 hover:border-lime-400/60 dark:border-zinc-600 dark:text-zinc-400'
+      }`}
+    >
+      {label}
+      {active && <span>{orden === 'asc' ? '↑' : '↓'}</span>}
+    </button>
+  )
 }
 
 function VersusPage() {
@@ -163,7 +181,7 @@ function VersusPage() {
           </p>
         </div>
 
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:grid-cols-3">
+        <div className="grid w-full max-w-6xl grid-cols-3 gap-2 rounded-xl border border-zinc-200 bg-white p-3 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:gap-3 sm:p-4">
           <div>
             <label className={LABEL_CLASSES}>Club</label>
             <select
@@ -207,27 +225,33 @@ function VersusPage() {
             </select>
           </div>
 
-          <div className="sm:col-span-3">
+          <div className="col-span-3">
             <label className={LABEL_CLASSES}>Ordenar por</label>
-            <div className="flex flex-wrap gap-2">
-              {CAMPOS.map(({ value, label }) => {
-                const active = campo === value
-                return (
-                  <button
+            <div className="flex flex-col gap-1.5">
+              <div className="grid grid-cols-4 gap-1.5">
+                {CAMPOS.slice(0, 4).map(({ value, label }) => (
+                  <SortButton
                     key={value}
-                    type="button"
-                    onClick={() => handleSort(value)}
-                    className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition ${
-                      active
-                        ? 'border-lime-400 bg-lime-400/10 text-lime-500 dark:text-lime-400'
-                        : 'border-zinc-300 text-zinc-500 hover:border-lime-400/60 dark:border-zinc-600 dark:text-zinc-400'
-                    }`}
-                  >
-                    {label}
-                    {active && <span>{orden === 'asc' ? '↑' : '↓'}</span>}
-                  </button>
-                )
-              })}
+                    value={value}
+                    label={label}
+                    active={campo === value}
+                    orden={orden}
+                    onClick={handleSort}
+                  />
+                ))}
+              </div>
+              <div className="grid grid-cols-5 gap-1.5">
+                {CAMPOS.slice(4).map(({ value, label }) => (
+                  <SortButton
+                    key={value}
+                    value={value}
+                    label={label}
+                    active={campo === value}
+                    orden={orden}
+                    onClick={handleSort}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

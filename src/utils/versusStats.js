@@ -65,17 +65,35 @@ export function buildScorersRows(matches, field) {
 export function buildAssistsRows(matches, field) {
   const byPlayer = new Map()
 
+  // Solo el equipo propio tiene alineación (titulares) registrada en Firebase;
+  // el rival no, así que su PJ sigue contando partidos en los que asistió.
+  const presenceField = field === 'incidenciasClub' ? 'titulares' : null
+
+  if (presenceField) {
+    for (const match of matches) {
+      for (const titular of match[presenceField] ?? []) {
+        if (!titular?.nombre) continue
+        const key = titular.id ?? titular.nombre
+        const row = byPlayer.get(key) ?? { nombre: titular.nombre, pj: 0, asistencias: 0 }
+        row.pj += 1
+        byPlayer.set(key, row)
+      }
+    }
+  }
+
   for (const match of matches) {
     const incidencias = (match[field] ?? []).filter((i) => i.asistencias > 0)
     for (const incidencia of incidencias) {
-      const row = byPlayer.get(incidencia.nombre) ?? { nombre: incidencia.nombre, pj: 0, asistencias: 0 }
-      row.pj += 1
+      const key = incidencia.id ?? incidencia.nombre
+      const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, pj: 0, asistencias: 0 }
+      if (!presenceField) row.pj += 1
       row.asistencias += incidencia.asistencias
-      byPlayer.set(incidencia.nombre, row)
+      byPlayer.set(key, row)
     }
   }
 
   return [...byPlayer.values()]
+    .filter((row) => row.asistencias > 0)
     .map((row) => ({ ...row, promedio: row.pj > 0 ? row.asistencias / row.pj : 0 }))
     .sort((a, b) => b.asistencias - a.asistencias || a.nombre.localeCompare(b.nombre))
 }

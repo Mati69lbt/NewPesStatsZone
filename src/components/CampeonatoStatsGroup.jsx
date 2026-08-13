@@ -23,7 +23,7 @@ function CampeonatoStatsGroup({ torneo, temporada, matches, defaultOpen }) {
         className="flex w-full items-center justify-between gap-4 border-b border-t-4 border-t-lime-400 border-b-zinc-200 bg-white px-4 py-3 text-left dark:border-b-zinc-700 dark:bg-zinc-800 sm:px-5 sm:py-4"
       >
         <div className="min-w-0">
-          <h2 className="truncate text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 sm:text-base">
+          <h2 className="whitespace-normal break-words text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 sm:text-base">
             {torneo} {temporada && <span className="text-zinc-500 dark:text-zinc-400">· {temporada}</span>}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">

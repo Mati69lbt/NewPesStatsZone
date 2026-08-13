@@ -102,8 +102,8 @@ function CapitanesPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex-row sm:items-end sm:justify-between">
-            <div className="w-full sm:w-64">
+          <div className="flex w-full flex-row items-end justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
+            <div className="min-w-0 flex-1 sm:w-64 sm:flex-none">
               <label className={LABEL_CLASSES}>Club</label>
               <select
                 value={clubActivo}
@@ -119,14 +119,14 @@ function CapitanesPage() {
               </select>
             </div>
 
-            <div className="flex overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+            <div className="flex shrink-0 overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
               <Link
                 to="/capitanes/resumen"
-                className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-zinc-600 transition hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-600"
+                className="px-2 py-2 text-[11px] font-bold uppercase tracking-wide text-zinc-600 transition hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-600 sm:px-4 sm:text-xs"
               >
                 🔎 Resumen
               </Link>
-              <span className="bg-lime-400 px-4 py-2 text-xs font-bold uppercase tracking-wide text-zinc-900">
+              <span className="bg-lime-400 px-2 py-2 text-[11px] font-bold uppercase tracking-wide text-zinc-900 sm:px-4 sm:text-xs">
                 🖐️ Capitanes
               </span>
             </div>
