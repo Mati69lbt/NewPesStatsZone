@@ -7,7 +7,7 @@ const TABS = [
   { value: 'visitante', label: 'Visitante' },
 ]
 
-function GoleadoresStatSection({ title, dataPorCondicion, Table, defaultOpen }) {
+function GoleadoresStatSection({ title, dataPorCondicion, Table, defaultOpen, tableProps }) {
   const [tab, setTab] = useState('general')
 
   return (
@@ -30,7 +30,7 @@ function GoleadoresStatSection({ title, dataPorCondicion, Table, defaultOpen }) 
           ))}
         </div>
 
-        <Table rows={dataPorCondicion[tab]} />
+        <Table rows={dataPorCondicion[tab]} {...tableProps} />
       </div>
     </Accordion>
   )

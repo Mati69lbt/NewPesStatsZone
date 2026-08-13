@@ -11,6 +11,7 @@ import useMatches from '../hooks/useMatches'
 import { VISTAS } from '../utils/estadisticasVistas'
 import {
   buildMejoresAniosGoleadores,
+  buildTopAsistenciasHistorico,
   buildTopGoleadoresHistorico,
   buildTopPJHistorico,
   buildTopPromedioHistorico,
@@ -64,10 +65,11 @@ function GoleadoresPage() {
   )
 
   const dataPorMetrica = useMemo(() => {
-    const result = { topGoleadores: {}, topPromedio: {}, topPJ: {}, mejoresAnios: {} }
+    const result = { topGoleadores: {}, topAsistencias: {}, topPromedio: {}, topPJ: {}, mejoresAnios: {} }
     for (const { value } of CONDICIONES) {
       const condicionMatches = matchesPorCondicion[value]
       result.topGoleadores[value] = buildTopGoleadoresHistorico(condicionMatches, formato)
+      result.topAsistencias[value] = buildTopAsistenciasHistorico(condicionMatches, formato)
       result.topPromedio[value] = buildTopPromedioHistorico(condicionMatches, formato)
       result.topPJ[value] = buildTopPJHistorico(condicionMatches, formato)
       result.mejoresAnios[value] = buildMejoresAniosGoleadores(condicionMatches, formato)
@@ -77,6 +79,12 @@ function GoleadoresPage() {
 
   const ACORDEONES = [
     { key: 'topGoleadores', title: 'Top 15 Goleadores', Table: GoleadoresHistoricoTable },
+    {
+      key: 'topAsistencias',
+      title: 'Top 15 Asistencias',
+      Table: GoleadoresHistoricoTable,
+      tableProps: { valueKey: 'asistencias', valueLabel: 'A', promedioKey: 'promedioAsistencias' },
+    },
     { key: 'topPromedio', title: 'Top 15 Promedio', Table: GoleadoresHistoricoTable },
     { key: 'topPJ', title: 'Top 15 Más PJ', Table: GoleadoresHistoricoTable },
     { key: 'mejoresAnios', title: 'Mejores Años Goleadores', Table: MejoresAniosTable },
@@ -163,13 +171,14 @@ function GoleadoresPage() {
           </div>
 
           <div className="flex w-full flex-col gap-3">
-            {ACORDEONES.map(({ key, title, Table }, index) => (
+            {ACORDEONES.map(({ key, title, Table, tableProps }, index) => (
               <GoleadoresStatSection
                 key={key}
                 title={title}
                 Table={Table}
                 dataPorCondicion={dataPorMetrica[key]}
                 defaultOpen={index === 0}
+                tableProps={tableProps}
               />
             ))}
           </div>

@@ -19,7 +19,7 @@ function Posicion({ index }) {
   )
 }
 
-function GoleadoresHistoricoTable({ rows }) {
+function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', promedioKey = 'promedio' }) {
   if (rows.length === 0) {
     return (
       <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
@@ -36,7 +36,7 @@ function GoleadoresHistoricoTable({ rows }) {
             <th className={`${TH_CLASSES} w-8 text-center md:w-10`}>Pos</th>
             <th className={TH_CLASSES}>Jugador</th>
             <th className={`${TH_CLASSES} w-14 md:w-20`}>Año</th>
-            <th className={TH_NUM_CLASSES}>G</th>
+            <th className={TH_NUM_CLASSES}>{valueLabel}</th>
             <th className={TH_NUM_CLASSES}>PJ</th>
             <th className={TH_NUM_CLASSES}>Prom.</th>
           </tr>
@@ -55,9 +55,9 @@ function GoleadoresHistoricoTable({ rows }) {
                 {row.club && <span className="block truncate text-[10px] font-normal text-zinc-500">{row.club}</span>}
               </td>
               <td className={`${TD_CLASSES} w-14 whitespace-nowrap text-zinc-400 md:w-20`}>{row.periodo}</td>
-              <td className={`${TD_NUM_CLASSES} font-bold text-lime-400`}>{row.goles}</td>
+              <td className={`${TD_NUM_CLASSES} font-bold text-lime-400`}>{row[valueKey]}</td>
               <td className={TD_NUM_CLASSES}>{row.pj}</td>
-              <td className={`${TD_NUM_CLASSES} font-semibold text-zinc-200`}>{formatPromedio(row.promedio)}</td>
+              <td className={`${TD_NUM_CLASSES} font-semibold text-zinc-200`}>{formatPromedio(row[promedioKey])}</td>
             </tr>
           ))}
         </tbody>

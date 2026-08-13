@@ -70,9 +70,11 @@ function VersusStatCell({ label, stats, showPoints = false }) {
         PJ {pj} · GF {gf} · GC {gc}
       </p>
       {showPoints && (
-        <p className="mt-1.5 border-t border-zinc-900/5 pt-1.5 text-[11px] font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
-          {pts} / {ptsPosibles}
-          <span className="block text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1.5 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-1.5 text-[11px] font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
+          <span>
+            {pts} / {ptsPosibles} -
+          </span>
+          <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
             {ptsPosibles > 0 ? Math.round((pts / ptsPosibles) * 100) : 0}%
           </span>
         </p>

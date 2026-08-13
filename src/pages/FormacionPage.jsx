@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Confirm } from 'notiflix'
@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar'
 import ClubForm from '../components/ClubForm'
 import PlayerForm from '../components/PlayerForm'
 import PlayerList from '../components/PlayerList'
+import PlantelSortBar from '../components/PlantelSortBar'
 import FormationEditor from '../components/FormationEditor'
 import FormationCard from '../components/FormationCard'
 import useCurrentUser from '../hooks/useCurrentUser'
@@ -17,8 +18,20 @@ import { updateClub } from '../services/clubService'
 import { addPlayer, deletePlayer, updatePlayer } from '../services/playersService'
 import { addFormation, deleteFormation, updateFormation } from '../services/formationsService'
 import { toTitleCase } from '../utils/textFormat'
+import { getPositionOrder } from '../utils/positionOrder'
 
 const EMPTY_PLAYER_FORM = { nombre: '', dorsal: '', posicion: '' }
+
+function sortPlayers(players, sortKey, sortDir) {
+  const sorted = [...players].sort((a, b) => {
+    if (sortKey === 'dorsal') return a.dorsal - b.dorsal
+    if (sortKey === 'posicion') {
+      return getPositionOrder(a.posicion) - getPositionOrder(b.posicion) || a.nombre.localeCompare(b.nombre)
+    }
+    return a.nombre.localeCompare(b.nombre)
+  })
+  return sortDir === 'desc' ? sorted.reverse() : sorted
+}
 
 function FormacionPage() {
   const user = useCurrentUser()
@@ -40,6 +53,23 @@ function FormacionPage() {
 
   const [clubCleared, setClubCleared] = useState(false)
   const displayedClub = clubCleared ? '' : club
+
+  const [plantelSortKey, setPlantelSortKey] = useState('nombre')
+  const [plantelSortDir, setPlantelSortDir] = useState('asc')
+
+  const sortedPlayers = useMemo(
+    () => sortPlayers(players, plantelSortKey, plantelSortDir),
+    [players, plantelSortKey, plantelSortDir]
+  )
+
+  const handlePlantelSort = (key) => {
+    if (key === plantelSortKey) {
+      setPlantelSortDir((prev) => (prev === 'desc' ? 'asc' : 'desc'))
+    } else {
+      setPlantelSortKey(key)
+      setPlantelSortDir('asc')
+    }
+  }
 
   const handleSaveClub = async (nombreClub) => {
     if (!user) return
@@ -262,7 +292,12 @@ function FormacionPage() {
                 Plantel Profesional {club ? ` ${club}` : ' del club'}{' '}
                 <span className="text-zinc-400 dark:text-zinc-500">({players.length} jugadores)</span>
               </h2>
-              <PlayerList players={players} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
+              {players.length > 0 && (
+                <div className="mb-4 flex justify-center">
+                  <PlantelSortBar sortKey={plantelSortKey} sortDir={plantelSortDir} onSort={handlePlantelSort} />
+                </div>
+              )}
+              <PlayerList players={sortedPlayers} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
             </div>
 
             <div className="w-full max-w-5xl">

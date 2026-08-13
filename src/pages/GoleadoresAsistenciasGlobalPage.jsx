@@ -9,13 +9,14 @@ import { buildAsistenciasGlobalRows, buildGoleadoresGlobalRows } from '../utils/
 import { VISTAS } from '../utils/estadisticasVistas'
 
 const FIELD_CLASSES =
-  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
+  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-2 py-1.5 text-xs text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 sm:px-3 sm:py-2 sm:text-sm'
 
-const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
+const LABEL_CLASSES =
+  'mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 sm:mb-1 sm:text-xs'
 
 const MODOS = [
-  { value: 'goleadores', label: '⚽ Goleadores' },
-  { value: 'asistencias', label: '🎯 Asistencias' },
+  { value: 'goleadores', label: '⚽ ' },
+  { value: 'asistencias', label: '🎯' },
 ]
 
 function sortRows(rows, sortKey, sortDir) {
@@ -93,10 +94,10 @@ function GoleadoresAsistenciasGlobalPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex w-full flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:p-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4">
               <div>
-                <label className={LABEL_CLASSES}>{isGoles ? 'Mín. goles' : 'Mín. asistencias'}</label>
+                <label className={LABEL_CLASSES}>{isGoles ? 'Mín. goles' : 'Mín. asist.'}</label>
                 <input
                   type="number"
                   min="0"
@@ -104,6 +105,27 @@ function GoleadoresAsistenciasGlobalPage() {
                   onChange={(e) => setMinimo(Number(e.target.value) || 0)}
                   className={FIELD_CLASSES}
                 />
+              </div>
+
+              <div>
+                <label className={LABEL_CLASSES}>Modo</label>
+                <div className="flex w-full overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+                  {MODOS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleModo(value)}
+                      title={label}
+                      className={`flex-1 truncate px-1 py-1.5 text-[10px] font-bold uppercase tracking-wide transition sm:px-2 sm:py-2 sm:text-xs ${
+                        modo === value
+                          ? 'bg-lime-400 text-zinc-900'
+                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div>
@@ -115,26 +137,6 @@ function GoleadoresAsistenciasGlobalPage() {
                     </option>
                   ))}
                 </select>
-              </div>
-            </div>
-
-            <div>
-              <label className={LABEL_CLASSES}>Modo</label>
-              <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-                {MODOS.map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => handleModo(value)}
-                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition sm:text-sm ${
-                      modo === value
-                        ? 'bg-lime-400 text-zinc-900'
-                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
               </div>
             </div>
           </div>

@@ -12,7 +12,7 @@ function buildPlayerPeriodRows(matches, formato) {
     const key = `${nombre}__${periodo}`
     let row = byKey.get(key)
     if (!row) {
-      row = { nombre, periodo, club: new Set(), pj: 0, goles: 0 }
+      row = { nombre, periodo, club: new Set(), pj: 0, goles: 0, asistencias: 0 }
       byKey.set(key, row)
     }
     return row
@@ -30,9 +30,10 @@ function buildPlayerPeriodRows(matches, formato) {
     }
 
     for (const incidencia of match.incidenciasClub ?? []) {
-      if (!(incidencia.goles > 0)) continue
+      if (!(incidencia.goles > 0 || incidencia.asistencias > 0)) continue
       const row = getRow(incidencia.nombre, periodo)
-      row.goles += incidencia.goles
+      row.goles += incidencia.goles > 0 ? incidencia.goles : 0
+      row.asistencias += incidencia.asistencias > 0 ? incidencia.asistencias : 0
       if (match.club) row.club.add(match.club)
     }
   }
@@ -43,7 +44,9 @@ function buildPlayerPeriodRows(matches, formato) {
     club: [...row.club].sort((a, b) => a.localeCompare(b)).join(', '),
     pj: row.pj,
     goles: row.goles,
+    asistencias: row.asistencias,
     promedio: row.pj > 0 ? row.goles / row.pj : 0,
+    promedioAsistencias: row.pj > 0 ? row.asistencias / row.pj : 0,
   }))
 }
 
@@ -58,6 +61,13 @@ export function buildTopPromedioHistorico(matches, formato) {
   return buildPlayerPeriodRows(matches, formato)
     .filter((row) => row.pj > 0 && row.goles > 0)
     .sort((a, b) => b.promedio - a.promedio || b.goles - a.goles || a.nombre.localeCompare(b.nombre))
+    .slice(0, 15)
+}
+
+export function buildTopAsistenciasHistorico(matches, formato) {
+  return buildPlayerPeriodRows(matches, formato)
+    .filter((row) => row.asistencias > 0)
+    .sort((a, b) => b.asistencias - a.asistencias || a.nombre.localeCompare(b.nombre))
     .slice(0, 15)
 }
 

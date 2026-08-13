@@ -136,7 +136,7 @@ function TemporadasPage() {
           </Link>
         </div>
 
-        <div className="flex w-full max-w-6xl flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex-row sm:items-end sm:justify-between">
+        <div className="grid w-full max-w-6xl grid-cols-2 gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex sm:flex-row sm:items-end sm:justify-between">
           <div>
             <label className={LABEL_CLASSES}>Formato</label>
             <div className="flex overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
@@ -145,7 +145,7 @@ function TemporadasPage() {
                   key={value}
                   type="button"
                   onClick={() => setFormato(value)}
-                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                  className={`flex-1 px-4 py-2 text-xs font-bold uppercase tracking-wide transition sm:flex-none ${
                     formato === value
                       ? 'bg-lime-400 text-zinc-900'
                       : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
@@ -176,14 +176,13 @@ function TemporadasPage() {
           </p>
         ) : (
           <div className="flex w-full max-w-6xl flex-col gap-4">
-            {temporadas.map((t, index) => (
+            {temporadas.map((t) => (
               <TemporadaGroup
                 key={t.key}
                 temporada={t.temporada}
                 club={t.club}
                 teamStats={t.teamStats}
                 captains={t.captains}
-                defaultOpen={index === 0}
               />
             ))}
           </div>

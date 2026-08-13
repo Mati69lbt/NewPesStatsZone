@@ -139,11 +139,11 @@ function CapitanesPage() {
           ) : (
             <>
               <Accordion
+                key={`totales-${clubActivo}`}
                 title="Totales Generales"
                 subtitle={`${capitanesGenerales.length} ${
                   capitanesGenerales.length === 1 ? 'capitán' : 'capitanes'
                 }`}
-                defaultOpen
               >
                 {capitanesGenerales.length === 0 ? (
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin capitanes registrados.</p>
