@@ -33,18 +33,19 @@ export function buildPalmares(matches, tournamentResults) {
   const groups = new Map()
   for (const match of matches) {
     const torneo = match.torneo || 'Sin torneo'
-    if (!groups.has(torneo)) groups.set(torneo, [])
-    groups.get(torneo).push(match)
+    const tipo = tournamentResults[torneo]?.tipo || 'europeo'
+    const temporada = getTemporadaLabel(match.fecha, tipo)
+    const key = `${torneo}|||${temporada}`
+    if (!groups.has(key)) groups.set(key, { torneo, temporada, matches: [] })
+    groups.get(key).matches.push(match)
   }
 
-  const competencias = [...groups.entries()].map(([torneo, torneoMatches]) => {
-    const tipo = tournamentResults[torneo]?.tipo || 'europeo'
-    const resultado = tournamentResults[torneo]?.resultado || ''
+  const competencias = [...groups.values()].map(({ torneo, temporada, matches: torneoMatches }) => {
+    const resultado = tournamentResults[torneo]?.resultados?.[temporada] || ''
     const club = mostFrequent(torneoMatches.map((m) => m.club).filter(Boolean))
     const ultimaFecha = torneoMatches.reduce((max, m) => (!max || m.fecha > max ? m.fecha : max), null)
-    const temporada = getTemporadaLabel(ultimaFecha, tipo)
     return {
-      key: torneo,
+      key: `${torneo}|||${temporada}`,
       torneo,
       club,
       resultado,

@@ -24,16 +24,17 @@ function buildCampeonatos(matches, club, tournamentResults) {
   const groups = new Map()
   for (const match of clubMatches) {
     const torneo = match.torneo || 'Sin torneo'
-    if (!groups.has(torneo)) groups.set(torneo, [])
-    groups.get(torneo).push(match)
+    const tipo = tournamentResults[torneo]?.tipo || 'europeo'
+    const temporada = getTemporadaLabel(match.fecha, tipo)
+    const key = `${torneo}|||${temporada}`
+    if (!groups.has(key)) groups.set(key, { torneo, temporada, matches: [] })
+    groups.get(key).matches.push(match)
   }
 
-  return [...groups.entries()].map(([torneo, torneoMatches]) => {
-    const tipo = tournamentResults[torneo]?.tipo || 'europeo'
+  return [...groups.values()].map(({ torneo, temporada, matches: torneoMatches }) => {
     const ultimaFecha = torneoMatches.reduce((max, m) => (!max || m.fecha > max ? m.fecha : max), null)
-    const temporada = getTemporadaLabel(ultimaFecha, tipo)
     return {
-      key: torneo,
+      key: `${torneo}|||${temporada}`,
       torneo,
       temporada,
       matches: torneoMatches,

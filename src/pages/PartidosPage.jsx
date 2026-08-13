@@ -26,22 +26,23 @@ function PartidosPage() {
       const tipo = tournamentResults[torneo]?.tipo || 'europeo'
       const temporada = getTemporadaLabel(match.fecha, tipo)
       const key = `${torneo}|||${temporada}`
-      if (!groups.has(key)) groups.set(key, { torneo, matches: [] })
+      if (!groups.has(key)) groups.set(key, { torneo, temporada, matches: [] })
       groups.get(key).matches.push(match)
     }
 
     return [...groups.values()]
-      .map(({ torneo, matches: torneoMatches }) => ({
+      .map(({ torneo, temporada, matches: torneoMatches }) => ({
         torneo,
+        temporada,
         matches: [...torneoMatches].sort((a, b) => b.fecha.localeCompare(a.fecha)),
       }))
       .sort((a, b) => b.matches[0].fecha.localeCompare(a.matches[0].fecha))
   }, [matches, tournamentResults])
 
-  const handleResultadoChange = async (torneo, resultado) => {
+  const handleResultadoChange = async (torneo, temporada, resultado) => {
     if (!user) return
     try {
-      await updateTournamentResult(user.uid, torneo, resultado)
+      await updateTournamentResult(user.uid, torneo, temporada, resultado)
       toast.success('Resultado del torneo actualizado')
     } catch {
       toast.error('No se pudo guardar el resultado del torneo')
@@ -113,14 +114,14 @@ function PartidosPage() {
           </p>
         ) : (
           <div className="flex w-full max-w-5xl flex-col gap-8">
-            {groupedTournaments.map(({ torneo, matches: torneoMatches }) => (
+            {groupedTournaments.map(({ torneo, temporada, matches: torneoMatches }) => (
               <TournamentGroup
                 key={`${torneo}-${torneoMatches[0].fecha}`}
                 torneo={torneo}
                 matches={torneoMatches}
-                resultado={tournamentResults[torneo]?.resultado}
+                resultado={tournamentResults[torneo]?.resultados?.[temporada]}
                 tipo={tournamentResults[torneo]?.tipo}
-                onResultadoChange={handleResultadoChange}
+                onResultadoChange={(t, resultado) => handleResultadoChange(t, temporada, resultado)}
                 onTipoChange={handleTipoChange}
                 onEdit={handleEdit}
                 onDelete={handleDelete}

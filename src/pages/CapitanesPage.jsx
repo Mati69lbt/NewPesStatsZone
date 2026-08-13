@@ -7,7 +7,9 @@ import CapitanCard from '../components/CapitanCard'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
+import useTournamentResults from '../hooks/useTournamentResults'
 import { computeStats } from '../utils/versusStats'
+import { getTemporadaLabel } from '../utils/dateFormat'
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
@@ -37,6 +39,7 @@ function CapitanesPage() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
   const matches = useMatches(user?.uid)
+  const tournamentResults = useTournamentResults(user?.uid)
 
   const clubes = useMemo(() => {
     const set = new Set(matches.map((m) => m.club).filter(Boolean))
@@ -55,18 +58,23 @@ function CapitanesPage() {
     const groups = new Map()
     for (const match of clubMatches) {
       const torneo = match.torneo || 'Sin torneo'
-      if (!groups.has(torneo)) groups.set(torneo, [])
-      groups.get(torneo).push(match)
+      const tipo = tournamentResults[torneo]?.tipo || 'europeo'
+      const temporada = getTemporadaLabel(match.fecha, tipo)
+      const key = `${torneo}|||${temporada}`
+      if (!groups.has(key)) groups.set(key, { torneo, temporada, matches: [] })
+      groups.get(key).matches.push(match)
     }
 
-    return [...groups.entries()]
-      .map(([torneo, torneoMatches]) => ({
+    return [...groups.values()]
+      .map(({ torneo, temporada, matches: torneoMatches }) => ({
+        key: `${torneo}|||${temporada}`,
         torneo,
+        temporada,
         capitanes: buildCapitanes(torneoMatches),
         ultimaFecha: torneoMatches.reduce((max, m) => (!max || m.fecha > max ? m.fecha : max), ''),
       }))
       .sort((a, b) => b.ultimaFecha.localeCompare(a.ultimaFecha))
-  }, [clubMatches])
+  }, [clubMatches, tournamentResults])
 
   if (!user) {
     return (
@@ -155,10 +163,10 @@ function CapitanesPage() {
                 {torneos.length === 0 ? (
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin torneos registrados.</p>
                 ) : (
-                  torneos.map(({ torneo, capitanes }) => (
+                  torneos.map(({ key, torneo, temporada, capitanes }) => (
                     <Accordion
-                      key={torneo}
-                      title={torneo}
+                      key={key}
+                      title={`${torneo} ${temporada}`}
                       subtitle={`${capitanes.length} ${capitanes.length === 1 ? 'capitán' : 'capitanes'}`}
                     >
                       {capitanes.length === 0 ? (

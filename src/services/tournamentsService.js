@@ -5,8 +5,12 @@ function tournamentDoc(uid, torneo) {
   return doc(db, 'users', uid, 'torneos', torneo)
 }
 
-export async function updateTournamentResult(uid, torneo, resultado) {
-  await setDoc(tournamentDoc(uid, torneo), { resultado }, { merge: true })
+export async function updateTournamentResult(uid, torneo, temporada, resultado) {
+  await setDoc(
+    tournamentDoc(uid, torneo),
+    { resultados: { [temporada]: resultado } },
+    { merge: true }
+  )
 }
 
 export async function updateTournamentTipo(uid, torneo, tipo) {
@@ -19,7 +23,7 @@ export function subscribeToTournamentResults(uid, onChange) {
       Object.fromEntries(
         snapshot.docs.map((docSnap) => [
           docSnap.id,
-          { resultado: docSnap.data().resultado ?? '', tipo: docSnap.data().tipo ?? 'europeo' },
+          { resultados: docSnap.data().resultados ?? {}, tipo: docSnap.data().tipo ?? 'europeo' },
         ])
       )
     )
