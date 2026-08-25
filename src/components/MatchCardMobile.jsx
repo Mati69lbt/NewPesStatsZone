@@ -10,9 +10,9 @@ import {
 function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
   const { nombreLocal, golesLocal, golesVisitante, nombreVisitante } = getScoreboard(match)
-  const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub)
+  const goleadoresPropios = buildGoleadoresLabel(match.incidenciasClub, match.autogolesFavor)
   const asistentesPropios = buildAsistentesLabel(match.incidenciasClub)
-  const goleadoresRivales = buildGoleadoresLabel(match.incidenciasRival)
+  const goleadoresRivales = buildGoleadoresLabel(match.incidenciasRival, match.autogolesContra)
 
   return (
     <div className="px-3 py-2">

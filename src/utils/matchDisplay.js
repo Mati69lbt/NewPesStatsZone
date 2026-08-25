@@ -25,10 +25,13 @@ export function getScoreboard(match) {
   }
 }
 
-export function buildGoleadoresLabel(incidencias) {
+export function buildGoleadoresLabel(incidencias, autogoles = 0) {
   const goleadores = (incidencias ?? [])
     .filter((i) => i.goles > 0)
     .map((i) => (i.goles > 1 ? `${i.nombre} (${i.goles})` : i.nombre))
+  if (autogoles > 0) {
+    goleadores.push(autogoles > 1 ? `Gol en contra (${autogoles})` : 'Gol en contra')
+  }
   return goleadores.length > 0 ? goleadores.join(', ') : '-'
 }
 

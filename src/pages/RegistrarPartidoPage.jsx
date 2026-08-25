@@ -50,6 +50,8 @@ function RegistrarPartidoPage() {
 
   const [rivalScorerInput, setRivalScorerInput] = useState('')
   const [incidenciasRival, setIncidenciasRival] = useState([])
+  const [autogolesFavor, setAutogolesFavor] = useState(0)
+  const [autogolesContra, setAutogolesContra] = useState(0)
 
   const [saving, setSaving] = useState(false)
 
@@ -84,14 +86,20 @@ function RegistrarPartidoPage() {
       .sort((a, b) => a.nombre.localeCompare(b.nombre))
   }, [titulares, suplentes, incidenciasClub])
 
-  const golesClub = incidenciasClub.reduce((sum, i) => sum + i.goles, 0)
-  const golesRival = incidenciasRival.reduce((sum, i) => sum + i.goles, 0)
+  const golesClub = incidenciasClub.reduce((sum, i) => sum + i.goles, 0) + autogolesFavor
+  const golesRival = incidenciasRival.reduce((sum, i) => sum + i.goles, 0) + autogolesContra
   const goleadoresClub = incidenciasClub
     .filter((i) => i.goles > 0)
     .map((i) => (i.goles > 1 ? `${i.nombre} (${i.goles})` : i.nombre))
+  if (autogolesFavor > 0) {
+    goleadoresClub.push(autogolesFavor > 1 ? `Gol en contra (${autogolesFavor})` : 'Gol en contra')
+  }
   const goleadoresRival = incidenciasRival
     .filter((i) => i.goles > 0)
     .map((i) => (i.goles > 1 ? `${i.nombre} (${i.goles})` : i.nombre))
+  if (autogolesContra > 0) {
+    goleadoresRival.push(autogolesContra > 1 ? `Gol en contra (${autogolesContra})` : 'Gol en contra')
+  }
   const expulsadosClub = incidenciasClub.filter((i) => i.expulsado).map((i) => i.nombre)
   const expulsadosRival = incidenciasRival.filter((i) => i.expulsado).map((i) => i.nombre)
   const asistentesClub = incidenciasClub
@@ -114,6 +122,8 @@ function RegistrarPartidoPage() {
     setSuplentes(match.suplentes ?? [])
     setIncidenciasClub(match.incidenciasClub ?? [])
     setIncidenciasRival(match.incidenciasRival ?? [])
+    setAutogolesFavor(match.autogolesFavor ?? 0)
+    setAutogolesContra(match.autogolesContra ?? 0)
     const formation = formations.find((f) => f.capitanId === match.capitanId)
     setSelectedFormationId(formation?.id ?? '')
     loadedMatchIdRef.current = editingMatchId
@@ -201,6 +211,8 @@ function RegistrarPartidoPage() {
       suplentes,
       incidenciasClub,
       incidenciasRival,
+      autogolesFavor,
+      autogolesContra,
       golesClub,
       golesRival,
     }
@@ -276,6 +288,10 @@ function RegistrarPartidoPage() {
               incidenciasRival={incidenciasRival}
               onUpdateIncidenciaRival={handleUpdateIncidenciaRival}
               onRemoveIncidenciaRival={handleRemoveIncidenciaRival}
+              autogolesFavor={autogolesFavor}
+              onAutogolesFavorChange={setAutogolesFavor}
+              autogolesContra={autogolesContra}
+              onAutogolesContraChange={setAutogolesContra}
               onSubmit={handleSubmit}
               saving={saving}
             />

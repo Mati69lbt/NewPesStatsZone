@@ -46,6 +46,10 @@ function MatchForm({
   incidenciasRival,
   onUpdateIncidenciaRival,
   onRemoveIncidenciaRival,
+  autogolesFavor,
+  onAutogolesFavorChange,
+  autogolesContra,
+  onAutogolesContraChange,
   onSubmit,
   saving,
 }) {
@@ -317,6 +321,41 @@ function MatchForm({
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="mb-6 grid grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="autogoles-favor" className={LABEL_CLASSES}>
+            Gol en contra (a favor)
+          </label>
+          <select
+            id="autogoles-favor"
+            value={autogolesFavor}
+            onChange={(e) => onAutogolesFavorChange(Number(e.target.value))}
+            className={FIELD_CLASSES}
+          >
+            <option value={0}>0</option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="autogoles-contra" className={LABEL_CLASSES}>
+            Gol en contra (en contra)
+          </label>
+          <select
+            id="autogoles-contra"
+            value={autogolesContra}
+            onChange={(e) => onAutogolesContraChange(Number(e.target.value))}
+            className={FIELD_CLASSES}
+          >
+            <option value={0}>0</option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+          </select>
+        </div>
       </div>
 
       <button
