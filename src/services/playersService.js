@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, updateDoc, writeBatch } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
 function playersCollection(uid) {
@@ -22,4 +22,11 @@ export async function updatePlayer(uid, playerId, player) {
 
 export async function deletePlayer(uid, playerId) {
   await deleteDoc(doc(db, 'users', uid, 'jugadores', playerId))
+}
+
+export async function deleteAllPlayers(uid) {
+  const snapshot = await getDocs(playersCollection(uid))
+  const batch = writeBatch(db)
+  snapshot.docs.forEach((docSnap) => batch.delete(docSnap.ref))
+  await batch.commit()
 }

@@ -1,4 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import FormacionPage from './pages/FormacionPage'
@@ -52,6 +54,7 @@ function App() {
         <Route path="/record" element={<RecordPersonalPage />} />
         <Route path="/goleadores-global" element={<GoleadoresAsistenciasGlobalPage />} />
       </Routes>
+      <ToastContainer theme="dark" position="top-right" />
     </div>
   )
 }

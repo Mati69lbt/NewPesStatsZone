@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { toast } from 'react-toastify'
 import { auth } from '../config/firebase'
 import LoginForm from '../components/LoginForm'
 
@@ -37,7 +36,6 @@ function LoginPage() {
         onSwitchToRegister={() => navigate('/register')}
         loading={loading}
       />
-      <ToastContainer theme="dark" position="top-right" />
     </div>
   )
 }

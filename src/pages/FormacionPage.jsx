@@ -10,13 +10,14 @@ import PlayerList from '../components/PlayerList'
 import PlantelSortBar from '../components/PlantelSortBar'
 import FormationEditor from '../components/FormationEditor'
 import FormationCard from '../components/FormationCard'
+import Modal from '../components/Modal'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import usePlayers from '../hooks/usePlayers'
 import useFormations from '../hooks/useFormations'
 import { updateClub } from '../services/clubService'
-import { addPlayer, deletePlayer, updatePlayer } from '../services/playersService'
-import { addFormation, deleteFormation, updateFormation } from '../services/formationsService'
+import { addPlayer, deleteAllPlayers, deletePlayer, updatePlayer } from '../services/playersService'
+import { addFormation, deleteAllFormations, deleteFormation, updateFormation } from '../services/formationsService'
 import { toTitleCase } from '../utils/textFormat'
 import { getPositionOrder } from '../utils/positionOrder'
 
@@ -51,8 +52,9 @@ function FormacionPage() {
   const [titulares, setTitulares] = useState([])
   const [savingFormation, setSavingFormation] = useState(false)
 
-  const [clubCleared, setClubCleared] = useState(false)
-  const displayedClub = clubCleared ? '' : club
+  const [showNewClubModal, setShowNewClubModal] = useState(false)
+  const [newClubName, setNewClubName] = useState('')
+  const [startingNewContract, setStartingNewContract] = useState(false)
 
   const [plantelSortKey, setPlantelSortKey] = useState('nombre')
   const [plantelSortDir, setPlantelSortDir] = useState('asc')
@@ -76,7 +78,6 @@ function FormacionPage() {
     setSavingClub(true)
     try {
       await updateClub(user.uid, nombreClub)
-      setClubCleared(false)
       toast.success('Club actualizado')
     } catch {
       toast.error('No se pudo actualizar el club')
@@ -92,13 +93,43 @@ function FormacionPage() {
       'Sí',
       'Cancelar',
       () => {
-        setClubCleared(true)
-        handleCancelEdit()
-        handleCancelFormation()
+        setNewClubName('')
+        setShowNewClubModal(true)
       },
       undefined,
       { titleColor: '#a3e635', okButtonBackground: '#a3e635' }
     )
+  }
+
+  const handleCloseNewClubModal = () => {
+    if (startingNewContract) return
+    setShowNewClubModal(false)
+  }
+
+  const handleConfirmNewClub = async (e) => {
+    e.preventDefault()
+    if (!user) return
+
+    const nombre = toTitleCase(newClubName.trim())
+    if (!nombre) {
+      toast.error('Ingresá un nombre de club válido')
+      return
+    }
+
+    setStartingNewContract(true)
+    try {
+      await updateClub(user.uid, nombre)
+      await deleteAllPlayers(user.uid)
+      await deleteAllFormations(user.uid)
+      handleCancelEdit()
+      handleCancelFormation()
+      setShowNewClubModal(false)
+      toast.success('Nuevo contrato registrado')
+    } catch {
+      toast.error('No se pudo iniciar el nuevo contrato')
+    } finally {
+      setStartingNewContract(false)
+    }
   }
 
   const handleEditPlayer = (player) => {
@@ -270,7 +301,7 @@ function FormacionPage() {
       <Navbar />
 
       <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10">
-        <ClubForm club={displayedClub} onSave={handleSaveClub} saving={savingClub} />
+        <ClubForm club={club} onSave={handleSaveClub} saving={savingClub} />
 
         <PlayerForm
           nombre={playerForm.nombre}
@@ -285,73 +316,69 @@ function FormacionPage() {
           onCancelEdit={handleCancelEdit}
         />
 
-        {!clubCleared && (
-          <>
-            <div className="w-full max-w-5xl">
-              <h2 className="mb-4 text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-                Plantel Profesional {club ? ` ${club}` : ' del club'}{' '}
-                <span className="text-zinc-400 dark:text-zinc-500">({players.length} jugadores)</span>
-              </h2>
-              {players.length > 0 && (
-                <div className="mb-4 flex justify-center">
-                  <PlantelSortBar sortKey={plantelSortKey} sortDir={plantelSortDir} onSort={handlePlantelSort} />
-                </div>
-              )}
-              <PlayerList players={sortedPlayers} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
+        <div className="w-full max-w-5xl">
+          <h2 className="mb-4 text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
+            Plantel Profesional {club ? ` ${club}` : ' del club'}{' '}
+            <span className="text-zinc-400 dark:text-zinc-500">({players.length} jugadores)</span>
+          </h2>
+          {players.length > 0 && (
+            <div className="mb-4 flex justify-center">
+              <PlantelSortBar sortKey={plantelSortKey} sortDir={plantelSortDir} onSort={handlePlantelSort} />
             </div>
+          )}
+          <PlayerList players={sortedPlayers} onEdit={handleEditPlayer} onDelete={handleDeletePlayer} />
+        </div>
 
-            <div className="w-full max-w-5xl">
-              <div className="mb-4 flex items-center justify-center gap-4">
-                <h2 className="text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-                  Formaciones
-                </h2>
-                {!showFormationEditor && (
-                  <button
-                    type="button"
-                    onClick={handleOpenNewFormation}
-                    className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300"
-                  >
-                    Nueva formación
-                  </button>
-                )}
-              </div>
+        <div className="w-full max-w-5xl">
+          <div className="mb-4 flex items-center justify-center gap-4">
+            <h2 className="text-center text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
+              Formaciones
+            </h2>
+            {!showFormationEditor && (
+              <button
+                type="button"
+                onClick={handleOpenNewFormation}
+                className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300"
+              >
+                Nueva formación
+              </button>
+            )}
+          </div>
 
-              {showFormationEditor && (
-                <div className="mb-8 flex justify-center">
-                  <FormationEditor
-                    players={players}
-                    capitanId={capitanId}
-                    titulares={titulares}
-                    onCaptainChange={handleCaptainChange}
-                    onAddPlayer={handleAddTitular}
-                    onRemovePlayer={handleRemoveTitular}
-                    onSave={handleSaveFormation}
-                    onCancel={handleCancelFormation}
-                    saving={savingFormation}
-                    isEditing={Boolean(editingFormationId)}
-                  />
-                </div>
-              )}
-
-              {formations.length === 0 ? (
-                <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-                  Todavía no hay formaciones guardadas.
-                </p>
-              ) : (
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
-                  {formations.map((formation) => (
-                    <FormationCard
-                      key={formation.id}
-                      formation={formation}
-                      onEdit={handleEditFormation}
-                      onDelete={handleDeleteFormation}
-                    />
-                  ))}
-                </div>
-              )}
+          {showFormationEditor && (
+            <div className="mb-8 flex justify-center">
+              <FormationEditor
+                players={players}
+                capitanId={capitanId}
+                titulares={titulares}
+                onCaptainChange={handleCaptainChange}
+                onAddPlayer={handleAddTitular}
+                onRemovePlayer={handleRemoveTitular}
+                onSave={handleSaveFormation}
+                onCancel={handleCancelFormation}
+                saving={savingFormation}
+                isEditing={Boolean(editingFormationId)}
+              />
             </div>
-          </>
-        )}
+          )}
+
+          {formations.length === 0 ? (
+            <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+              Todavía no hay formaciones guardadas.
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
+              {formations.map((formation) => (
+                <FormationCard
+                  key={formation.id}
+                  formation={formation}
+                  onEdit={handleEditFormation}
+                  onDelete={handleDeleteFormation}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         <button
           type="button"
@@ -361,6 +388,48 @@ function FormacionPage() {
           Nuevo Contrato
         </button>
       </main>
+
+      <Modal open={showNewClubModal} onClose={handleCloseNewClubModal} title="Nuevo contrato" subtitle="Nuevo club">
+        <form onSubmit={handleConfirmNewClub} className="flex flex-col gap-4">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Ingresá el nombre del nuevo club. Se vaciará el plantel profesional y las formaciones guardadas.
+          </p>
+          <div>
+            <label
+              htmlFor="nuevoClub"
+              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+            >
+              Nombre del nuevo club
+            </label>
+            <input
+              id="nuevoClub"
+              type="text"
+              autoFocus
+              value={newClubName}
+              onChange={(e) => setNewClubName(e.target.value)}
+              placeholder="Ej: Sacachispas FC"
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-100 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500"
+            />
+          </div>
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleCloseNewClubModal}
+              disabled={startingNewContract}
+              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-bold uppercase tracking-wide text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={startingNewContract}
+              className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-900 transition hover:bg-lime-300 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {startingNewContract ? 'Guardando...' : 'Confirmar'}
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       <ToastContainer theme="dark" position="top-right" />
     </div>

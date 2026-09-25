@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, updateDoc, writeBatch } from 'firebase/firestore'
 import { db } from '../config/firebase'
 
 function formationsCollection(uid) {
@@ -21,4 +21,11 @@ export async function updateFormation(uid, formationId, formation) {
 
 export async function deleteFormation(uid, formationId) {
   await deleteDoc(doc(db, 'users', uid, 'formaciones', formationId))
+}
+
+export async function deleteAllFormations(uid) {
+  const snapshot = await getDocs(formationsCollection(uid))
+  const batch = writeBatch(db)
+  snapshot.docs.forEach((docSnap) => batch.delete(docSnap.ref))
+  await batch.commit()
 }

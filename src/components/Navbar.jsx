@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
+import LogoutButton from './LogoutButton'
 
 const NAV_LINKS = [
   { to: '/formacion', label: 'Formación' },
@@ -191,6 +192,7 @@ function Navbar() {
             + Registrar Partido
           </NavLink>
           <ThemeToggle />
+          <LogoutButton />
         </nav>
 
         <button
@@ -223,8 +225,9 @@ function Navbar() {
                 />
               ))}
             </div>
-            <div className="pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <ThemeToggle />
+              <LogoutButton variant="full" onAfterLogout={() => setIsOpen(false)} />
             </div>
           </nav>
         </div>
