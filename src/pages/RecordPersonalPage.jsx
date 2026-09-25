@@ -9,6 +9,8 @@ import useMatches from '../hooks/useMatches'
 import { buildRecordPersonalRows } from '../utils/recordPersonalStats'
 import { VISTAS } from '../utils/estadisticasVistas'
 
+const TODOS_LOS_CLUBES = '__TODOS__'
+
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
 
@@ -41,12 +43,15 @@ function RecordPersonalPage() {
   }, [matches, club])
 
   useEffect(() => {
-    if (selectedClub || clubes.length === 0) return
-    setSelectedClub(club && clubes.includes(club) ? club : clubes[0])
-  }, [club, clubes, selectedClub])
+    if (selectedClub) return
+    setSelectedClub(TODOS_LOS_CLUBES)
+  }, [selectedClub])
 
   const clubMatches = useMemo(
-    () => matches.filter((m) => m.club === selectedClub),
+    () =>
+      selectedClub === TODOS_LOS_CLUBES
+        ? matches
+        : matches.filter((m) => m.club === selectedClub),
     [matches, selectedClub]
   )
 
@@ -90,7 +95,7 @@ function RecordPersonalPage() {
               <div>
                 <label className={LABEL_CLASSES}>Club</label>
                 <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
-                  {clubes.length === 0 && <option value="">Sin clubes</option>}
+                  <option value={TODOS_LOS_CLUBES}>Todos los clubes</option>
                   {clubes.map((c) => (
                     <option key={c} value={c}>
                       {c}

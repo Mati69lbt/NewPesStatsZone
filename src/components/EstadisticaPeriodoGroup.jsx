@@ -1,10 +1,17 @@
-import { useMemo, useState } from 'react'
-import { buildJugadoresRows } from '../utils/periodoStats'
-import EstadisticaPeriodoTable from './EstadisticaPeriodoTable'
+import { useMemo, useState } from "react";
+import { buildJugadoresRows } from "../utils/periodoStats";
+import EstadisticaPeriodoTable from "./EstadisticaPeriodoTable";
 
 function EstadisticaPeriodoGroup({ periodo, matches, metrica, defaultOpen }) {
-  const [open, setOpen] = useState(defaultOpen)
-  const rows = useMemo(() => buildJugadoresRows(matches, metrica), [matches, metrica])
+  const [open, setOpen] = useState(defaultOpen);
+  const rows = useMemo(
+    () => buildJugadoresRows(matches, metrica),
+    [matches, metrica],
+  );
+  const totalGoles = useMemo(
+    () => matches.reduce((sum, m) => sum + (m.golesClub ?? 0), 0),
+    [matches],
+  );
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-zinc-300 shadow-lg dark:border-zinc-700">
@@ -19,7 +26,9 @@ function EstadisticaPeriodoGroup({ periodo, matches, metrica, defaultOpen }) {
             {periodo}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {matches.length} {matches.length === 1 ? 'partido jugado' : 'partidos jugados'}
+            {matches.length}{" "}
+            {matches.length === 1 ? "Partido Jugado" : "Partidos Jugados"} -{" "}
+            {totalGoles} {totalGoles === 1 ? "Gol" : "Goles"}
           </p>
         </div>
 
@@ -28,9 +37,13 @@ function EstadisticaPeriodoGroup({ periodo, matches, metrica, defaultOpen }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform ${open ? '' : '-rotate-90'}`}
+          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform ${open ? "" : "-rotate-90"}`}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+          />
         </svg>
       </button>
 
@@ -40,7 +53,7 @@ function EstadisticaPeriodoGroup({ periodo, matches, metrica, defaultOpen }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default EstadisticaPeriodoGroup
+export default EstadisticaPeriodoGroup;

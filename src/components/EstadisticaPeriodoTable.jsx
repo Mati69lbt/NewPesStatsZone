@@ -10,7 +10,7 @@ function formatPromedio(value) {
 function Posicion({ index }) {
   const medalla = MEDALLAS[index]
   return (
-    <span className="flex items-center justify-center text-xs font-bold text-zinc-400 md:text-sm">
+    <span className="flex items-center justify-center text-xs font-bold text-zinc-500 dark:text-zinc-400 md:text-sm">
       {medalla ?? index + 1}
     </span>
   )
@@ -30,10 +30,10 @@ function EstadisticaPeriodoTable({ rows, metrica }) {
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
+    <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
       <table className="w-full table-fixed border-collapse text-xs md:text-sm">
         <thead>
-          <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-400 md:text-[11px]">
+          <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
             <th className="w-9 px-1.5 py-2 text-center md:w-10 md:px-3 md:py-3">Pos</th>
             <th className="w-[30%] px-1.5 py-2 text-left md:px-3 md:py-3">Jugador</th>
             <th className="w-[30%] px-1.5 py-2 text-left md:px-3 md:py-3">Club</th>
@@ -42,33 +42,33 @@ function EstadisticaPeriodoTable({ rows, metrica }) {
             <th className={NUM_TH_CLASSES}>Prom.</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-800">
+        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {rows.map((row, index) => (
             <tr
               key={row.nombre}
-              className={`transition hover:bg-zinc-800/60 ${index % 2 === 0 ? 'bg-zinc-900' : 'bg-zinc-900/40'}`}
+              className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
             >
               <td className="w-9 px-1.5 py-2 md:w-10 md:px-3 md:py-3">
                 <Posicion index={index} />
               </td>
-              <td className="break-words px-1.5 py-2 text-left text-xs font-bold text-zinc-100 md:px-3 md:py-3 md:text-sm">
+              <td className="break-words px-1.5 py-2 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
                 {row.nombre}
               </td>
-              <td className="break-words px-1.5 py-2 text-left text-[10px] text-zinc-400 md:px-3 md:py-3 md:text-xs">
+              <td className="break-words px-1.5 py-2 text-left text-[10px] text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-xs">
                 {row.club || '-'}
               </td>
-              <td className={`${NUM_TD_CLASSES} text-zinc-300`}>{row.pj}</td>
-              <td className={`${NUM_TD_CLASSES} font-bold text-lime-400`}>{isGoles ? row.goles : row.asistencias}</td>
-              <td className={`${NUM_TD_CLASSES} font-semibold text-zinc-200`}>{formatPromedio(row.promedio)}</td>
+              <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
+              <td className={`${NUM_TD_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>{isGoles ? row.goles : row.asistencias}</td>
+              <td className={`${NUM_TD_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>{formatPromedio(row.promedio)}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
-          <tr className="border-t-2 border-zinc-700 bg-zinc-800 text-[10px] font-bold uppercase text-zinc-300 md:text-xs">
+          <tr className="border-t-2 border-zinc-200 bg-gray-50 text-[10px] font-bold uppercase text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 md:text-xs">
             <td className="px-1.5 py-1.5 md:px-3 md:py-3" colSpan={4}>
               Total
             </td>
-            <td className={`${NUM_TD_CLASSES} text-lime-400`}>{total}</td>
+            <td className={`${NUM_TD_CLASSES} text-lime-600 dark:text-lime-400`}>{total}</td>
             <td className={NUM_TD_CLASSES} />
           </tr>
         </tfoot>

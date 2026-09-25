@@ -19,7 +19,7 @@ function Badge({ value, label, labelPosition }) {
   const valueEl = (
     <span
       title={label}
-      className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-1.5 text-[11px] font-bold ${getBadgeClasses(
+      className={`inline-flex h-8 min-w-8 items-center justify-center rounded-full border px-2 text-sm font-bold ${getBadgeClasses(
         value
       )}`}
     >
@@ -28,7 +28,7 @@ function Badge({ value, label, labelPosition }) {
   )
 
   return (
-    <span className="flex items-center gap-1">
+    <span className="flex items-center gap-1.5">
       {labelPosition === 'left' && labelEl}
       {valueEl}
       {labelPosition === 'right' && labelEl}
@@ -41,40 +41,40 @@ function VersusStatCell({ label, stats, showPoints = false }) {
 
   if (pj === 0) {
     return (
-      <div className="flex min-w-[132px] items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-center dark:border-zinc-700/50 dark:bg-zinc-800/40">
+      <div className="flex min-h-[150px] min-w-[160px] items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-center dark:border-zinc-700/50 dark:bg-zinc-800/40">
         {label && (
           <p className="sr-only">{label}</p>
         )}
-        <span className="text-lg font-bold text-zinc-300 dark:text-zinc-600">—</span>
+        <span className="text-2xl font-bold text-zinc-300 dark:text-zinc-600">—</span>
       </div>
     )
   }
 
   return (
-    <div className={`min-w-[132px] rounded-lg border p-2 text-center ${getCardClasses(g, p)}`}>
+    <div className={`min-w-[160px] rounded-xl border p-4 text-center ${getCardClasses(g, p)}`}>
       {label && (
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
           {label}
         </p>
       )}
-      <div className="flex justify-center gap-1.5 text-[11px] font-bold text-zinc-700 dark:text-zinc-200">
+      <div className="flex justify-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-200">
         <span>{g}G</span>
         <span>{e}E</span>
         <span>{p}P</span>
       </div>
-      <div className="mt-1.5 flex items-center justify-center gap-2">
+      <div className="mt-2 flex items-center justify-center gap-3">
         <Badge value={gp} label="G/P" labelPosition="left" />
         <Badge value={df} label="DF" labelPosition="right" />
       </div>
-      <p className="mt-1.5 text-[10px] text-zinc-500 dark:text-zinc-400">
+      <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
         PJ {pj} · GF {gf} · GC {gc}
       </p>
       {showPoints && (
-        <p className="mt-1.5 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-1.5 text-[11px] font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
+        <p className="mt-2 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-2 text-sm font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
           <span>
             {pts} / {ptsPosibles} -
           </span>
-          <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+          <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
             {ptsPosibles > 0 ? Math.round((pts / ptsPosibles) * 100) : 0}%
           </span>
         </p>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import EstadisticaPeriodoGroup from '../components/EstadisticaPeriodoGroup'
@@ -6,6 +7,7 @@ import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
 import { buildPeriodoGroups } from '../utils/periodoStats'
+import { VISTAS } from '../utils/estadisticasVistas'
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
@@ -34,6 +36,7 @@ function EstadisticasPeriodoPage() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
   const matches = useMatches(user?.uid)
+  const navigate = useNavigate()
 
   const [selectedClub, setSelectedClub] = useState(TODOS_CLUBES)
   const [formato, setFormato] = useState('anual')
@@ -91,16 +94,29 @@ function EstadisticasPeriodoPage() {
         </div>
 
         <div className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:max-w-3xl">
-          <div>
-            <label className={LABEL_CLASSES}>Club</label>
-            <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
-              <option value={TODOS_CLUBES}>{TODOS_CLUBES}</option>
-              {clubes.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
+            <div>
+              <label className={LABEL_CLASSES}>Club</label>
+              <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
+                <option value={TODOS_CLUBES}>{TODOS_CLUBES}</option>
+                {clubes.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className={LABEL_CLASSES}>Ir a</label>
+              <select value="/estadisticas-periodo" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
+                {VISTAS.map((v) => (
+                  <option key={v.value} value={v.value}>
+                    {v.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>

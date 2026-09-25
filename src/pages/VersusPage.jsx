@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import Navbar from '../components/Navbar'
-import VersusStatCell from '../components/VersusStatCell'
+import VersusCompactStat from '../components/VersusCompactStat'
+import VersusStatDetail from '../components/VersusStatDetail'
+import Modal from '../components/Modal'
 import Loader from '../components/Loader'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
-import useFormations from '../hooks/useFormations'
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-1.5 py-1.5 text-[11px] text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 sm:px-3 sm:py-2 sm:text-sm'
@@ -48,7 +49,10 @@ function computeStats(matches) {
     else e += 1
   }
 
-  return { g, e, p, pj: matches.length, gf, gc, df: gf - gc, gp: g - p }
+  const pts = g * 3 + e
+  const ptsPosibles = matches.length * 3
+
+  return { g, e, p, pj: matches.length, gf, gc, df: gf - gc, gp: g - p, pts, ptsPosibles }
 }
 
 function SortButton({ value, label, active, orden, onClick }) {
@@ -72,7 +76,6 @@ function VersusPage() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
   const matches = useMatches(user?.uid)
-  const formations = useFormations(user?.uid)
 
   const clubes = useMemo(() => {
     const set = new Set(matches.map((m) => m.club).filter(Boolean))
@@ -84,7 +87,11 @@ function VersusPage() {
   const [ambito, setAmbito] = useState('general')
   const [sort, setSort] = useState({ campo: 'nombre', orden: 'asc' })
   const [campeonato, setCampeonato] = useState('todos')
+  const [modalData, setModalData] = useState(null)
   const { campo, orden } = sort
+
+  const openModal = (rival, label, stats) => setModalData({ rival, label, stats })
+  const closeModal = () => setModalData(null)
 
   const handleSort = (field) => {
     setSort((prev) =>
@@ -121,8 +128,8 @@ function VersusPage() {
   )
 
   const capitanes = useMemo(
-    () => [...new Set(formations.map((f) => f.capitanNombre).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
-    [formations]
+    () => [...new Set(clubMatches.map((m) => m.capitanNombre).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [clubMatches]
   )
 
   const AMBITOS = useMemo(
@@ -261,26 +268,29 @@ function VersusPage() {
             No hay enfrentamientos registrados con los filtros seleccionados.
           </p>
         ) : (
-          <div className="relative w-full max-w-6xl overflow-auto rounded-xl border border-zinc-200 shadow dark:border-zinc-700/50" style={{ maxHeight: '70vh' }}>
-            <table className="w-full border-separate border-spacing-0 bg-white dark:bg-zinc-900">
+          <div
+            className="relative w-full max-w-6xl overflow-auto rounded-xl border border-zinc-200 shadow dark:border-zinc-700/50"
+            style={{ maxHeight: '75vh' }}
+          >
+            <table className="mx-auto w-max border-separate border-spacing-0 bg-white dark:bg-zinc-900 md:mx-0 md:w-full">
               <thead>
-                <tr className="text-xs font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                  <th className="sticky left-0 top-0 z-30 w-36 max-w-[150px] border-b border-zinc-200 bg-zinc-100 px-3 py-3 text-left dark:border-zinc-700/50 dark:bg-zinc-800">
+                <tr className="text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                  <th className="sticky left-0 top-0 z-30 w-28 max-w-[120px] border-b border-zinc-200 bg-zinc-100 px-2 py-2 text-left dark:border-zinc-700/50 dark:bg-zinc-800">
                     Rival
                   </th>
-                  <th className="sticky top-0 z-20 min-w-[132px] border-b border-zinc-200 bg-zinc-100 px-2 py-3 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
+                  <th className="sticky top-0 z-20 min-w-[128px] border-b border-zinc-200 bg-zinc-100 px-1 py-2 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
                     General
                   </th>
-                  <th className="sticky top-0 z-20 min-w-[132px] border-b border-zinc-200 bg-zinc-100 px-2 py-3 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
+                  <th className="sticky top-0 z-20 min-w-[128px] border-b border-zinc-200 bg-zinc-100 px-1 py-2 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
                     Local
                   </th>
-                  <th className="sticky top-0 z-20 min-w-[132px] border-b border-zinc-200 bg-zinc-100 px-2 py-3 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
+                  <th className="sticky top-0 z-20 min-w-[128px] border-b border-zinc-200 bg-zinc-100 px-1 py-2 text-center dark:border-zinc-700/50 dark:bg-zinc-800">
                     Visitante
                   </th>
                   {capitanes.map((capitan) => (
                     <th
                       key={capitan}
-                      className="sticky top-0 z-20 min-w-[132px] border-b border-zinc-200 bg-zinc-100 px-2 py-3 text-center dark:border-zinc-700/50 dark:bg-zinc-800"
+                      className="sticky top-0 z-20 min-w-[128px] border-b border-zinc-200 bg-zinc-100 px-1 py-2 text-center dark:border-zinc-700/50 dark:bg-zinc-800"
                     >
                       {capitan}
                     </th>
@@ -290,21 +300,24 @@ function VersusPage() {
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700/50">
                 {rivales.map(({ rival, general, local, visitante, porCapitan }, index) => (
                   <tr key={rival}>
-                    <td className="sticky left-0 z-10 w-36 max-w-[150px] whitespace-normal break-words bg-white px-3 py-3 text-sm font-bold text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+                    <td className="sticky left-0 z-10 w-28 max-w-[120px] whitespace-normal break-words bg-white px-2 py-1.5 text-xs font-bold text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
                       {index + 1}. {rival}
                     </td>
-                    <td className="px-2 py-2">
-                      <VersusStatCell stats={general} />
+                    <td className="px-1 py-1.5">
+                      <VersusCompactStat stats={general} onClick={() => openModal(rival, 'General', general)} />
                     </td>
-                    <td className="px-2 py-2">
-                      <VersusStatCell stats={local} />
+                    <td className="px-1 py-1.5">
+                      <VersusCompactStat stats={local} onClick={() => openModal(rival, 'Local', local)} />
                     </td>
-                    <td className="px-2 py-2">
-                      <VersusStatCell stats={visitante} />
+                    <td className="px-1 py-1.5">
+                      <VersusCompactStat
+                        stats={visitante}
+                        onClick={() => openModal(rival, 'Visitante', visitante)}
+                      />
                     </td>
                     {porCapitan.map(({ capitan, stats }) => (
-                      <td key={capitan} className="px-2 py-2">
-                        <VersusStatCell stats={stats} />
+                      <td key={capitan} className="px-1 py-1.5">
+                        <VersusCompactStat stats={stats} onClick={() => openModal(rival, capitan, stats)} />
                       </td>
                     ))}
                   </tr>
@@ -314,6 +327,10 @@ function VersusPage() {
           </div>
         )}
       </main>
+
+      <Modal open={Boolean(modalData)} onClose={closeModal} title={modalData?.rival} subtitle={modalData?.label}>
+        {modalData && <VersusStatDetail stats={modalData.stats} />}
+      </Modal>
     </div>
   )
 }

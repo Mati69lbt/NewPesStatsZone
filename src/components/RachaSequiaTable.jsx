@@ -11,30 +11,30 @@ function RachaSequiaTable({ rows }) {
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-lg bg-zinc-900">
+    <div className="w-full overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
       <table className="w-full table-fixed border-collapse text-xs md:text-sm">
         <thead>
-          <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-400 md:text-[11px]">
+          <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
             <th className="w-9 px-1.5 py-2 text-center md:w-10 md:px-3 md:py-3">#</th>
             <th className="px-1.5 py-2 text-left md:px-3 md:py-3">Jugador</th>
             <th className={NUM_TH_CLASSES}>Racha</th>
             <th className="w-[30%] px-1.5 py-2 text-left md:px-3 md:py-3">Último Rival</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-800">
+        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
           {rows.map((row, index) => (
             <tr
               key={row.nombre}
-              className={`transition hover:bg-zinc-800/60 ${index % 2 === 0 ? 'bg-zinc-900' : 'bg-zinc-900/40'}`}
+              className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
             >
-              <td className="w-9 px-1.5 py-2 text-center text-xs font-bold text-zinc-400 md:w-10 md:px-3 md:py-3 md:text-sm">
+              <td className="w-9 px-1.5 py-2 text-center text-xs font-bold text-zinc-500 dark:text-zinc-400 md:w-10 md:px-3 md:py-3 md:text-sm">
                 {index + 1}
               </td>
-              <td className="break-words px-1.5 py-2 text-left text-xs font-bold text-zinc-100 md:px-3 md:py-3 md:text-sm">
+              <td className="break-words px-1.5 py-2 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
                 {row.nombre}
               </td>
-              <td className={`${NUM_TD_CLASSES} font-black text-orange-400`}>{row.racha}</td>
-              <td className="break-words px-1.5 py-2 text-left text-[10px] text-zinc-400 md:px-3 md:py-3 md:text-xs">
+              <td className={`${NUM_TD_CLASSES} font-black text-orange-500 dark:text-orange-400`}>{row.racha}</td>
+              <td className="break-words px-1.5 py-2 text-left text-[10px] text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-xs">
                 {row.rival}
               </td>
             </tr>
