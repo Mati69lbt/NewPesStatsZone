@@ -65,61 +65,63 @@ function RachasSequiaPage() {
     <div className="flex min-h-dvh w-full max-w-full flex-col overflow-x-hidden bg-zinc-100 dark:bg-zinc-950">
       <Navbar />
 
-      <main className="flex flex-1 flex-col items-center gap-6 px-2 py-10 sm:px-4">
-        <div className="mx-auto w-full max-w-md text-center sm:max-w-4xl">
-          <h1 className="flex items-center justify-center gap-2 text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 sm:text-3xl">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-orange-400 sm:h-7 sm:w-7">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 18.75a6 6 0 006-6c0-1.887-.833-3.482-2.187-5.028-.395-.454-.858-.79-1.13-1.317-.478-.93-.147-2.107.317-3.157C13.11 3.36 11.2 4.4 9.938 6.19c-.7.99-1.09 2.213-1.03 3.428.03.61-.492 1.061-1.098.837-.94-.347-1.516-1.153-1.72-2.108C4.933 9.65 5 11.5 5.5 12.75c.5 1.25 1.5 3 3 4A6 6 0 0012 18.75z"
-              />
-            </svg>
-            Racha de Sequía Goleadora
-          </h1>
-          <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-            Jugadores con 3 o más partidos consecutivos sin convertir
-          </p>
-        </div>
+      <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-1 py-6 sm:px-4 sm:py-10">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 sm:gap-6">
+          <div className="text-center">
+            <h1 className="flex items-center justify-center gap-2 text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 sm:text-3xl">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-orange-400 sm:h-7 sm:w-7">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 18.75a6 6 0 006-6c0-1.887-.833-3.482-2.187-5.028-.395-.454-.858-.79-1.13-1.317-.478-.93-.147-2.107.317-3.157C13.11 3.36 11.2 4.4 9.938 6.19c-.7.99-1.09 2.213-1.03 3.428.03.61-.492 1.061-1.098.837-.94-.347-1.516-1.153-1.72-2.108C4.933 9.65 5 11.5 5.5 12.75c.5 1.25 1.5 3 3 4A6 6 0 0012 18.75z"
+                  />
+              </svg>
+              Racha de Sequía Goleadora
+            </h1>
+            <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+              Jugadores con 3 o más partidos consecutivos sin convertir
+            </p>
+          </div>
 
-        <div className="mx-auto flex w-full max-w-md flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:max-w-4xl">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={LABEL_CLASSES}>Club</label>
-              <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
-                {clubes.length === 0 && <option value="">Sin clubes</option>}
-                {clubes.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="flex w-full flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-3 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
+              <div>
+                <label className={LABEL_CLASSES}>Club</label>
+                <select value={selectedClub} onChange={(e) => setSelectedClub(e.target.value)} className={FIELD_CLASSES}>
+                  {clubes.length === 0 && <option value="">Sin clubes</option>}
+                  {clubes.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label className={LABEL_CLASSES}>Vista</label>
-              <select value="/rachas-sequia" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
-                {VISTAS.map((v) => (
-                  <option key={v.value} value={v.value}>
-                    {v.label}
-                  </option>
-                ))}
-              </select>
+              <div>
+                <label className={LABEL_CLASSES}>Vista</label>
+                <select value="/rachas-sequia" onChange={(e) => navigate(e.target.value)} className={FIELD_CLASSES}>
+                  {VISTAS.map((v) => (
+                    <option key={v.value} value={v.value}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mx-auto flex w-full max-w-md flex-col gap-4 sm:max-w-4xl">
-          {secciones.map((s, index) => (
-            <Accordion
-              key={s.value}
-              title={s.titulo}
-              subtitle={`${s.rows.length} ${s.rows.length === 1 ? 'jugador en sequía' : 'jugadores en sequía'}`}
-              defaultOpen={index === 0}
-            >
-              <RachaSequiaTable rows={s.rows} />
-            </Accordion>
-          ))}
+          <div className="flex w-full flex-col gap-3">
+            {secciones.map((s, index) => (
+              <Accordion
+                key={s.value}
+                title={s.titulo}
+                subtitle={`${s.rows.length} ${s.rows.length === 1 ? 'jugador en sequía' : 'jugadores en sequía'}`}
+                defaultOpen={index === 0}
+              >
+                <RachaSequiaTable rows={s.rows} />
+              </Accordion>
+            ))}
+          </div>
         </div>
       </main>
     </div>

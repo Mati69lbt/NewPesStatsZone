@@ -64,7 +64,7 @@ function VillanosPage() {
       <Navbar />
 
       <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-2 py-10 sm:px-4">
-        <div className="mx-auto flex w-full max-w-md flex-col gap-6 md:max-w-3xl">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
           <div className="text-center">
             <h1 className="flex items-center justify-center gap-2 text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6 text-red-500 sm:h-7 sm:w-7">

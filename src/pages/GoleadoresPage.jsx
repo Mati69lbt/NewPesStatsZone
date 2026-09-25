@@ -106,7 +106,7 @@ function GoleadoresPage() {
       <Navbar />
 
       <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-1 py-6 sm:px-4 sm:py-10">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 sm:gap-6">
+        <div className="mx-auto flex w-full flex-col gap-4 sm:gap-6 md:max-w-2xl">
           <div className="text-center">
             <h1 className="flex items-center justify-center gap-2 text-3xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-7 w-7 text-lime-500">

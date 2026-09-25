@@ -17,7 +17,7 @@ function AsistenciasTable({ rows }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md px-2 md:max-w-4xl">
+    <div className="w-full">
       <div className="w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
         <table className="w-full border-collapse text-xs md:text-sm">
           <thead>

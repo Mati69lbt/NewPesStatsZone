@@ -24,6 +24,7 @@ function TournamentGroup({
   const [collapsed, setCollapsed] = useState(true)
   const isCampeon = resultado === 'Campeón'
   const tipoActual = tipo || 'europeo'
+  const club = matches.find((m) => m.club)?.club
 
   const fechaCounts = matches.reduce((counts, m) => {
     counts.set(m.fecha, (counts.get(m.fecha) || 0) + 1)
@@ -57,6 +58,7 @@ function TournamentGroup({
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
             {matches.length} {matches.length === 1 ? 'partido jugado' : 'partidos jugados'}
+            {club ? ` - ${club}` : ''}
           </p>
         </div>
 
