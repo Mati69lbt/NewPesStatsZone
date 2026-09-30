@@ -16,6 +16,29 @@ function Posicion({ index }) {
   )
 }
 
+function ColGroup({ isGoles }) {
+  return (
+    <colgroup>
+      <col className="w-6 md:w-8" />
+      <col className="w-24 md:w-32" />
+      <col className="w-8 md:w-10" />
+      {isGoles ? (
+        <>
+          <col className="w-8 md:w-10" />
+          <col className="w-8 md:w-10" />
+          <col className="w-8 md:w-10" />
+          <col className="w-8 md:w-10" />
+        </>
+      ) : (
+        <>
+          <col className="w-8 md:w-10" />
+          <col className="w-8 md:w-10" />
+        </>
+      )}
+    </colgroup>
+  )
+}
+
 function CampeonatoStatsTable({ rows, mode }) {
   const isGoles = mode === 'goleadores'
 
@@ -29,18 +52,29 @@ function CampeonatoStatsTable({ rows, mode }) {
     { goles: 0, asistencias: 0, x2: 0, x3: 0 }
   )
 
+  const titulo = isGoles ? '⚽ Goleadores' : '🎯 Asistidores'
+
   if (rows.length === 0) {
     return (
-      <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
-        {isGoles ? 'No hay goleadores registrados en este torneo.' : 'No hay asistidores registrados en este torneo.'}
-      </p>
+      <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <h3 className="border-b border-zinc-200 bg-gray-50 px-3 py-2 text-xs font-black uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 md:text-sm">
+          {titulo}
+        </h3>
+        <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
+          {isGoles ? 'No hay goleadores registrados en este torneo.' : 'No hay asistidores registrados en este torneo.'}
+        </p>
+      </div>
     )
   }
 
   return (
-    <div className="mx-auto w-full max-w-md px-2 md:max-w-4xl">
-      <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-        <table className="w-full border-collapse text-xs md:text-sm">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+      <h3 className="border-b border-zinc-200 bg-gray-50 px-3 py-2 text-xs font-black uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 md:text-sm">
+        {titulo}
+      </h3>
+      <div className="w-full flex-1 overflow-x-auto">
+        <table className="w-full min-w-max table-fixed border-collapse text-xs md:text-sm">
+          <ColGroup isGoles={isGoles} />
           <thead>
             <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
               <th className="w-6 px-1.5 py-1.5 text-center md:w-8 md:px-3 md:py-3">Pos</th>
@@ -70,7 +104,7 @@ function CampeonatoStatsTable({ rows, mode }) {
                 <td className="w-6 px-1.5 py-1.5 md:w-8 md:px-3 md:py-3">
                   <Posicion index={index} />
                 </td>
-                <td className="px-1.5 py-1.5 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
+                <td className="truncate px-1.5 py-1.5 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
                   {row.nombre}
                 </td>
                 <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
@@ -106,6 +140,12 @@ function CampeonatoStatsTable({ rows, mode }) {
               </tr>
             ))}
           </tbody>
+        </table>
+      </div>
+
+      <div className="mt-auto w-full overflow-x-auto">
+        <table className="w-full min-w-max table-fixed border-collapse text-xs md:text-sm">
+          <ColGroup isGoles={isGoles} />
           <tfoot>
             <tr className="border-t-2 border-zinc-200 bg-gray-50 text-[10px] font-bold uppercase text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 md:text-xs">
               <td className="px-1.5 py-1.5 md:px-3 md:py-3" colSpan={3}>

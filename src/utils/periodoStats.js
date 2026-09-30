@@ -20,8 +20,7 @@ export function buildPeriodoGroups(matches, formato) {
     .sort((a, b) => periodoSortKey(b.periodo) - periodoSortKey(a.periodo))
 }
 
-export function buildJugadoresRows(matches, metrica) {
-  const isGoles = metrica === 'goleadores'
+export function buildJugadoresRows(matches) {
   const roster = new Map()
   const byPlayer = new Map()
 
@@ -36,31 +35,36 @@ export function buildJugadoresRows(matches, metrica) {
       roster.set(key, rosterRow)
     }
 
-    const incidencias = (match.incidenciasClub ?? []).filter((i) => (isGoles ? i.goles > 0 : i.asistencias > 0))
+    const incidencias = (match.incidenciasClub ?? []).filter((i) => i.goles > 0 || i.asistencias > 0)
     for (const incidencia of incidencias) {
       const key = incidencia.id ?? incidencia.nombre
       const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, goles: 0, asistencias: 0 }
-      if (isGoles) row.goles += incidencia.goles
-      else row.asistencias += incidencia.asistencias
+      row.goles += incidencia.goles ?? 0
+      row.asistencias += incidencia.asistencias ?? 0
       byPlayer.set(key, row)
     }
   }
 
-  return [...byPlayer.entries()]
-    .map(([key, row]) => {
-      const rosterRow = roster.get(key)
-      const pj = rosterRow?.pj ?? 0
-      const club = rosterRow ? [...rosterRow.clubes].sort((a, b) => a.localeCompare(b)).join(', ') : ''
-      const valor = isGoles ? row.goles : row.asistencias
-      return {
-        nombre: row.nombre,
-        club,
-        pj,
-        goles: row.goles,
-        asistencias: row.asistencias,
-        promedio: pj > 0 ? valor / pj : 0,
-      }
-    })
+  return [...byPlayer.entries()].map(([key, row]) => {
+    const rosterRow = roster.get(key)
+    const pj = rosterRow?.pj ?? 0
+    const club = rosterRow ? [...rosterRow.clubes].sort((a, b) => a.localeCompare(b)).join(', ') : ''
+    return {
+      nombre: row.nombre,
+      club,
+      pj,
+      goles: row.goles,
+      asistencias: row.asistencias,
+      promedioGoles: pj > 0 ? row.goles / pj : 0,
+      promedioAsistencias: pj > 0 ? row.asistencias / pj : 0,
+    }
+  })
+}
+
+export function getRowsForMetrica(rows, metrica) {
+  const isGoles = metrica === 'goleadores'
+  return rows
+    .filter((row) => (isGoles ? row.goles > 0 : row.asistencias > 0))
     .sort((a, b) => {
       const av = isGoles ? a.goles : a.asistencias
       const bv = isGoles ? b.goles : b.asistencias

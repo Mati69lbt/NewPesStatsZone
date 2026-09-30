@@ -21,11 +21,6 @@ const FORMATOS = [
   { value: 'europeo', label: 'Temporada Europea' },
 ]
 
-const METRICAS = [
-  { value: 'goleadores', label: '⚽ Goleadores' },
-  { value: 'asistencias', label: '🎯 Asistencias' },
-]
-
 const CONDICIONES = [
   { value: 'general', label: 'Gral' },
   { value: 'local', label: 'Loc' },
@@ -40,7 +35,6 @@ function EstadisticasPeriodoPage() {
 
   const [selectedClub, setSelectedClub] = useState(TODOS_CLUBES)
   const [formato, setFormato] = useState('anual')
-  const [metrica, setMetrica] = useState('goleadores')
   const [condicion, setCondicion] = useState('general')
 
   const clubes = useMemo(() => {
@@ -140,26 +134,6 @@ function EstadisticasPeriodoPage() {
           </div>
 
           <div>
-            <label className={LABEL_CLASSES}>Métrica</label>
-            <div className="flex w-full overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-              {METRICAS.map(({ value, label }) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setMetrica(value)}
-                  className={`flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wide transition sm:text-sm ${
-                    metrica === value
-                      ? 'bg-lime-400 text-zinc-900'
-                      : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
             <label className={LABEL_CLASSES}>Condición</label>
             <div className="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
               {CONDICIONES.map(({ value, label }) => (
@@ -185,13 +159,12 @@ function EstadisticasPeriodoPage() {
             No hay partidos registrados para esta selección.
           </p>
         ) : (
-          <div className="mx-auto flex w-full max-w-md flex-col gap-4 sm:max-w-3xl">
+          <div className="mx-auto flex w-full max-w-md flex-col gap-4 sm:max-w-3xl lg:max-w-5xl">
             {periodos.map((p, index) => (
               <EstadisticaPeriodoGroup
                 key={p.periodo}
                 periodo={p.periodo}
                 matches={p.matches}
-                metrica={metrica}
                 defaultOpen={index === 0}
               />
             ))}

@@ -17,9 +17,9 @@ function AsistenciasTable({ rows }) {
   }
 
   return (
-    <div className="w-full">
-      <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-        <table className="w-full border-collapse text-xs md:text-sm">
+    <div className="w-full overflow-x-auto">
+      <div className="mx-auto w-max overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <table className="w-auto border-collapse text-xs md:text-sm">
           <thead>
             <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
               <th className="w-6 px-1.5 py-1.5 md:w-8 md:px-3 md:py-3">#</th>

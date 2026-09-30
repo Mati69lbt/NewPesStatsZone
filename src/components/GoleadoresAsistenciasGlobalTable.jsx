@@ -1,7 +1,7 @@
 const NUM_TH_CLASSES =
-  "w-[10%] px-1 py-2 text-center text-[10px] md:w-12 md:px-2 md:py-3 md:text-[11px]";
+  "px-2 py-2 text-center text-[10px] md:px-4 md:py-3 md:text-[11px]";
 const NUM_TD_CLASSES =
-  "w-[10%] px-1 py-2 text-center text-xs md:w-12 md:px-2 md:py-3 md:text-sm";
+  "px-2 py-2 text-center text-xs md:px-4 md:py-3 md:text-sm";
 
 const MEDALLAS = ["🥇", "🥈", "🥉"];
 
@@ -30,6 +30,7 @@ function SortableHeader({
   sortDir,
   onSort,
   className,
+  align = "center",
 }) {
   const active = sortKey === sortKeyValue;
   return (
@@ -37,7 +38,9 @@ function SortableHeader({
       <button
         type="button"
         onClick={() => onSort(sortKeyValue)}
-        className={`flex w-full items-center justify-center gap-0.5 uppercase tracking-wide transition ${
+        className={`flex w-full items-center gap-0.5 uppercase tracking-wide transition ${
+          align === "left" ? "justify-start" : "justify-center"
+        } ${
           active
             ? "text-lime-600 dark:text-lime-400"
             : "text-zinc-500 hover:text-lime-600 dark:text-zinc-400 dark:hover:text-lime-300"
@@ -78,14 +81,12 @@ function GoleadoresAsistenciasGlobalTable({
   }
 
   return (
-    <div className="w-full">
-      <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-        <table className="w-full table-fixed border-collapse text-xs md:text-sm">
+    <div className="w-full overflow-x-auto">
+      <div className="mx-auto w-fit overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <table className="w-auto border-collapse text-xs md:text-sm">
           <thead>
             <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
-              <th className="w-[8%] px-1 py-2 text-center md:w-10 md:px-3 md:py-3">
-                #
-              </th>
+              <th className="px-2 py-2 text-center md:px-3 md:py-3">#</th>
               <SortableHeader
                 label={valorLabel}
                 sortKeyValue="valor"
@@ -100,7 +101,8 @@ function GoleadoresAsistenciasGlobalTable({
                 sortKey={sortKey}
                 sortDir={sortDir}
                 onSort={onSort}
-                className="w-[32%] px-1 py-2 text-center md:px-3 md:py-3"
+                className="px-2 py-2 text-left md:px-3 md:py-3"
+                align="left"
               />
               <SortableHeader
                 label="PJ"
@@ -128,7 +130,7 @@ function GoleadoresAsistenciasGlobalTable({
                 key={`${row.nombre}-${row.club}`}
                 className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
               >
-                <td className="w-[8%] px-1 py-2 md:w-10 md:px-3 md:py-3">
+                <td className="px-2 py-2 text-center md:px-3 md:py-3">
                   <Posicion index={index} />
                 </td>
                 <td className={NUM_TD_CLASSES}>
@@ -136,7 +138,7 @@ function GoleadoresAsistenciasGlobalTable({
                     {row.valor}
                   </span>
                 </td>
-                <td className="break-words px-1 py-2 text-center md:px-3 md:py-3">
+                <td className="break-words px-2 py-2 text-left md:px-3 md:py-3">
                   <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 md:text-sm">
                     {row.nombre}
                   </div>

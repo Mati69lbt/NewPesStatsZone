@@ -3,7 +3,8 @@ import VersusSummaryMatrix from './VersusSummaryMatrix'
 
 function TemporadaGroup({ temporada, club, teamStats, captains, defaultOpen }) {
   const [open, setOpen] = useState(defaultOpen)
-  const pj = teamStats.general.pj
+  const { pj, g, e, p, gf, gc, ptsPosibles, pts } = teamStats.general
+  const porcentaje = ptsPosibles > 0 ? Math.round((pts / ptsPosibles) * 100) : 0
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-zinc-300 shadow-lg dark:border-zinc-700">
@@ -18,7 +19,7 @@ function TemporadaGroup({ temporada, club, teamStats, captains, defaultOpen }) {
             {temporada} · {club}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {pj} {pj === 1 ? 'partido jugado' : 'partidos jugados'}
+            {pj} PJ - {g}G/{e}E/{p}P - GF: {gf} / GC: {gc} - {porcentaje}%
           </p>
         </div>
 

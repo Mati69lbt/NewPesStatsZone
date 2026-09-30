@@ -48,7 +48,9 @@ function CampeonatoCard({ torneo, temporada, matches }) {
       >
         <div className="min-w-0">
           <h3 className="truncate text-sm font-black text-zinc-100 sm:text-base">{torneo}</h3>
-          <p className="text-xs font-semibold text-zinc-400">{temporada}</p>
+          <p className="text-xs font-semibold text-zinc-400">
+            Temporada: {temporada} - PJ: {matches.length} {matches.length === 1 ? 'Partido' : 'Partidos'}
+          </p>
         </div>
 
         <svg

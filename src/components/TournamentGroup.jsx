@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { getTemporadaLabel } from '../utils/dateFormat'
+import { getMatchResultado } from '../utils/matchDisplay'
 import MatchCardMobile from './MatchCardMobile'
 import MatchRow from './MatchRow'
 
@@ -25,6 +26,17 @@ function TournamentGroup({
   const isCampeon = resultado === 'Campeón'
   const tipoActual = tipo || 'europeo'
   const club = matches.find((m) => m.club)?.club
+
+  const { victorias, empates, derrotas } = matches.reduce(
+    (acc, m) => {
+      const resultado = getMatchResultado(m)
+      if (resultado === 'victoria') acc.victorias += 1
+      else if (resultado === 'empate') acc.empates += 1
+      else acc.derrotas += 1
+      return acc
+    },
+    { victorias: 0, empates: 0, derrotas: 0 }
+  )
 
   const fechaCounts = matches.reduce((counts, m) => {
     counts.set(m.fecha, (counts.get(m.fecha) || 0) + 1)
@@ -57,8 +69,7 @@ function TournamentGroup({
             {torneo} {temporada}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {matches.length} {matches.length === 1 ? 'partido jugado' : 'partidos jugados'}
-            {club ? ` - ${club}` : ''}
+            {club ? `${club} - ` : ''}{matches.length} PJ - {victorias}G / {empates}E / {derrotas}P
           </p>
         </div>
 

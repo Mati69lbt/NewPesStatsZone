@@ -29,39 +29,41 @@ function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', 
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-      <table className="w-full table-fixed border-collapse text-xs md:text-sm">
-        <thead>
-          <tr className="border-b border-zinc-200 bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800">
-            <th className={`${TH_CLASSES} w-8 text-center md:w-10`}>Pos</th>
-            <th className={TH_CLASSES}>Jugador</th>
-            <th className={`${TH_CLASSES} w-14 md:w-20`}>Año</th>
-            <th className={TH_NUM_CLASSES}>{valueLabel}</th>
-            <th className={TH_NUM_CLASSES}>PJ</th>
-            <th className={TH_NUM_CLASSES}>Prom.</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-          {rows.map((row, index) => (
-            <tr
-              key={`${row.nombre}-${row.periodo}`}
-              className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
-            >
-              <td className={`${TD_CLASSES} w-8 text-center md:w-10`}>
-                <Posicion index={index} />
-              </td>
-              <td className={`${TD_CLASSES} break-words font-bold text-zinc-900 dark:text-zinc-100`}>
-                {row.nombre}
-                {row.club && <span className="block truncate text-[10px] font-normal text-zinc-500 dark:text-zinc-500">{row.club}</span>}
-              </td>
-              <td className={`${TD_CLASSES} w-14 whitespace-nowrap text-zinc-500 dark:text-zinc-400 md:w-20`}>{row.periodo}</td>
-              <td className={`${TD_NUM_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>{row[valueKey]}</td>
-              <td className={TD_NUM_CLASSES}>{row.pj}</td>
-              <td className={`${TD_NUM_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>{formatPromedio(row[promedioKey])}</td>
+    <div className="w-full overflow-x-auto">
+      <div className="mx-auto w-fit overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <table className="border-collapse text-xs md:text-sm">
+          <thead>
+            <tr className="border-b border-zinc-200 bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800">
+              <th className={`${TH_CLASSES} text-center`}>Pos</th>
+              <th className={TH_CLASSES}>Jugador</th>
+              <th className={`${TH_CLASSES} text-center`}>Año</th>
+              <th className={TH_NUM_CLASSES}>{valueLabel}</th>
+              <th className={TH_NUM_CLASSES}>PJ</th>
+              <th className={TH_NUM_CLASSES}>Prom.</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {rows.map((row, index) => (
+              <tr
+                key={`${row.nombre}-${row.periodo}`}
+                className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
+              >
+                <td className={`${TD_CLASSES} text-center`}>
+                  <Posicion index={index} />
+                </td>
+                <td className={`${TD_CLASSES} break-words font-bold text-zinc-900 dark:text-zinc-100`}>
+                  {row.nombre}
+                  {row.club && <span className="block truncate text-[10px] font-normal text-zinc-500 dark:text-zinc-500">{row.club}</span>}
+                </td>
+                <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
+                <td className={`${TD_NUM_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>{row[valueKey]}</td>
+                <td className={TD_NUM_CLASSES}>{row.pj}</td>
+                <td className={`${TD_NUM_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>{formatPromedio(row[promedioKey])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

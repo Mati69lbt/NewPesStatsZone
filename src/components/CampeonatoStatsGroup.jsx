@@ -2,17 +2,18 @@ import { useMemo, useState } from 'react'
 import { buildAssistsRows, buildScorersRows } from '../utils/versusStats'
 import CampeonatoStatsTable from './CampeonatoStatsTable'
 
-const TABS = [
-  { value: 'goleadores', label: '⚽ Goleadores' },
-  { value: 'asistencias', label: '🎯 Asistencias' },
-]
-
 function CampeonatoStatsGroup({ torneo, temporada, matches, defaultOpen }) {
   const [open, setOpen] = useState(defaultOpen)
-  const [tab, setTab] = useState('goleadores')
 
   const goleadoresRows = useMemo(() => buildScorersRows(matches, 'incidenciasClub'), [matches])
   const asistenciasRows = useMemo(() => buildAssistsRows(matches, 'incidenciasClub'), [matches])
+
+  const golesTotales = useMemo(() => goleadoresRows.reduce((acc, row) => acc + (row.goles || 0), 0), [goleadoresRows])
+  const asistenciasTotales = useMemo(
+    () => asistenciasRows.reduce((acc, row) => acc + (row.asistencias || 0), 0),
+    [asistenciasRows]
+  )
+  const promedioGoles = matches.length > 0 ? golesTotales / matches.length : 0
 
   return (
     <div className="w-full overflow-hidden rounded-xl border border-zinc-300 shadow-lg dark:border-zinc-700">
@@ -27,7 +28,8 @@ function CampeonatoStatsGroup({ torneo, temporada, matches, defaultOpen }) {
             {torneo} {temporada && <span className="text-zinc-500 dark:text-zinc-400">· {temporada}</span>}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {matches.length} {matches.length === 1 ? 'partido jugado' : 'partidos jugados'}
+            {matches.length} {matches.length === 1 ? 'partido' : 'partidos'} - {golesTotales} goles - {asistenciasTotales} asistencias -{' '}
+            {promedioGoles.toFixed(2)} prom. goles
           </p>
         </div>
 
@@ -43,25 +45,9 @@ function CampeonatoStatsGroup({ torneo, temporada, matches, defaultOpen }) {
       </button>
 
       {open && (
-        <div className="flex flex-col gap-4 bg-zinc-50 py-4 dark:bg-zinc-900">
-          <div className="mx-auto flex w-full max-w-md justify-center overflow-hidden rounded-lg border border-zinc-300 px-2 dark:border-zinc-600 md:max-w-4xl">
-            {TABS.map(({ value, label }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setTab(value)}
-                className={`flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wide transition sm:text-sm ${
-                  tab === value
-                    ? 'bg-lime-400 text-zinc-900'
-                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <CampeonatoStatsTable rows={tab === 'goleadores' ? goleadoresRows : asistenciasRows} mode={tab} />
+        <div className="grid grid-cols-1 gap-4 bg-zinc-50 p-4 dark:bg-zinc-900 md:grid-cols-2">
+          <CampeonatoStatsTable rows={goleadoresRows} mode="goleadores" />
+          <CampeonatoStatsTable rows={asistenciasRows} mode="asistencias" />
         </div>
       )}
     </div>
