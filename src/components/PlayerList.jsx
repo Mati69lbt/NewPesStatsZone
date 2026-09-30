@@ -1,4 +1,5 @@
 import { getPositionColorClasses } from '../utils/positionColors'
+import TruncatedName from './TruncatedName'
 
 function PlayerList({ players, onEdit, onDelete }) {
   if (players.length === 0) {
@@ -46,9 +47,10 @@ function PlayerList({ players, onEdit, onDelete }) {
           >
             {player.posicion} - #{player.dorsal}
           </span>
-          <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            {player.nombre}
-          </p>
+          <TruncatedName
+            text={player.nombre}
+            className="w-full text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+          />
         </div>
       ))}
     </div>

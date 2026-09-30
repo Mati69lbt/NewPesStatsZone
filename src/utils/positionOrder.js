@@ -1,15 +1,15 @@
 const POSITION_ORDER = {
   PT: 0,
   DEF: 1,
-  LD: 1,
-  LI: 1,
-  MCD: 2,
-  MC: 2,
-  MO: 2,
-  EXI: 3,
-  EXD: 3,
-  CD: 3,
-  SD: 3,
+  LI: 2,
+  LD: 3,
+  MCD: 4,
+  MC: 5,
+  MO: 6,
+  EXD: 7,
+  EXI: 8,
+  SD: 9,
+  CD: 10,
 }
 
 export function getPositionOrder(posicion) {

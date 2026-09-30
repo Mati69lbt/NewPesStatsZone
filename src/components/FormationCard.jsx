@@ -1,8 +1,9 @@
 import { getPositionColorClasses } from '../utils/positionColors'
-import { sortByPosition } from '../utils/positionOrder'
+import { sortPlayers } from '../utils/sortPlayers'
+import TruncatedName from './TruncatedName'
 
-function FormationCard({ formation, onEdit, onDelete }) {
-  const ordered = sortByPosition(formation.jugadores ?? [])
+function FormationCard({ formation, sortKey = 'nombre', sortDir = 'asc', onEdit, onDelete }) {
+  const ordered = sortPlayers(formation.jugadores ?? [], sortKey, sortDir)
 
   return (
     <div className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700 dark:bg-zinc-800">
@@ -47,7 +48,10 @@ function FormationCard({ formation, onEdit, onDelete }) {
             <span className="w-8 text-center text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               #{player.dorsal}
             </span>
-            <span className="truncate text-left text-sm text-zinc-900 dark:text-zinc-100">{player.nombre}</span>
+            <TruncatedName
+              text={player.nombre}
+              className="text-left text-sm text-zinc-900 dark:text-zinc-100"
+            />
             {player.id === formation.capitanId ? (
               <span className="rounded-full bg-zinc-900 px-1.5 py-0.5 text-[10px] font-bold text-white dark:bg-white dark:text-zinc-900">
                 C

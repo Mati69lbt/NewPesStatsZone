@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Confirm } from 'notiflix'
@@ -19,20 +19,9 @@ import { updateClub } from '../services/clubService'
 import { addPlayer, deleteAllPlayers, deletePlayer, updatePlayer } from '../services/playersService'
 import { addFormation, deleteAllFormations, deleteFormation, updateFormation } from '../services/formationsService'
 import { toTitleCase } from '../utils/textFormat'
-import { getPositionOrder } from '../utils/positionOrder'
+import { sortPlayers } from '../utils/sortPlayers'
 
 const EMPTY_PLAYER_FORM = { nombre: '', dorsal: '', posicion: '' }
-
-function sortPlayers(players, sortKey, sortDir) {
-  const sorted = [...players].sort((a, b) => {
-    if (sortKey === 'dorsal') return a.dorsal - b.dorsal
-    if (sortKey === 'posicion') {
-      return getPositionOrder(a.posicion) - getPositionOrder(b.posicion) || a.nombre.localeCompare(b.nombre)
-    }
-    return a.nombre.localeCompare(b.nombre)
-  })
-  return sortDir === 'desc' ? sorted.reverse() : sorted
-}
 
 function FormacionPage() {
   const user = useCurrentUser()
@@ -44,6 +33,8 @@ function FormacionPage() {
   const [savingPlayer, setSavingPlayer] = useState(false)
   const [playerForm, setPlayerForm] = useState(EMPTY_PLAYER_FORM)
   const [editingPlayerId, setEditingPlayerId] = useState(null)
+  const playerFormRef = useRef(null)
+  const playerNameInputRef = useRef(null)
 
   const [showFormationEditor, setShowFormationEditor] = useState(false)
   const [editingFormationId, setEditingFormationId] = useState(null)
@@ -135,6 +126,8 @@ function FormacionPage() {
   const handleEditPlayer = (player) => {
     setEditingPlayerId(player.id)
     setPlayerForm({ nombre: player.nombre, dorsal: String(player.dorsal), posicion: player.posicion })
+    playerFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    playerNameInputRef.current?.focus()
   }
 
   const handleCancelEdit = () => {
@@ -304,6 +297,8 @@ function FormacionPage() {
         <ClubForm club={club} onSave={handleSaveClub} saving={savingClub} />
 
         <PlayerForm
+          ref={playerFormRef}
+          nameInputRef={playerNameInputRef}
           nombre={playerForm.nombre}
           dorsal={playerForm.dorsal}
           posicion={playerForm.posicion}
@@ -372,6 +367,8 @@ function FormacionPage() {
                 <FormationCard
                   key={formation.id}
                   formation={formation}
+                  sortKey={plantelSortKey}
+                  sortDir={plantelSortDir}
                   onEdit={handleEditFormation}
                   onDelete={handleDeleteFormation}
                 />

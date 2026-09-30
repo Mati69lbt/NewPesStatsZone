@@ -1,22 +1,29 @@
+import { forwardRef } from 'react'
+
 const POSICIONES = ['PT', 'DEF', 'LD', 'LI', 'MCD', 'MC', 'MO', 'EXI', 'EXD', 'CD', 'SD']
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500'
 
-function PlayerForm({
-  nombre,
-  dorsal,
-  posicion,
-  onNombreChange,
-  onDorsalChange,
-  onPosicionChange,
-  onSubmit,
-  saving,
-  isEditing,
-  onCancelEdit,
-}) {
+const PlayerForm = forwardRef(function PlayerForm(
+  {
+    nombre,
+    dorsal,
+    posicion,
+    onNombreChange,
+    onDorsalChange,
+    onPosicionChange,
+    onSubmit,
+    saving,
+    isEditing,
+    onCancelEdit,
+    nameInputRef,
+  },
+  ref
+) {
   return (
     <form
+      ref={ref}
       onSubmit={onSubmit}
       className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-zinc-50 p-6 shadow-xl sm:p-8 dark:border-zinc-800 dark:bg-zinc-900"
     >
@@ -30,6 +37,7 @@ function PlayerForm({
         </label>
         <input
           id="jugador-nombre"
+          ref={nameInputRef}
           type="text"
           required
           value={nombre}
@@ -97,6 +105,6 @@ function PlayerForm({
       </div>
     </form>
   )
-}
+})
 
 export default PlayerForm
