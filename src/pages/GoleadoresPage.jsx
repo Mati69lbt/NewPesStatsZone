@@ -10,6 +10,7 @@ import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
 import { VISTAS } from '../utils/estadisticasVistas'
 import {
+  buildGolesRecibidosPorAnio,
   buildMejoresAniosGoleadores,
   buildTopAsistenciasHistorico,
   buildTopGoleadoresHistorico,
@@ -65,7 +66,14 @@ function GoleadoresPage() {
   )
 
   const dataPorMetrica = useMemo(() => {
-    const result = { topGoleadores: {}, topAsistencias: {}, topPromedio: {}, topPJ: {}, mejoresAnios: {} }
+    const result = {
+      topGoleadores: {},
+      topAsistencias: {},
+      topPromedio: {},
+      topPJ: {},
+      mejoresAnios: {},
+      golesRecibidos: {},
+    }
     for (const { value } of CONDICIONES) {
       const condicionMatches = matchesPorCondicion[value]
       result.topGoleadores[value] = buildTopGoleadoresHistorico(condicionMatches, formato)
@@ -73,21 +81,53 @@ function GoleadoresPage() {
       result.topPromedio[value] = buildTopPromedioHistorico(condicionMatches, formato)
       result.topPJ[value] = buildTopPJHistorico(condicionMatches, formato)
       result.mejoresAnios[value] = buildMejoresAniosGoleadores(condicionMatches, formato)
+      result.golesRecibidos[value] = buildGolesRecibidosPorAnio(condicionMatches, formato)
     }
     return result
   }, [matchesPorCondicion, formato])
 
   const ACORDEONES = [
-    { key: 'topGoleadores', title: 'Top 15 Goleadores', Table: GoleadoresHistoricoTable },
+    {
+      key: 'topGoleadores',
+      title: 'Top 15 Goleadores',
+      Table: GoleadoresHistoricoTable,
+      tableProps: { highlightColumn: 'value', highlightColorClass: 'text-lime-600 dark:text-lime-400' },
+    },
     {
       key: 'topAsistencias',
       title: 'Top 15 Asistencias',
       Table: GoleadoresHistoricoTable,
-      tableProps: { valueKey: 'asistencias', valueLabel: 'A', promedioKey: 'promedioAsistencias' },
+      tableProps: {
+        valueKey: 'asistencias',
+        valueLabel: 'A',
+        promedioKey: 'promedioAsistencias',
+        highlightColumn: 'value',
+        highlightColorClass: 'text-sky-500 dark:text-sky-400',
+      },
     },
-    { key: 'topPromedio', title: 'Top 15 Promedio', Table: GoleadoresHistoricoTable },
-    { key: 'topPJ', title: 'Top 15 Más PJ', Table: GoleadoresHistoricoTable },
+    {
+      key: 'topPromedio',
+      title: 'Top 15 Promedio',
+      Table: GoleadoresHistoricoTable,
+      tableProps: { highlightColumn: 'promedio', highlightColorClass: 'text-violet-500 dark:text-violet-400' },
+    },
+    {
+      key: 'topPJ',
+      title: 'Top 15 Más PJ',
+      Table: GoleadoresHistoricoTable,
+      tableProps: { highlightColumn: 'pj', highlightColorClass: 'text-orange-500 dark:text-orange-400' },
+    },
     { key: 'mejoresAnios', title: 'Mejores Años Goleadores', Table: MejoresAniosTable },
+    {
+      key: 'golesRecibidos',
+      title: 'Goles Recibidos por Año',
+      Table: MejoresAniosTable,
+      tableProps: {
+        valueKey: 'golesRecibidos',
+        valueLabel: 'GC',
+        valueColorClass: 'text-rose-500 dark:text-rose-400',
+      },
+    },
   ]
 
   if (!user) {

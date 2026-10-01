@@ -11,14 +11,14 @@ function RachaSequiaTable({ rows }) {
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-      <table className="w-full table-fixed border-collapse text-xs md:text-sm">
+    <div className="mx-auto w-max max-w-full overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+      <table className="w-max max-w-full table-fixed border-collapse text-xs md:text-sm">
         <thead>
           <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
             <th className="w-9 px-1.5 py-2 text-center md:w-10 md:px-3 md:py-3">#</th>
-            <th className="px-1.5 py-2 text-left md:px-3 md:py-3">Jugador</th>
+            <th className="w-28 px-1.5 py-2 text-left md:w-40 md:px-3 md:py-3">Jugador</th>
             <th className={NUM_TH_CLASSES}>Racha</th>
-            <th className="w-[30%] px-1.5 py-2 text-left md:px-3 md:py-3">Último Rival</th>
+            <th className="w-24 px-1.5 py-2 text-left md:w-40 md:px-3 md:py-3">Último Rival</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">

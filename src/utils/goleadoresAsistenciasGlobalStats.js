@@ -13,17 +13,26 @@ function buildGlobalRows(matches, statKey) {
 
   for (const match of matches) {
     const club = match.club || '-'
-    for (const titular of match.titulares ?? []) {
-      if (!titular?.nombre) continue
-      getRow(titular, club).pj += 1
-    }
-  }
+    const countedEnPartido = new Set()
 
-  for (const match of matches) {
-    const club = match.club || '-'
+    for (const jugador of [...(match.titulares ?? []), ...(match.suplentes ?? [])]) {
+      if (!jugador?.nombre) continue
+      const row = getRow(jugador, club)
+      const key = `${jugador.id ?? jugador.nombre}__${club}`
+      if (!countedEnPartido.has(key)) {
+        countedEnPartido.add(key)
+        row.pj += 1
+      }
+    }
+
     const incidencias = (match.incidenciasClub ?? []).filter((i) => i[statKey] > 0)
     for (const incidencia of incidencias) {
       const row = getRow(incidencia, club)
+      const key = `${incidencia.id ?? incidencia.nombre}__${club}`
+      if (!countedEnPartido.has(key)) {
+        countedEnPartido.add(key)
+        row.pj += 1
+      }
       row.valor += incidencia[statKey]
       if (incidencia[statKey] === 2) row.x2 += 1
       else if (incidencia[statKey] >= 3) row.x3 += 1

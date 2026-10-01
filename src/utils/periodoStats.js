@@ -25,14 +25,22 @@ export function buildJugadoresRows(matches) {
   const byPlayer = new Map()
 
   for (const match of matches) {
+    const countedEnPartido = new Set()
+    const sumarPj = (key, nombre) => {
+      const rosterRow = roster.get(key) ?? { nombre, clubes: new Set(), pj: 0 }
+      if (!countedEnPartido.has(key)) {
+        countedEnPartido.add(key)
+        rosterRow.pj += 1
+      }
+      if (match.club) rosterRow.clubes.add(match.club)
+      roster.set(key, rosterRow)
+    }
+
     const plantel = [...(match.titulares ?? []), ...(match.suplentes ?? [])]
     for (const jugador of plantel) {
       const key = jugador?.id ?? jugador?.nombre
       if (!key) continue
-      const rosterRow = roster.get(key) ?? { nombre: jugador.nombre, clubes: new Set(), pj: 0 }
-      rosterRow.pj += 1
-      if (match.club) rosterRow.clubes.add(match.club)
-      roster.set(key, rosterRow)
+      sumarPj(key, jugador.nombre)
     }
 
     const incidencias = (match.incidenciasClub ?? []).filter((i) => i.goles > 0 || i.asistencias > 0)
@@ -42,6 +50,10 @@ export function buildJugadoresRows(matches) {
       row.goles += incidencia.goles ?? 0
       row.asistencias += incidencia.asistencias ?? 0
       byPlayer.set(key, row)
+
+      // Si el jugador no figuró en titulares/suplentes pero registró una
+      // incidencia, igualmente debe contabilizarse el partido como jugado.
+      sumarPj(key, incidencia.nombre)
     }
   }
 

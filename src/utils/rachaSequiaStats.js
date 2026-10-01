@@ -1,6 +1,7 @@
 function isPresente(nombre, match) {
   const nomina = [...(match.titulares ?? []), ...(match.suplentes ?? [])]
-  return nomina.some((p) => p.nombre === nombre)
+  if (nomina.some((p) => p.nombre === nombre)) return true
+  return (match.incidenciasClub ?? []).some((i) => i.nombre === nombre)
 }
 
 function convirtioGol(nombre, match) {
@@ -13,12 +14,20 @@ function getAllPlayerNames(matches) {
     for (const p of [...(match.titulares ?? []), ...(match.suplentes ?? [])]) {
       if (p.nombre) set.add(p.nombre)
     }
+    for (const i of match.incidenciasClub ?? []) {
+      if (i.nombre) set.add(i.nombre)
+    }
   }
   return [...set]
 }
 
-export function buildRachaSequiaRows(matches, condicion) {
-  const nombres = getAllPlayerNames(matches)
+export function buildRachaSequiaRows(matches, condicion, plantelNombres = null) {
+  let nombres = getAllPlayerNames(matches)
+
+  if (plantelNombres) {
+    const plantelSet = new Set(plantelNombres)
+    nombres = nombres.filter((nombre) => plantelSet.has(nombre))
+  }
   const filtered = condicion === 'general' ? matches : matches.filter((m) => m.condicion === condicion)
   const sorted = [...filtered].sort((a, b) => (a.fecha ?? '').localeCompare(b.fecha ?? ''))
 

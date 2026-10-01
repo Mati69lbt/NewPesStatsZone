@@ -7,6 +7,7 @@ import RachaSequiaTable from '../components/RachaSequiaTable'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
+import usePlayers from '../hooks/usePlayers'
 import { buildRachaSequiaRows } from '../utils/rachaSequiaStats'
 import { VISTAS } from '../utils/estadisticasVistas'
 
@@ -25,9 +26,15 @@ function RachasSequiaPage() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
   const matches = useMatches(user?.uid)
+  const players = usePlayers(user?.uid)
   const navigate = useNavigate()
 
   const [selectedClub, setSelectedClub] = useState('')
+
+  const plantelNombres = useMemo(
+    () => (selectedClub === club ? players.map((p) => p.nombre) : null),
+    [players, selectedClub, club]
+  )
 
   const clubes = useMemo(() => {
     const set = new Set(matches.map((m) => m.club).filter(Boolean))
@@ -46,8 +53,8 @@ function RachasSequiaPage() {
   )
 
   const secciones = useMemo(
-    () => SECCIONES.map((s) => ({ ...s, rows: buildRachaSequiaRows(clubMatches, s.value) })),
-    [clubMatches]
+    () => SECCIONES.map((s) => ({ ...s, rows: buildRachaSequiaRows(clubMatches, s.value, plantelNombres) })),
+    [clubMatches, plantelNombres]
   )
 
   if (!user) {
@@ -110,13 +117,14 @@ function RachasSequiaPage() {
             </div>
           </div>
 
-          <div className="flex w-full flex-col gap-3">
+          <div className="flex w-full flex-col items-center gap-3">
             {secciones.map((s, index) => (
               <Accordion
                 key={s.value}
                 title={s.titulo}
                 subtitle={`${s.rows.length} ${s.rows.length === 1 ? 'jugador en sequía' : 'jugadores en sequía'}`}
                 defaultOpen={index === 0}
+                className="mx-auto w-max max-w-full"
               >
                 <RachaSequiaTable rows={s.rows} />
               </Accordion>

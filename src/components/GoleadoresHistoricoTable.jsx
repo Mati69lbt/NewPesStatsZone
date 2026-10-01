@@ -19,7 +19,14 @@ function Posicion({ index }) {
   )
 }
 
-function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', promedioKey = 'promedio' }) {
+function GoleadoresHistoricoTable({
+  rows,
+  valueKey = 'goles',
+  valueLabel = 'G',
+  promedioKey = 'promedio',
+  highlightColumn = 'value',
+  highlightColorClass = 'text-lime-600 dark:text-lime-400',
+}) {
   if (rows.length === 0) {
     return (
       <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
@@ -27,6 +34,10 @@ function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', 
       </p>
     )
   }
+
+  const valueHighlight = highlightColumn === 'value'
+  const pjHighlight = highlightColumn === 'pj'
+  const promedioHighlight = highlightColumn === 'promedio'
 
   return (
     <div className="w-full overflow-x-auto">
@@ -37,9 +48,9 @@ function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', 
               <th className={`${TH_CLASSES} text-center`}>Pos</th>
               <th className={TH_CLASSES}>Jugador</th>
               <th className={`${TH_CLASSES} text-center`}>Año</th>
-              <th className={TH_NUM_CLASSES}>{valueLabel}</th>
-              <th className={TH_NUM_CLASSES}>PJ</th>
-              <th className={TH_NUM_CLASSES}>Prom.</th>
+              <th className={`${TH_NUM_CLASSES} ${valueHighlight ? highlightColorClass : ''}`}>{valueLabel}</th>
+              <th className={`${TH_NUM_CLASSES} ${pjHighlight ? highlightColorClass : ''}`}>PJ</th>
+              <th className={`${TH_NUM_CLASSES} ${promedioHighlight ? highlightColorClass : ''}`}>Prom.</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -56,9 +67,17 @@ function GoleadoresHistoricoTable({ rows, valueKey = 'goles', valueLabel = 'G', 
                   {row.club && <span className="block truncate text-[10px] font-normal text-zinc-500 dark:text-zinc-500">{row.club}</span>}
                 </td>
                 <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
-                <td className={`${TD_NUM_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>{row[valueKey]}</td>
-                <td className={TD_NUM_CLASSES}>{row.pj}</td>
-                <td className={`${TD_NUM_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>{formatPromedio(row[promedioKey])}</td>
+                <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
+                  {row[valueKey]}
+                </td>
+                <td className={`${TD_NUM_CLASSES} font-semibold ${pjHighlight ? highlightColorClass : 'text-zinc-600 dark:text-zinc-300'}`}>
+                  {row.pj}
+                </td>
+                <td
+                  className={`${TD_NUM_CLASSES} font-semibold ${promedioHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}
+                >
+                  {formatPromedio(row[promedioKey])}
+                </td>
               </tr>
             ))}
           </tbody>

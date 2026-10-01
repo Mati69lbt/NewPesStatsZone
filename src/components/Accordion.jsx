@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-function Accordion({ title, subtitle, defaultOpen = false, children }) {
+function Accordion({ title, subtitle, defaultOpen = false, children, className = 'w-full' }) {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-zinc-300 shadow-lg dark:border-zinc-700">
+    <div className={`${className} overflow-hidden rounded-xl border border-zinc-300 shadow-lg dark:border-zinc-700`}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}

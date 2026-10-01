@@ -25,34 +25,48 @@ export function computeStats(matches) {
 export function buildScorersRows(matches, field) {
   const byPlayer = new Map()
 
-  // Solo el equipo propio tiene alineación (titulares) registrada en Firebase;
-  // el rival no, así que su PJ sigue contando partidos en los que anotó.
-  const presenceField = field === 'incidenciasClub' ? 'titulares' : null
+  // Solo el equipo propio tiene alineación (titulares/suplentes) registrada en
+  // Firebase; el rival no, así que su PJ se deduce únicamente de sus incidencias.
+  const hasPresenceData = field === 'incidenciasClub'
 
-  if (presenceField) {
-    for (const match of matches) {
-      for (const titular of match[presenceField] ?? []) {
-        if (!titular?.nombre) continue
-        const key = titular.id ?? titular.nombre
-        const row = byPlayer.get(key) ?? { nombre: titular.nombre, pj: 0, goles: 0, x2: 0, x3: 0 }
-        row.pj += 1
-        byPlayer.set(key, row)
-      }
+  function getRow(player) {
+    const key = player.id ?? player.nombre
+    let row = byPlayer.get(key)
+    if (!row) {
+      row = { nombre: player.nombre, pj: 0, goles: 0, x2: 0, x3: 0 }
+      byPlayer.set(key, row)
     }
+    return { key, row }
   }
 
   for (const match of matches) {
+    const countedEnPartido = new Set()
+    const markPresente = (player) => {
+      const { key, row } = getRow(player)
+      if (!countedEnPartido.has(key)) {
+        countedEnPartido.add(key)
+        row.pj += 1
+      }
+      return row
+    }
+
+    if (hasPresenceData) {
+      for (const jugador of [...(match.titulares ?? []), ...(match.suplentes ?? [])]) {
+        if (!jugador?.nombre) continue
+        markPresente(jugador)
+      }
+    }
+
     const incidencias = (match[field] ?? []).filter((i) => i.goles > 0)
     for (const incidencia of incidencias) {
       // Se agrupa por ID de jugador (estable) y no solo por nombre, para evitar
       // que variaciones de texto entre partidos dividan/mezclen a un mismo jugador.
-      const key = incidencia.id ?? incidencia.nombre
-      const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, pj: 0, goles: 0, x2: 0, x3: 0 }
-      if (!presenceField) row.pj += 1
+      // markPresente asegura PJ = 1 en este partido aunque el jugador no figure
+      // en titulares/suplentes (p. ej. datos cargados de forma incompleta).
+      const row = markPresente(incidencia)
       row.goles += incidencia.goles
       if (incidencia.goles === 2) row.x2 += 1
       else if (incidencia.goles >= 3) row.x3 += 1
-      byPlayer.set(key, row)
     }
   }
 
@@ -65,30 +79,42 @@ export function buildScorersRows(matches, field) {
 export function buildAssistsRows(matches, field) {
   const byPlayer = new Map()
 
-  // Solo el equipo propio tiene alineación (titulares) registrada en Firebase;
-  // el rival no, así que su PJ sigue contando partidos en los que asistió.
-  const presenceField = field === 'incidenciasClub' ? 'titulares' : null
+  // Solo el equipo propio tiene alineación (titulares/suplentes) registrada en
+  // Firebase; el rival no, así que su PJ se deduce únicamente de sus incidencias.
+  const hasPresenceData = field === 'incidenciasClub'
 
-  if (presenceField) {
-    for (const match of matches) {
-      for (const titular of match[presenceField] ?? []) {
-        if (!titular?.nombre) continue
-        const key = titular.id ?? titular.nombre
-        const row = byPlayer.get(key) ?? { nombre: titular.nombre, pj: 0, asistencias: 0 }
-        row.pj += 1
-        byPlayer.set(key, row)
-      }
+  function getRow(player) {
+    const key = player.id ?? player.nombre
+    let row = byPlayer.get(key)
+    if (!row) {
+      row = { nombre: player.nombre, pj: 0, asistencias: 0 }
+      byPlayer.set(key, row)
     }
+    return { key, row }
   }
 
   for (const match of matches) {
+    const countedEnPartido = new Set()
+    const markPresente = (player) => {
+      const { key, row } = getRow(player)
+      if (!countedEnPartido.has(key)) {
+        countedEnPartido.add(key)
+        row.pj += 1
+      }
+      return row
+    }
+
+    if (hasPresenceData) {
+      for (const jugador of [...(match.titulares ?? []), ...(match.suplentes ?? [])]) {
+        if (!jugador?.nombre) continue
+        markPresente(jugador)
+      }
+    }
+
     const incidencias = (match[field] ?? []).filter((i) => i.asistencias > 0)
     for (const incidencia of incidencias) {
-      const key = incidencia.id ?? incidencia.nombre
-      const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, pj: 0, asistencias: 0 }
-      if (!presenceField) row.pj += 1
+      const row = markPresente(incidencia)
       row.asistencias += incidencia.asistencias
-      byPlayer.set(key, row)
     }
   }
 
