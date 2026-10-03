@@ -5,7 +5,16 @@ import {
   buildGoleadoresLabel,
   getMatchResultado,
   getScoreboard,
+  splitLabelLines,
 } from '../utils/matchDisplay'
+
+function MultilineLabel({ text, className }) {
+  return splitLabelLines(text).map((line, index) => (
+    <p key={index} className={className}>
+      {line}
+    </p>
+  ))
+}
 
 function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, onDateChange }) {
   const resultado = getMatchResultado(match)
@@ -58,27 +67,41 @@ function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, on
       <div className="mt-1 flex items-center gap-2">
         <span className="shrink-0 text-xs text-zinc-500 dark:text-zinc-400">{match.capitanNombre || '-'}</span>
         <span
-          className={`flex-1 truncate rounded-full px-2.5 py-1 text-center text-xs font-bold ${RESULT_CLASSES[resultado]}`}
+          className={`flex-1 whitespace-normal break-words rounded-full px-2.5 py-1 text-center text-xs font-bold ${RESULT_CLASSES[resultado]}`}
         >
           {nombreLocal} {golesLocal} - {golesVisitante} {nombreVisitante}
         </span>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 text-center">
-        <div>
-          <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+        <div className="whitespace-normal break-words">
+          <p className="whitespace-normal break-words text-[11px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
             Goles {match.club}
           </p>
-          <p className="truncate text-xs text-zinc-700 dark:text-zinc-300">{goleadoresPropios}</p>
+          <MultilineLabel
+            text={goleadoresPropios}
+            className="whitespace-normal break-words text-xs text-zinc-700 dark:text-zinc-300"
+          />
           {asistentesPropios && (
-            <p className="truncate text-[10px] text-zinc-400 dark:text-zinc-500">🎯 {asistentesPropios}</p>
+            <p className="whitespace-normal break-words text-[11px] text-zinc-400 dark:text-zinc-500">
+              🎯{' '}
+              {splitLabelLines(asistentesPropios).map((line, index, lines) => (
+                <span key={index}>
+                  {line}
+                  {index < lines.length - 1 && <br />}
+                </span>
+              ))}
+            </p>
           )}
         </div>
-        <div>
-          <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+        <div className="whitespace-normal break-words">
+          <p className="whitespace-normal break-words text-[11px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
             Goles {match.rival}
           </p>
-          <p className="truncate text-xs text-zinc-700 dark:text-zinc-300">{goleadoresRivales}</p>
+          <MultilineLabel
+            text={goleadoresRivales}
+            className="whitespace-normal break-words text-xs text-zinc-700 dark:text-zinc-300"
+          />
         </div>
       </div>
     </div>

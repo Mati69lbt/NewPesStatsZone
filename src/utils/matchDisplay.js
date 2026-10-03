@@ -41,3 +41,16 @@ export function buildAsistentesLabel(incidencias) {
     .map((i) => (i.asistencias > 1 ? `${i.nombre} (${i.asistencias})` : i.nombre))
   return asistentes.length > 0 ? asistentes.join(', ') : null
 }
+
+export function splitLabelLines(label) {
+  if (!label || label === '-') return [label]
+  const items = label.split(', ')
+  if (items.length <= 2) return [label]
+  const lines = []
+  for (let i = 0; i < items.length; i += 2) {
+    const chunk = items.slice(i, i + 2).join(', ')
+    const isLast = i + 2 >= items.length
+    lines.push(isLast ? chunk : `${chunk},`)
+  }
+  return lines
+}
