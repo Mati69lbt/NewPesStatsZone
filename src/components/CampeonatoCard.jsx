@@ -14,11 +14,11 @@ function getBadgeClasses(value) {
 function StatBadge({ value }) {
   return (
     <span
-      className={`inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border text-[9px] font-bold sm:h-6 sm:w-6 sm:text-[10px] ${getBadgeClasses(
+      className={`inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border text-[11px] font-bold sm:h-7 sm:w-7 sm:text-xs ${getBadgeClasses(
         value
       )}`}
     >
-      {value > 0 ? `+${value}` : value}
+      {Math.abs(value)}
     </span>
   )
 }
@@ -49,7 +49,7 @@ function CampeonatoCard({ torneo, temporada, matches }) {
         <div className="min-w-0">
           <h3 className="truncate text-sm font-black text-zinc-100 sm:text-base">{torneo}</h3>
           <p className="text-xs font-semibold text-zinc-400">
-            Temporada: {temporada} - PJ: {matches.length} {matches.length === 1 ? 'Partido' : 'Partidos'}
+            Temporada: {temporada} - {matches.length} {matches.length === 1 ? 'Partido' : 'Partidos'}
           </p>
         </div>
 
@@ -65,46 +65,46 @@ function CampeonatoCard({ torneo, temporada, matches }) {
       </button>
 
       {open && (
-        <table className="w-full table-fixed border-collapse text-[10px] sm:text-xs">
+        <table className="w-full table-fixed border-collapse text-[11px] sm:text-sm">
           <thead>
             <tr className="border-b border-zinc-700 bg-zinc-800/60 text-left font-bold uppercase tracking-wide text-zinc-400">
-              <th className="w-15 whitespace-nowrap px-1 py-2 pr-4 text-left sm:w-[37.5] sm:px-2 sm:pr-8">Cond.</th>
-              <th className="px-1 py-2 text-center sm:px-2">PJ</th>
-              <th className="px-1 py-2 text-center sm:px-2">G</th>
-              <th className="px-1 py-2 text-center sm:px-2">E</th>
-              <th className="px-1 py-2 text-center sm:px-2">P</th>
-              <th className="px-1 py-2 text-center sm:px-2">G/P</th>
-              <th className="px-1 py-2 text-center sm:px-2">GF</th>
-              <th className="px-1 py-2 text-center sm:px-2">GC</th>
-              <th className="px-1 py-2 text-center sm:px-2">DF</th>
-              <th className="px-1 py-2 text-center sm:px-2">%</th>
+              <th className="w-12 whitespace-nowrap px-1 py-2 text-left sm:w-16 sm:px-1.5">Cond.</th>
+              <th className="px-0.5 py-2 text-center sm:px-1">PJ</th>
+              <th className="px-px py-2 text-center sm:px-0.5">G</th>
+              <th className="px-px py-2 text-center sm:px-0.5">E</th>
+              <th className="px-px py-2 text-center sm:px-0.5">P</th>
+              <th className="px-0.5 py-2 text-center sm:px-1">G/P</th>
+              <th className="px-0.5 py-2 text-center sm:px-1">GF</th>
+              <th className="px-0.5 py-2 text-center sm:px-1">GC</th>
+              <th className="px-0.5 py-2 text-center sm:px-1">DF</th>
+              <th className="w-10 px-0.5 py-2 text-center sm:w-12 sm:px-1">%</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-800">
             {rows.map((row) => (
               <tr key={row.key} className="text-zinc-300">
-                <td className="w-15 whitespace-nowrap px-1 py-2 pr-4 text-left font-bold text-zinc-100 sm:w-[150px] sm:px-2 sm:pr-8">{row.label}</td>
-                <td className="px-1 py-2 text-center font-semibold text-zinc-200 sm:px-2">{row.stats.pj}</td>
-                <td className="px-1 py-2 text-center sm:px-2">{row.stats.g}</td>
-                <td className="px-1 py-2 text-center sm:px-2">{row.stats.e}</td>
-                <td className="px-1 py-2 text-center sm:px-2">{row.stats.p}</td>
-                <td className="px-1 py-2 text-center sm:px-2">
+                <td className="whitespace-nowrap px-1 py-2 text-left font-bold text-zinc-100 sm:px-1.5">{row.label}</td>
+                <td className="px-0.5 py-2 text-center font-semibold text-zinc-200 sm:px-1">{row.stats.pj}</td>
+                <td className="px-px py-2 text-center sm:px-0.5">{row.stats.g}</td>
+                <td className="px-px py-2 text-center sm:px-0.5">{row.stats.e}</td>
+                <td className="px-px py-2 text-center sm:px-0.5">{row.stats.p}</td>
+                <td className="px-0.5 py-2 text-center sm:px-1">
                   <div className="flex justify-center">
                     <StatBadge value={row.stats.gp} />
                   </div>
                 </td>
-                <td className="px-1 py-2 text-center sm:px-2">{row.stats.gf}</td>
-                <td className="px-1 py-2 text-center sm:px-2">{row.stats.gc}</td>
-                <td className="px-1 py-2 text-center sm:px-2">
+                <td className="px-0.5 py-2 text-center sm:px-1">{row.stats.gf}</td>
+                <td className="px-0.5 py-2 text-center sm:px-1">{row.stats.gc}</td>
+                <td className="px-0.5 py-2 text-center sm:px-1">
                   <div className="flex justify-center">
                     <StatBadge value={row.stats.df} />
                   </div>
                 </td>
-                <td className="px-1 py-2 text-center sm:px-2">
+                <td className="whitespace-nowrap px-0.5 py-2 text-center sm:px-1">
                   <p className="font-bold text-emerald-400">
                     {row.stats.pts}/{row.stats.ptsPosibles}
                   </p>
-                  <p className="text-[9px] font-semibold text-zinc-500">{row.pct}%</p>
+                  <p className="text-[10px] font-semibold text-zinc-500 sm:text-xs">{row.pct}%</p>
                 </td>
               </tr>
             ))}
