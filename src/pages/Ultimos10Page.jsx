@@ -156,7 +156,9 @@ function Ultimos10Page() {
             </p>
           ) : (
             <>
-              <StreakCard {...historial} />
+              <Accordion key={`ultimos10-${clubActivo}`} title="Últimos 10 Resultados" defaultOpen>
+                <StreakCard {...historial} />
+              </Accordion>
 
               <Accordion key={`capitanes-${clubActivo}`} title="Capitanes">
                 {capitanes.length === 0 ? (
@@ -248,7 +250,7 @@ function Ultimos10Page() {
                 )}
               </Accordion>
 
-              <RachasAvanzadasSection matches={clubMatches} />
+              <RachasAvanzadasSection matches={clubMatches} allMatches={matches} />
             </>
           )}
         </div>

@@ -1,3 +1,10 @@
+const VARIANT_TITLES = {
+  general: 'text-[#a3e635]',
+  local: 'text-sky-400',
+  visitante: 'text-purple-400',
+  neutral: 'text-amber-400',
+}
+
 function getCardClasses(g, p) {
   if (g > p) return 'border-emerald-500/30 bg-emerald-500/10'
   if (g < p) return 'border-rose-500/30 bg-rose-500/10'
@@ -36,8 +43,9 @@ function Badge({ value, label, labelPosition }) {
   )
 }
 
-function VersusStatCell({ label, stats, showPoints = false }) {
+function VersusStatCell({ label, stats, showPoints = false, variant = 'general' }) {
   const { g, e, p, pj, gf, gc, df, gp, pts, ptsPosibles } = stats
+  const titleClass = VARIANT_TITLES[variant] || VARIANT_TITLES.general
 
   if (pj === 0) {
     return (
@@ -53,21 +61,25 @@ function VersusStatCell({ label, stats, showPoints = false }) {
   return (
     <div className={`min-w-[160px] rounded-xl border p-4 text-center ${getCardClasses(g, p)}`}>
       {label && (
-        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+        <p className={`mb-1.5 text-xs font-bold uppercase tracking-wider ${titleClass}`}>
           {label}
         </p>
       )}
-      <div className="flex justify-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-200">
-        <span>{g}G</span>
-        <span>{e}E</span>
-        <span>{p}P</span>
+      <div className="flex justify-center gap-2 text-sm font-bold">
+        <span className="text-[#a3e635]">{g}G</span>
+        <span className="text-amber-300">{e}E</span>
+        <span className="text-rose-500">{p}P</span>
       </div>
       <div className="mt-2 flex items-center justify-center gap-3">
         <Badge value={gp} label="G/P" labelPosition="left" />
         <Badge value={df} label="DF" labelPosition="right" />
       </div>
-      <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-        PJ {pj} · GF {gf} · GC {gc}
+      <p className="mt-2 text-xs font-semibold">
+        <span className="text-orange-400">PJ {pj}</span>
+        <span className="text-zinc-500 dark:text-zinc-400"> · </span>
+        <span className="text-sky-400">GF {gf}</span>
+        <span className="text-zinc-500 dark:text-zinc-400"> · </span>
+        <span className="text-red-400">GC {gc}</span>
       </p>
       {showPoints && (
         <p className="mt-2 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-2 text-sm font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">

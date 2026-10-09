@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import Accordion from './Accordion'
-import RachaCategoriaCard from './RachaCategoriaCard'
+import RachaCategoriaList from './RachaCategoriaList'
 import JugadoresRachaGolTable from './JugadoresRachaGolTable'
 import { buildRachasAvanzadas, CATEGORIAS_EQUIPO } from '../utils/rachasAvanzadasStats'
+import { formatDateDisplay } from '../utils/dateFormat'
 
 const FIELD_CLASSES =
   'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
@@ -17,37 +18,74 @@ const CONDICIONES = [
 
 const TODOS = ''
 
-function RachasAvanzadasSection({ matches }) {
+function RachasAvanzadasSection({ matches, allMatches }) {
+  const [clubFiltro, setClubFiltro] = useState(TODOS)
   const [condicion, setCondicion] = useState('general')
   const [torneoFiltro, setTorneoFiltro] = useState(TODOS)
   const [capitanFiltro, setCapitanFiltro] = useState(TODOS)
 
+  const baseMatches = allMatches || matches
+
+  const clubes = useMemo(
+    () => [...new Set(baseMatches.map((m) => m.club).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [baseMatches]
+  )
+
+  const clubEfectivo = clubFiltro && clubes.includes(clubFiltro) ? clubFiltro : TODOS
+
+  const matchesAmbito = useMemo(
+    () => (clubEfectivo ? baseMatches.filter((m) => m.club === clubEfectivo) : baseMatches),
+    [baseMatches, clubEfectivo]
+  )
+
+  const ultimoPartido = useMemo(() => {
+    return matchesAmbito.reduce((max, m) => (m.fecha && (!max || m.fecha > max) ? m.fecha : max), '')
+  }, [matchesAmbito])
+
   const torneos = useMemo(
-    () => [...new Set(matches.map((m) => m.torneo).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
-    [matches]
+    () => [...new Set(matchesAmbito.map((m) => m.torneo).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [matchesAmbito]
   )
 
   const capitanes = useMemo(
-    () => [...new Set(matches.map((m) => m.capitanNombre).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
-    [matches]
+    () => [...new Set(matchesAmbito.map((m) => m.capitanNombre).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [matchesAmbito]
   )
 
   const torneoEfectivo = torneoFiltro && torneos.includes(torneoFiltro) ? torneoFiltro : TODOS
   const capitanEfectivo = capitanFiltro && capitanes.includes(capitanFiltro) ? capitanFiltro : TODOS
 
   const matchesFiltrados = useMemo(() => {
-    return matches.filter((m) => {
+    return matchesAmbito.filter((m) => {
       if (torneoEfectivo && m.torneo !== torneoEfectivo) return false
       if (capitanEfectivo && m.capitanNombre !== capitanEfectivo) return false
       if (condicion !== 'general' && m.condicion !== condicion) return false
       return true
     })
-  }, [matches, torneoEfectivo, capitanEfectivo, condicion])
+  }, [matchesAmbito, torneoEfectivo, capitanEfectivo, condicion])
 
   const { equipo, jugadores } = useMemo(() => buildRachasAvanzadas(matchesFiltrados), [matchesFiltrados])
 
   return (
     <Accordion title="Rachas Estadísticas Avanzadas" subtitle="Rachas récord y actuales del equipo y jugadores">
+      {ultimoPartido && (
+        <div className="rounded-lg border border-lime-400/40 bg-lime-50 px-3 py-2 text-center text-xs font-bold text-lime-700 dark:border-lime-400/30 dark:bg-lime-400/10 dark:text-lime-300">
+          Último partido registrado: {formatDateDisplay(ultimoPartido)}
+        </div>
+      )}
+
+      <div>
+        <label className={LABEL_CLASSES}>Club / Equipo</label>
+        <select value={clubEfectivo} onChange={(e) => setClubFiltro(e.target.value)} className={FIELD_CLASSES}>
+          <option value={TODOS}>Todos los clubes</option>
+          {clubes.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
         <div className="flex-1">
           <label className={LABEL_CLASSES}>Torneo / Campeonato</label>
@@ -98,13 +136,14 @@ function RachasAvanzadasSection({ matches }) {
         <>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {CATEGORIAS_EQUIPO.map(({ key, label, descripcion, showGE }) => (
-              <RachaCategoriaCard
+              <RachaCategoriaList
                 key={key}
                 label={label}
                 descripcion={descripcion}
                 showGE={showGE}
-                actual={equipo[key].actual}
-                record={equipo[key].record}
+                ultimos5={equipo[key].ultimos5}
+                mensajeVacio={equipo[key].mensajeVacio}
+                totalEncontradas={equipo[key].totalEncontradas}
               />
             ))}
           </div>

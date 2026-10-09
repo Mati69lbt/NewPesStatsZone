@@ -1,13 +1,17 @@
 import { getMatchResultado } from './matchDisplay'
 
-const RECORD_MIN_PARTIDOS = 5
+const RACHA_MIN_PARTIDOS = 3
+
+const KEYS_RACHA_MINIMA_ESTRICTA = ['vallaInvicta', 'sequiaColectiva']
+const RACHA_MINIMA_ESTRICTA = 3
+const MENSAJE_SIN_RACHA_MINIMA = 'Sin rachas mayores a 3 partidos'
 
 export const CATEGORIAS_EQUIPO = [
   { key: 'invicto', label: 'Invicto', descripcion: 'Partidos sin perder', showGE: true },
   { key: 'victorias', label: 'Racha de Victorias', descripcion: 'Solo partidos ganados' },
   { key: 'anotadora', label: 'Racha Anotadora', descripcion: 'Convirtiendo al menos 1 gol' },
   { key: 'recibeGoles', label: 'Racha de Recibir Goles', descripcion: 'Con al menos 1 gol en contra' },
-  { key: 'vallaInvicta', label: 'Valla Invicta', descripcion: 'Sin recibir goles' },
+  { key: 'vallaInvicta', label: 'Valla Invicta', descripcion: 'Sin recibir goles', showGE: true },
   { key: 'sequiaColectiva', label: 'Sequía Colectiva', descripcion: 'Sin convertir goles' },
 ]
 
@@ -22,6 +26,16 @@ const PREDICATES = {
 
 function sortAscending(matches) {
   return [...matches].filter((m) => m.fecha).sort((a, b) => a.fecha.localeCompare(b.fecha))
+}
+
+function groupByClub(matchesAsc) {
+  const groups = new Map()
+  for (const match of matchesAsc) {
+    const club = match.club ?? ''
+    if (!groups.has(club)) groups.set(club, [])
+    groups.get(club).push(match)
+  }
+  return [...groups.values()]
 }
 
 function buildRuns(matches, predicate) {
@@ -42,41 +56,60 @@ function buildRuns(matches, predicate) {
   return runs
 }
 
-function summarizeRun(run) {
+function summarizeRun(run, esRecord) {
   if (!run || run.length === 0) return null
 
   const ganados = run.filter((m) => getMatchResultado(m) === 'victoria').length
   const empatados = run.filter((m) => getMatchResultado(m) === 'empate').length
+  const perdidos = run.length - ganados - empatados
   const gf = run.reduce((sum, m) => sum + (m.golesClub ?? 0), 0)
   const gc = run.reduce((sum, m) => sum + (m.golesRival ?? 0), 0)
 
   return {
+    club: run[run.length - 1].club ?? '',
     partidos: run.length,
     fechaInicio: run[0].fecha,
     fechaFin: run[run.length - 1].fecha,
     ganados,
     empatados,
+    perdidos,
     gf,
     gc,
+    esRecord,
   }
+}
+
+const TOP_RACHAS_LIMIT = 5
+
+function sortRunsByPartidosDesc(runs) {
+  return [...runs].sort((a, b) => {
+    if (b.length !== a.length) return b.length - a.length
+    return b[b.length - 1].fecha.localeCompare(a[a.length - 1].fecha)
+  })
 }
 
 function buildCategoria(matchesAsc, key) {
   const predicate = PREDICATES[key]
-  const runs = buildRuns(matchesAsc, predicate)
+  const runsPorClub = groupByClub(matchesAsc).map((clubMatches) => buildRuns(clubMatches, predicate))
+  const runs = runsPorClub.flat()
+  const esEstricta = KEYS_RACHA_MINIMA_ESTRICTA.includes(key)
 
-  const record = runs
-    .filter((run) => run.length > RECORD_MIN_PARTIDOS)
-    .sort((a, b) => b.length - a.length)[0]
-
-  const lastMatch = matchesAsc[matchesAsc.length - 1]
-  const lastRun = runs[runs.length - 1]
-  const actual = lastRun && lastRun[lastRun.length - 1] === lastMatch ? lastRun : null
-
-  return {
-    actual: summarizeRun(actual),
-    record: summarizeRun(record),
+  let candidatas
+  if (esEstricta) {
+    candidatas = runs.filter((run) => run.length >= RACHA_MINIMA_ESTRICTA)
+  } else {
+    const calificadas = runs.filter((run) => run.length > RACHA_MIN_PARTIDOS)
+    candidatas = calificadas.length > 0 ? calificadas : runs
   }
+
+  const top5PorPJ = sortRunsByPartidosDesc(candidatas).slice(0, TOP_RACHAS_LIMIT)
+  const top5Resumen = top5PorPJ.map((run, index) => summarizeRun(run, index === 0))
+
+  const ultimos5 = [...top5Resumen].sort((a, b) => b.fechaFin.localeCompare(a.fechaFin))
+
+  const mensajeVacio = esEstricta && ultimos5.length === 0 ? MENSAJE_SIN_RACHA_MINIMA : undefined
+
+  return { ultimos5, mensajeVacio, totalEncontradas: candidatas.length }
 }
 
 function buildEquipoRachas(matchesAsc) {
@@ -112,36 +145,44 @@ function getAllPlayerNames(matches) {
 }
 
 const JUGADOR_RACHA_MIN_PARTIDOS = 2
+const JUGADOR_RACHA_TOP_LIMIT = 10
 
 function buildJugadoresRachas(matchesAsc) {
-  const nombres = getAllPlayerNames(matchesAsc)
   const rows = []
 
-  for (const nombre of nombres) {
-    let run = []
+  for (const clubMatches of groupByClub(matchesAsc)) {
+    const club = clubMatches[0]?.club ?? ''
+    const nombres = getAllPlayerNames(clubMatches)
 
-    for (const match of matchesAsc) {
-      if (!isPresente(nombre, match)) continue
+    for (const nombre of nombres) {
+      let run = []
 
-      if (golesDe(nombre, match) > 0) {
-        run.push(match)
-      } else {
-        run = []
+      for (const match of clubMatches) {
+        if (!isPresente(nombre, match)) continue
+
+        if (golesDe(nombre, match) > 0) {
+          run.push(match)
+        } else {
+          run = []
+        }
       }
-    }
 
-    if (run.length >= JUGADOR_RACHA_MIN_PARTIDOS) {
-      rows.push({
-        nombre,
-        partidos: run.length,
-        goles: run.reduce((sum, m) => sum + golesDe(nombre, m), 0),
-        fechaInicio: run[0].fecha,
-        fechaFin: run[run.length - 1].fecha,
-      })
+      if (run.length >= JUGADOR_RACHA_MIN_PARTIDOS) {
+        rows.push({
+          nombre,
+          club,
+          partidos: run.length,
+          goles: run.reduce((sum, m) => sum + golesDe(nombre, m), 0),
+          fechaInicio: run[0].fecha,
+          fechaFin: run[run.length - 1].fecha,
+        })
+      }
     }
   }
 
-  return rows.sort((a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre))
+  return rows
+    .sort((a, b) => b.partidos - a.partidos || b.goles - a.goles || a.nombre.localeCompare(b.nombre))
+    .slice(0, JUGADOR_RACHA_TOP_LIMIT)
 }
 
 export function buildRachasAvanzadas(matches) {

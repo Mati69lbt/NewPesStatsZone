@@ -47,19 +47,17 @@ function VersusCompactStat({ stats, onClick }) {
       <div className="grid grid-cols-4 gap-x-1.5 gap-y-1.5">
         {metrics.map(({ label, value, className }) => (
           <div key={label} className="flex flex-col items-center leading-none">
-            <span className="text-[8px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
               {label}
             </span>
-            <span className={`text-[11px] font-bold ${className}`}>{value}</span>
+            <span className={`text-[12px] font-bold ${className}`}>{value}</span>
           </div>
         ))}
       </div>
       <div className="mt-1.5 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-1 dark:border-white/5">
-        <span className="text-[8px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
-          PTS/EF.
-        </span>
-        <span className="text-[11px] font-bold text-zinc-900 dark:text-zinc-100">
-          {pts}/{ptsPosibles} · {efectividad}%
+       
+        <span className="text-[12px] font-bold text-zinc-900 dark:text-zinc-100">
+          {pts} / {ptsPosibles} · {efectividad}%
         </span>
       </div>
     </button>

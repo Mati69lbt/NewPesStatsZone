@@ -11,7 +11,7 @@ function VersusSummaryMatrix({ stats, showPoints = false }) {
   return (
     <div className="grid w-full grid-cols-2 place-items-center gap-3 sm:flex sm:flex-row sm:flex-wrap sm:justify-center">
       {NIVELES.map(({ key, label }) => (
-        <VersusStatCell key={key} label={label} stats={stats[key]} showPoints={showPoints} />
+        <VersusStatCell key={key} variant={key} label={label} stats={stats[key]} showPoints={showPoints} />
       ))}
     </div>
   )
