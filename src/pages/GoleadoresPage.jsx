@@ -211,13 +211,13 @@ function GoleadoresPage() {
           </div>
 
           <div className="flex w-full flex-col gap-3">
-            {ACORDEONES.map(({ key, title, Table, tableProps }, index) => (
+            {ACORDEONES.map(({ key, title, Table, tableProps }) => (
               <GoleadoresStatSection
                 key={key}
                 title={title}
                 Table={Table}
                 dataPorCondicion={dataPorMetrica[key]}
-                defaultOpen={index === 0}
+                defaultOpen={false}
                 tableProps={tableProps}
               />
             ))}

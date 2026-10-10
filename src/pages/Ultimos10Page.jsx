@@ -156,7 +156,7 @@ function Ultimos10Page() {
             </p>
           ) : (
             <>
-              <Accordion key={`ultimos10-${clubActivo}`} title="Últimos 10 Resultados" defaultOpen>
+              <Accordion key={`ultimos10-${clubActivo}`} title="Últimos 10 Resultados">
                 <StreakCard {...historial} />
               </Accordion>
 

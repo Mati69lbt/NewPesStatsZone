@@ -7,11 +7,11 @@ const RACHA_MINIMA_ESTRICTA = 3
 const MENSAJE_SIN_RACHA_MINIMA = 'Sin rachas mayores a 3 partidos'
 
 export const CATEGORIAS_EQUIPO = [
-  { key: 'invicto', label: 'Invicto', descripcion: 'Partidos sin perder', showGE: true },
+  { key: 'invicto', label: 'Invicto', descripcion: 'Partidos sin perder' },
   { key: 'victorias', label: 'Racha de Victorias', descripcion: 'Solo partidos ganados' },
   { key: 'anotadora', label: 'Racha Anotadora', descripcion: 'Convirtiendo al menos 1 gol' },
   { key: 'recibeGoles', label: 'Racha de Recibir Goles', descripcion: 'Con al menos 1 gol en contra' },
-  { key: 'vallaInvicta', label: 'Valla Invicta', descripcion: 'Sin recibir goles', showGE: true },
+  { key: 'vallaInvicta', label: 'Valla Invicta', descripcion: 'Sin recibir goles' },
   { key: 'sequiaColectiva', label: 'Sequía Colectiva', descripcion: 'Sin convertir goles' },
 ]
 
@@ -79,7 +79,7 @@ function summarizeRun(run, esRecord) {
   }
 }
 
-const TOP_RACHAS_LIMIT = 5
+const TOP_RACHAS_LIMIT = 10
 
 function sortRunsByPartidosDesc(runs) {
   return [...runs].sort((a, b) => {
@@ -102,10 +102,11 @@ function buildCategoria(matchesAsc, key) {
     candidatas = calificadas.length > 0 ? calificadas : runs
   }
 
-  const top5PorPJ = sortRunsByPartidosDesc(candidatas).slice(0, TOP_RACHAS_LIMIT)
-  const top5Resumen = top5PorPJ.map((run, index) => summarizeRun(run, index === 0))
+  const topPorPJ = sortRunsByPartidosDesc(candidatas).slice(0, TOP_RACHAS_LIMIT)
+  const maxPartidos = topPorPJ.reduce((max, run) => Math.max(max, run.length), 0)
+  const topResumen = topPorPJ.map((run) => summarizeRun(run, run.length === maxPartidos))
 
-  const ultimos5 = [...top5Resumen].sort((a, b) => b.fechaFin.localeCompare(a.fechaFin))
+  const ultimos5 = [...topResumen].sort((a, b) => b.fechaFin.localeCompare(a.fechaFin))
 
   const mensajeVacio = esEstricta && ultimos5.length === 0 ? MENSAJE_SIN_RACHA_MINIMA : undefined
 
@@ -145,7 +146,7 @@ function getAllPlayerNames(matches) {
 }
 
 const JUGADOR_RACHA_MIN_PARTIDOS = 2
-const JUGADOR_RACHA_TOP_LIMIT = 10
+const JUGADOR_RACHA_TOP_LIMIT = 15
 
 function buildJugadoresRachas(matchesAsc) {
   const rows = []

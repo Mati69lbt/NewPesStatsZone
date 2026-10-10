@@ -134,26 +134,22 @@ function RachasAvanzadasSection({ matches, allMatches }) {
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {CATEGORIAS_EQUIPO.map(({ key, label, descripcion, showGE }) => (
-              <RachaCategoriaList
+          <div className="flex flex-col gap-3">
+            {CATEGORIAS_EQUIPO.map(({ key, label, descripcion }) => (
+              <Accordion
                 key={key}
-                label={label}
-                descripcion={descripcion}
-                showGE={showGE}
-                ultimos5={equipo[key].ultimos5}
-                mensajeVacio={equipo[key].mensajeVacio}
-                totalEncontradas={equipo[key].totalEncontradas}
-              />
+                title={label}
+                subtitle={`${descripcion} (${equipo[key].totalEncontradas})`}
+                className="w-full"
+              >
+                <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} />
+              </Accordion>
             ))}
           </div>
 
-          <div>
-            <h4 className="mb-2 text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-              Jugadores en Racha Goleadora
-            </h4>
+          <Accordion title="Jugadores en Racha Goleadora" className="w-full">
             <JugadoresRachaGolTable rows={jugadores} />
-          </div>
+          </Accordion>
         </>
       )}
     </Accordion>
