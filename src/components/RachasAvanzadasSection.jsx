@@ -142,7 +142,7 @@ function RachasAvanzadasSection({ matches, allMatches }) {
                 subtitle={`${descripcion} (${equipo[key].totalEncontradas})`}
                 className="w-full"
               >
-                <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} />
+                <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} categoria={key} />
               </Accordion>
             ))}
           </div>
