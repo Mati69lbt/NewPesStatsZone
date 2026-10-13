@@ -88,18 +88,16 @@ function sortRunsByPartidosDesc(runs) {
   })
 }
 
-function buildCategoria(matchesAsc, key) {
-  const predicate = PREDICATES[key]
+function buildCategoriaFromPredicate(matchesAsc, predicate, esEstricta) {
   const runsPorClub = groupByClub(matchesAsc).map((clubMatches) => buildRuns(clubMatches, predicate))
   const runs = runsPorClub.flat()
-  const esEstricta = KEYS_RACHA_MINIMA_ESTRICTA.includes(key)
 
   let candidatas
   if (esEstricta) {
     candidatas = runs.filter((run) => run.length >= RACHA_MINIMA_ESTRICTA)
   } else {
     const calificadas = runs.filter((run) => run.length > RACHA_MIN_PARTIDOS)
-    candidatas = calificadas.length > 0 ? calificadas : runs
+    candidatas = calificadas.length > 0 ? calificadas : runs.filter((run) => run.length >= 2)
   }
 
   const topPorPJ = sortRunsByPartidosDesc(candidatas).slice(0, TOP_RACHAS_LIMIT)
@@ -111,6 +109,24 @@ function buildCategoria(matchesAsc, key) {
   const mensajeVacio = esEstricta && ultimos5.length === 0 ? MENSAJE_SIN_RACHA_MINIMA : undefined
 
   return { ultimos5, mensajeVacio, totalEncontradas: candidatas.length }
+}
+
+function buildCategoria(matchesAsc, key) {
+  const predicate = PREDICATES[key]
+  const esEstricta = KEYS_RACHA_MINIMA_ESTRICTA.includes(key)
+  return buildCategoriaFromPredicate(matchesAsc, predicate, esEstricta)
+}
+
+export function buildAnotadoraCategoria(matches, minGoles = 1) {
+  const matchesAsc = sortAscending(matches)
+  const predicate = (m) => (m.golesClub ?? 0) >= minGoles
+  return buildCategoriaFromPredicate(matchesAsc, predicate, false)
+}
+
+export function buildRecibeGolesCategoria(matches, minGoles = 1) {
+  const matchesAsc = sortAscending(matches)
+  const predicate = (m) => (m.golesRival ?? 0) >= minGoles
+  return buildCategoriaFromPredicate(matchesAsc, predicate, false)
 }
 
 function buildEquipoRachas(matchesAsc) {

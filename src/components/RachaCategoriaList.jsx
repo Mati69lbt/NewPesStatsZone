@@ -1,6 +1,7 @@
 import { formatDateDisplay } from '../utils/dateFormat'
 
-const GRID_COLS = 'grid grid-cols-[1.25rem_minmax(0,1fr)_auto_2.5rem_auto] items-center'
+const GRID_COLS =
+  'grid grid-cols-[1.25rem_minmax(0,1fr)_7rem_2.5rem_6rem] items-center lg:grid-cols-[1.25rem_minmax(0,1fr)_6rem_2.25rem_5rem]'
 
 function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
   if (!ultimos5 || ultimos5.length === 0) {
@@ -15,13 +16,13 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
   const ocultarPerdidos = categoria === 'invicto' || categoria === 'victorias' || categoria === 'vallaInvicta'
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
+    <div className="w-full overflow-hidden">
       <div className={`${GRID_COLS} gap-1 px-1.5 text-[10px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500 sm:gap-2 sm:px-3`}>
         <span className="text-left font-bold">#</span>
         <span className="text-left font-bold">Equipo</span>
-        <span className="text-left font-bold">Resultados</span>
-        <span className="text-center font-bold">PJ</span>
-        <span className="text-left font-bold">Período</span>
+        <span className="flex items-center justify-start text-left font-bold">Resultados</span>
+        <span className="flex items-center justify-center text-center font-bold">PJ</span>
+        <span className="flex items-center justify-start text-left font-bold">Período</span>
       </div>
 
       <div className="mt-1.5 flex flex-col gap-1.5 text-xs">

@@ -2,7 +2,12 @@ import { useMemo, useState } from 'react'
 import Accordion from './Accordion'
 import RachaCategoriaList from './RachaCategoriaList'
 import JugadoresRachaGolTable from './JugadoresRachaGolTable'
-import { buildRachasAvanzadas, CATEGORIAS_EQUIPO } from '../utils/rachasAvanzadasStats'
+import {
+  buildRachasAvanzadas,
+  buildAnotadoraCategoria,
+  buildRecibeGolesCategoria,
+  CATEGORIAS_EQUIPO,
+} from '../utils/rachasAvanzadasStats'
 import { formatDateDisplay } from '../utils/dateFormat'
 
 const FIELD_CLASSES =
@@ -23,6 +28,8 @@ function RachasAvanzadasSection({ matches, allMatches }) {
   const [condicion, setCondicion] = useState('general')
   const [torneoFiltro, setTorneoFiltro] = useState(TODOS)
   const [capitanFiltro, setCapitanFiltro] = useState(TODOS)
+  const [anotadoraMinGoles, setAnotadoraMinGoles] = useState(1)
+  const [recibeGolesMinGoles, setRecibeGolesMinGoles] = useState(1)
 
   const baseMatches = allMatches || matches
 
@@ -65,6 +72,16 @@ function RachasAvanzadasSection({ matches, allMatches }) {
   }, [matchesAmbito, torneoEfectivo, capitanEfectivo, condicion])
 
   const { equipo, jugadores } = useMemo(() => buildRachasAvanzadas(matchesFiltrados), [matchesFiltrados])
+
+  const anotadora = useMemo(
+    () => buildAnotadoraCategoria(matchesFiltrados, anotadoraMinGoles),
+    [matchesFiltrados, anotadoraMinGoles]
+  )
+
+  const recibeGoles = useMemo(
+    () => buildRecibeGolesCategoria(matchesFiltrados, recibeGolesMinGoles),
+    [matchesFiltrados, recibeGolesMinGoles]
+  )
 
   return (
     <Accordion title="Rachas Estadísticas Avanzadas" subtitle="Rachas récord y actuales del equipo y jugadores">
@@ -134,17 +151,77 @@ function RachasAvanzadasSection({ matches, allMatches }) {
         </p>
       ) : (
         <>
-          <div className="flex flex-col gap-3">
-            {CATEGORIAS_EQUIPO.map(({ key, label, descripcion }) => (
-              <Accordion
-                key={key}
-                title={label}
-                subtitle={`${descripcion} (${equipo[key].totalEncontradas})`}
-                className="w-full"
-              >
-                <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} categoria={key} />
-              </Accordion>
-            ))}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6 lg:items-start">
+            {CATEGORIAS_EQUIPO.map(({ key, label, descripcion }) => {
+              if (key === 'anotadora') {
+                return (
+                  <Accordion
+                    key={key}
+                    title={label}
+                    subtitle={`Convirtiendo al menos ${anotadoraMinGoles} gol${anotadoraMinGoles > 1 ? 'es' : ''} (${anotadora.totalEncontradas})`}
+                    className="w-full"
+                  >
+                    <div className="flex gap-2">
+                      {[1, 2, 3].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => setAnotadoraMinGoles(n)}
+                          className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
+                            anotadoraMinGoles === n
+                              ? 'bg-lime-400 text-zinc-900'
+                              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+                          }`}
+                        >
+                          +{n}
+                        </button>
+                      ))}
+                    </div>
+                    <RachaCategoriaList ultimos5={anotadora.ultimos5} mensajeVacio={anotadora.mensajeVacio} categoria={key} />
+                  </Accordion>
+                )
+              }
+
+              if (key === 'recibeGoles') {
+                return (
+                  <Accordion
+                    key={key}
+                    title={label}
+                    subtitle={`Con al menos ${recibeGolesMinGoles} gol${recibeGolesMinGoles > 1 ? 'es' : ''} en contra (${recibeGoles.totalEncontradas})`}
+                    className="w-full"
+                  >
+                    <div className="flex gap-2">
+                      {[1, 2, 3].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => setRecibeGolesMinGoles(n)}
+                          className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
+                            recibeGolesMinGoles === n
+                              ? 'bg-lime-400 text-zinc-900'
+                              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+                          }`}
+                        >
+                          +{n}
+                        </button>
+                      ))}
+                    </div>
+                    <RachaCategoriaList ultimos5={recibeGoles.ultimos5} mensajeVacio={recibeGoles.mensajeVacio} categoria={key} />
+                  </Accordion>
+                )
+              }
+
+              return (
+                <Accordion
+                  key={key}
+                  title={label}
+                  subtitle={`${descripcion} (${equipo[key].totalEncontradas})`}
+                  className="w-full"
+                >
+                  <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} categoria={key} />
+                </Accordion>
+              )
+            })}
           </div>
 
           <Accordion title="Jugadores en Racha Goleadora" className="w-full">

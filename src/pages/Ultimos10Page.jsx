@@ -124,7 +124,7 @@ function Ultimos10Page() {
       <Navbar />
 
       <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden py-4">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4">
+        <div className="mx-auto flex w-full max-w-full flex-col gap-4 px-4 lg:w-[70%] lg:max-w-none">
           <div className="py-2 text-center">
             <h1 className="my-1 text-2xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
               Últimos 10
