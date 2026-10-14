@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import GoleadoresAsistenciasGlobalTable from "../components/GoleadoresAsistenciasGlobalTable";
 import useCurrentUser from "../hooks/useCurrentUser";
+import useClub from "../hooks/useClub";
 import useMatches from "../hooks/useMatches";
 import {
   buildAsistenciasGlobalRows,
@@ -32,6 +33,7 @@ function sortRows(rows, sortKey, sortDir) {
 
 function GoleadoresAsistenciasGlobalPage() {
   const user = useCurrentUser();
+  const club = useClub(user?.uid);
   const matches = useMatches(user?.uid);
   const navigate = useNavigate();
 
@@ -175,6 +177,7 @@ function GoleadoresAsistenciasGlobalPage() {
             sortKey={sortKey}
             sortDir={sortDir}
             onSort={handleSort}
+            clubActivo={club}
           />
         </div>
       </main>

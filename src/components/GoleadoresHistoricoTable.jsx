@@ -26,6 +26,7 @@ function GoleadoresHistoricoTable({
   promedioKey = 'promedio',
   highlightColumn = 'value',
   highlightColorClass = 'text-lime-600 dark:text-lime-400',
+  clubActivo,
 }) {
   if (rows.length === 0) {
     return (
@@ -54,32 +55,51 @@ function GoleadoresHistoricoTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-            {rows.map((row, index) => (
-              <tr
-                key={`${row.nombre}-${row.periodo}`}
-                className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
-              >
-                <td className={`${TD_CLASSES} text-center`}>
-                  <Posicion index={index} />
-                </td>
-                <td className={`${TD_CLASSES} break-words font-bold text-zinc-900 dark:text-zinc-100`}>
-                  {row.nombre}
-                  {row.club && <span className="block truncate text-[10px] font-normal text-zinc-500 dark:text-zinc-500">{row.club}</span>}
-                </td>
-                <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
-                <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
-                  {row[valueKey]}
-                </td>
-                <td className={`${TD_NUM_CLASSES} font-semibold ${pjHighlight ? highlightColorClass : 'text-zinc-600 dark:text-zinc-300'}`}>
-                  {row.pj}
-                </td>
-                <td
-                  className={`${TD_NUM_CLASSES} font-semibold ${promedioHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}
+            {rows.map((row, index) => {
+              const esClubActivo =
+                Boolean(clubActivo) && row.club?.split(', ').includes(clubActivo)
+
+              return (
+                <tr
+                  key={`${row.nombre}-${row.periodo}`}
+                  className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
                 >
-                  {formatPromedio(row[promedioKey])}
-                </td>
-              </tr>
-            ))}
+                  <td className={`${TD_CLASSES} text-center`}>
+                    <Posicion index={index} />
+                  </td>
+                  <td
+                    className={`${TD_CLASSES} break-words font-bold ${
+                      esClubActivo ? 'text-lime-600 dark:text-lime-400' : 'text-zinc-900 dark:text-zinc-100'
+                    }`}
+                  >
+                    {row.nombre}
+                    {row.club && (
+                      <span
+                        className={`block truncate text-[10px] font-normal ${
+                          esClubActivo
+                            ? 'font-bold text-lime-600 dark:text-lime-400'
+                            : 'text-zinc-500 dark:text-zinc-500'
+                        }`}
+                      >
+                        {row.club}
+                      </span>
+                    )}
+                  </td>
+                  <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
+                  <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
+                    {row[valueKey]}
+                  </td>
+                  <td className={`${TD_NUM_CLASSES} font-semibold ${pjHighlight ? highlightColorClass : 'text-zinc-600 dark:text-zinc-300'}`}>
+                    {row.pj}
+                  </td>
+                  <td
+                    className={`${TD_NUM_CLASSES} font-semibold ${promedioHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}
+                  >
+                    {formatPromedio(row[promedioKey])}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

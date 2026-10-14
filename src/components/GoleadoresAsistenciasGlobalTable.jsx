@@ -59,6 +59,7 @@ function GoleadoresAsistenciasGlobalTable({
   sortKey,
   sortDir,
   onSort,
+  clubActivo,
 }) {
   const isGoles = modo === "goleadores";
   const valorLabel = isGoles ? "G" : "A";
@@ -125,39 +126,53 @@ function GoleadoresAsistenciasGlobalTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-            {rows.map((row, index) => (
-              <tr
-                key={`${row.nombre}-${row.club}`}
-                className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
-              >
-                <td className="px-2 py-2 text-center md:px-3 md:py-3">
-                  <Posicion index={index} />
-                </td>
-                <td className={NUM_TD_CLASSES}>
-                  <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 py-0.5 text-[11px] font-bold text-lime-600 dark:bg-zinc-950 dark:text-lime-400 md:min-w-6 md:px-2 md:text-sm">
-                    {row.valor}
-                  </span>
-                </td>
-                <td className="break-words px-2 py-2 text-left md:px-3 md:py-3">
-                  <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 md:text-sm">
-                    {row.nombre}
-                  </div>
-                  <div className="text-[11px] text-zinc-500 dark:text-zinc-400 md:text-xs">
-                    {row.club}
-                  </div>
-                </td>
-                <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
-                <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>
-                  {row.x2 || "-"}
-                </td>
-                <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>
-                  {row.x3 || "-"}
-                </td>
-                <td className={`${NUM_TD_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>
-                  {row.promedio.toFixed(3)}
-                </td>
-              </tr>
-            ))}
+            {rows.map((row, index) => {
+              const esClubActivo = Boolean(clubActivo) && row.club === clubActivo;
+
+              return (
+                <tr
+                  key={`${row.nombre}-${row.club}`}
+                  className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
+                >
+                  <td className="px-2 py-2 text-center md:px-3 md:py-3">
+                    <Posicion index={index} />
+                  </td>
+                  <td className={NUM_TD_CLASSES}>
+                    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 py-0.5 text-[11px] font-bold text-lime-600 dark:bg-zinc-950 dark:text-lime-400 md:min-w-6 md:px-2 md:text-sm">
+                      {row.valor}
+                    </span>
+                  </td>
+                  <td className="break-words px-2 py-2 text-left md:px-3 md:py-3">
+                    <div
+                      className={`text-xs font-bold md:text-sm ${
+                        esClubActivo ? "text-lime-600 dark:text-lime-400" : "text-zinc-900 dark:text-zinc-100"
+                      }`}
+                    >
+                      {row.nombre}
+                    </div>
+                    <div
+                      className={`text-[11px] md:text-xs ${
+                        esClubActivo
+                          ? "font-semibold text-lime-600 dark:text-lime-400"
+                          : "text-zinc-500 dark:text-zinc-400"
+                      }`}
+                    >
+                      {row.club}
+                    </div>
+                  </td>
+                  <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
+                  <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>
+                    {row.x2 || "-"}
+                  </td>
+                  <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>
+                    {row.x3 || "-"}
+                  </td>
+                  <td className={`${NUM_TD_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>
+                    {row.promedio.toFixed(3)}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot>
             <tr className="border-t-2 border-zinc-200 bg-gray-50 text-[10px] font-bold uppercase text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 md:text-xs">

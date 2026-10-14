@@ -27,7 +27,15 @@ function Accordion({ title, subtitle, defaultOpen = false, children, className =
         </svg>
       </button>
 
-      {open && <div className="flex flex-col gap-4 bg-zinc-50 px-2 py-3 dark:bg-zinc-900 sm:gap-6 sm:px-5 sm:py-5">{children}</div>}
+      <div
+        className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-in-out ${
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="flex flex-col gap-4 bg-zinc-50 px-2 py-3 dark:bg-zinc-900 sm:gap-6 sm:px-5 sm:py-5">{children}</div>
+        </div>
+      </div>
     </div>
   )
 }

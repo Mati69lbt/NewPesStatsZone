@@ -91,7 +91,7 @@ function GoleadoresPage() {
       key: 'topGoleadores',
       title: 'Top 15 Goleadores',
       Table: GoleadoresHistoricoTable,
-      tableProps: { highlightColumn: 'value', highlightColorClass: 'text-lime-600 dark:text-lime-400' },
+      tableProps: { highlightColumn: 'value', highlightColorClass: 'text-lime-600 dark:text-lime-400', clubActivo: club },
     },
     {
       key: 'topAsistencias',
@@ -103,19 +103,20 @@ function GoleadoresPage() {
         promedioKey: 'promedioAsistencias',
         highlightColumn: 'value',
         highlightColorClass: 'text-sky-500 dark:text-sky-400',
+        clubActivo: club,
       },
     },
     {
       key: 'topPromedio',
       title: 'Top 15 Promedio',
       Table: GoleadoresHistoricoTable,
-      tableProps: { highlightColumn: 'promedio', highlightColorClass: 'text-violet-500 dark:text-violet-400' },
+      tableProps: { highlightColumn: 'promedio', highlightColorClass: 'text-violet-500 dark:text-violet-400', clubActivo: club },
     },
     {
       key: 'topPJ',
       title: 'Top 15 Más PJ',
       Table: GoleadoresHistoricoTable,
-      tableProps: { highlightColumn: 'pj', highlightColorClass: 'text-orange-500 dark:text-orange-400' },
+      tableProps: { highlightColumn: 'pj', highlightColorClass: 'text-orange-500 dark:text-orange-400', clubActivo: club },
     },
     { key: 'mejoresAnios', title: 'Mejores Años Goleadores', Table: MejoresAniosTable },
     {
