@@ -19,6 +19,8 @@ function calcularMetricas(matches) {
   const puntosObtenidos = g * 3 + e
   const puntosPosibles = pj * 3
   const efectividad = puntosPosibles > 0 ? (puntosObtenidos / puntosPosibles) * 100 : 0
+  const promGf = pj > 0 ? gf / pj : 0
+  const promGc = pj > 0 ? gc / pj : 0
 
   return {
     pj,
@@ -28,6 +30,8 @@ function calcularMetricas(matches) {
     gp: g - p,
     gf,
     gc,
+    promGf,
+    promGc,
     dif: gf - gc,
     puntosObtenidos,
     puntosPosibles,

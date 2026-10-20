@@ -26,12 +26,12 @@ function CapitanesResumenTable({ rows }) {
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
+    <div className="w-fit max-w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
       <div className="overflow-x-auto">
-        <table className="w-max min-w-full border-collapse text-xs">
+        <table className="w-auto border-collapse text-xs">
             <thead>
               <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[9px] font-bold uppercase tracking-wide text-zinc-400">
-                <th className="px-1.5 py-1.5">Capitán</th>
+                <th className="px-2 py-1.5">Capitán</th>
                 <th className="px-1 py-1.5 text-center">PJ</th>
                 <th className="px-1 py-1.5 text-center">G</th>
                 <th className="px-1 py-1.5 text-center">E</th>
@@ -40,7 +40,8 @@ function CapitanesResumenTable({ rows }) {
                 <th className="px-1 py-1.5 text-center">GF</th>
                 <th className="px-1 py-1.5 text-center">GC</th>
                 <th className="px-1 py-1.5 text-center">DIF</th>
-                <th className="px-1.5 py-1.5 text-center">%</th>
+                <th className="px-1 py-1.5 text-center">%</th>
+                <th className="px-2 py-1.5 text-center">Prom GF/GC</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800">
@@ -49,7 +50,7 @@ function CapitanesResumenTable({ rows }) {
                   key={row.key}
                   className={`transition hover:bg-zinc-800/60 ${index % 2 === 0 ? 'bg-zinc-900' : 'bg-zinc-900/40'}`}
                 >
-                  <td className="px-1.5 py-1.5">
+                  <td className="px-2 py-1.5">
                     <p className="font-bold text-zinc-100">
                       {index + 1} - {row.capitan}
                     </p>
@@ -68,11 +69,15 @@ function CapitanesResumenTable({ rows }) {
                   <td className="px-1 py-1.5 text-center">
                     <StatBadge value={row.df} />
                   </td>
-                  <td className="px-1.5 py-1.5 text-center">
+                  <td className="px-1 py-1.5 text-center">
                     <p className="text-xs font-bold text-emerald-400">
                       {row.pts} / {row.ptsPosibles}
                     </p>
                     <p className="text-[9px] font-semibold text-zinc-500">{row.pct}%</p>
+                  </td>
+                  <td className="px-2 py-1.5 text-center">
+                    <p className="text-emerald-400">{row.promGf.toFixed(2)}</p>
+                    <p className="text-rose-400">{row.promGc.toFixed(2)}</p>
                   </td>
                 </tr>
               ))}

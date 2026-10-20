@@ -4,6 +4,7 @@ import Loader from '../components/Loader'
 import StreakCard from '../components/StreakCard'
 import StreakRow from '../components/StreakRow'
 import Accordion from '../components/Accordion'
+import CondicionTabs from '../components/CondicionTabs'
 import RachasAvanzadasSection from '../components/RachasAvanzadasSection'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
@@ -199,22 +200,7 @@ function Ultimos10Page() {
 
                     {torneoSeleccionado && (
                       <div className="flex flex-col gap-3">
-                        <div className="flex overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-                          {CONDICIONES.map(({ value, label }) => (
-                            <button
-                              key={value}
-                              type="button"
-                              onClick={() => setCondicion(value)}
-                              className={`flex-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
-                                condicion === value
-                                  ? 'bg-lime-400 text-zinc-900'
-                                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                              }`}
-                            >
-                              {label}
-                            </button>
-                          ))}
-                        </div>
+                        <CondicionTabs value={condicion} onChange={setCondicion} />
 
                         <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
                           <h3 className="mb-3 text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">

@@ -35,7 +35,9 @@ function buildRows(matches, formato) {
   return [...groups.values()].map(({ temporada, club, matches: groupMatches }) => {
     const stats = computeStats(groupMatches)
     const pct = stats.ptsPosibles > 0 ? Math.round((stats.pts / stats.ptsPosibles) * 100) : 0
-    return { key: `${temporada}::${club}`, temporada, club, ...stats, pct }
+    const promGf = stats.pj > 0 ? stats.gf / stats.pj : 0
+    const promGc = stats.pj > 0 ? stats.gc / stats.pj : 0
+    return { key: `${temporada}::${club}`, temporada, club, ...stats, pct, promGf, promGc }
   })
 }
 

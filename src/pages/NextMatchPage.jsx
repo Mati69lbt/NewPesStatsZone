@@ -154,7 +154,7 @@ function NextMatchPage() {
         </div>
 
         <div className="flex w-full max-w-6xl flex-col items-center gap-6">
-          <VersusSummaryMatrix stats={stats} />
+          <VersusSummaryMatrix stats={stats} showPoints />
 
           {rivalActivo && (
             <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">

@@ -14,7 +14,7 @@ const NEUTRAL_CELL_CLASSES =
 function DesktopCell({ value, highlight }) {
   return (
     <div
-      className={`flex items-center justify-center rounded-lg border bg-zinc-50 py-3 text-sm font-bold dark:bg-zinc-900/40 ${
+      className={`flex items-center justify-center rounded-lg border bg-zinc-50 px-1 py-3 text-sm font-bold dark:bg-zinc-900/40 ${
         highlight ? signClasses(value) : NEUTRAL_CELL_CLASSES
       }`}
     >
@@ -38,6 +38,10 @@ function MobileCell({ label, value, highlight }) {
   )
 }
 
+function formatProm(value) {
+  return value.toFixed(2)
+}
+
 function RecordPersonalRow({ row }) {
   const { titulo, metrics } = row
   const ptsEfec = `${metrics.puntosObtenidos}/${metrics.puntosPosibles} (${formatEfec(metrics.efectividad)})`
@@ -45,8 +49,8 @@ function RecordPersonalRow({ row }) {
   return (
     <>
       {/* Desktop */}
-      <div className="hidden grid-cols-[140px_repeat(9,minmax(0,1fr))] items-stretch gap-2 rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700/50 dark:bg-zinc-800 md:grid">
-        <div className="flex items-center justify-center rounded-lg bg-zinc-100 px-2 py-3 text-sm font-black uppercase tracking-wide text-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+      <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700/50 dark:bg-zinc-800 md:grid">
+        <div className="flex items-center justify-center rounded-lg bg-zinc-100 px-1 py-3 text-xs font-black uppercase tracking-wide text-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
           {titulo}
         </div>
         <DesktopCell value={metrics.pj} />
@@ -56,9 +60,11 @@ function RecordPersonalRow({ row }) {
         <DesktopCell value={metrics.gp} highlight />
         <DesktopCell value={metrics.gf} />
         <DesktopCell value={metrics.gc} />
+        <DesktopCell value={formatProm(metrics.promGf)} />
+        <DesktopCell value={formatProm(metrics.promGc)} />
         <DesktopCell value={metrics.dif} highlight />
         <div
-          className={`flex items-center justify-center rounded-lg border bg-zinc-50 px-1 py-3 text-center text-xs font-bold dark:bg-zinc-900/40 ${NEUTRAL_CELL_CLASSES}`}
+          className={`flex items-center justify-center rounded-lg border bg-zinc-50 px-1 py-3 text-center text-[11px] font-bold dark:bg-zinc-900/40 ${NEUTRAL_CELL_CLASSES}`}
         >
           {ptsEfec}
         </div>
@@ -79,6 +85,10 @@ function RecordPersonalRow({ row }) {
         <div className="grid grid-cols-4 gap-1.5">
           <MobileCell label="GF" value={metrics.gf} />
           <MobileCell label="GC" value={metrics.gc} />
+          <MobileCell label="PROM GF" value={formatProm(metrics.promGf)} />
+          <MobileCell label="PROM GC" value={formatProm(metrics.promGc)} />
+        </div>
+        <div className="grid grid-cols-2 gap-1.5">
           <MobileCell label="DIF" value={metrics.dif} highlight />
           <div
             className={`flex flex-col items-center justify-center gap-0.5 rounded-lg border bg-zinc-50 px-1 py-2 dark:bg-zinc-900/40 ${NEUTRAL_CELL_CLASSES}`}

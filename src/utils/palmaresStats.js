@@ -69,3 +69,12 @@ export function buildPalmares(matches, tournamentResults) {
     }))
     .sort((a, b) => b.items[0].ultimaFecha.localeCompare(a.items[0].ultimaFecha))
 }
+
+export function buildTitulos(temporadas) {
+  return temporadas
+    .map(({ temporada, items }) => ({
+      temporada,
+      items: items.filter((item) => item.resultado === 'Campeón'),
+    }))
+    .filter((grupo) => grupo.items.length > 0)
+}

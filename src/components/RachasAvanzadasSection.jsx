@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Accordion from './Accordion'
+import CondicionTabs from './CondicionTabs'
 import RachaCategoriaList from './RachaCategoriaList'
 import JugadoresRachaGolTable from './JugadoresRachaGolTable'
 import {
@@ -15,21 +16,86 @@ const FIELD_CLASSES =
 
 const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
 
-const CONDICIONES = [
-  { value: 'general', label: 'General' },
-  { value: 'local', label: 'Local' },
-  { value: 'visitante', label: 'Visitante' },
-]
-
 const TODOS = ''
+
+function filtrarPorCondicion(matches, condicion) {
+  return condicion === 'general' ? matches : matches.filter((m) => m.condicion === condicion)
+}
+
+function EquipoCategoriaAccordion({ matchesBase, categoriaKey, label, descripcion }) {
+  const [condicion, setCondicion] = useState('general')
+
+  const matchesCondicion = useMemo(() => filtrarPorCondicion(matchesBase, condicion), [matchesBase, condicion])
+  const data = useMemo(
+    () => buildRachasAvanzadas(matchesCondicion).equipo[categoriaKey],
+    [matchesCondicion, categoriaKey]
+  )
+
+  return (
+    <Accordion title={label} subtitle={`${descripcion} (${data.totalEncontradas})`} className="w-full">
+      <CondicionTabs value={condicion} onChange={setCondicion} />
+      <RachaCategoriaList ultimos5={data.ultimos5} mensajeVacio={data.mensajeVacio} categoria={categoriaKey} />
+    </Accordion>
+  )
+}
+
+function MinGolesCategoriaAccordion({ matchesBase, categoriaKey, label, buildCategoria, sufijo }) {
+  const [condicion, setCondicion] = useState('general')
+  const [minGoles, setMinGoles] = useState(1)
+
+  const matchesCondicion = useMemo(() => filtrarPorCondicion(matchesBase, condicion), [matchesBase, condicion])
+  const data = useMemo(
+    () => buildCategoria(matchesCondicion, minGoles),
+    [matchesCondicion, minGoles, buildCategoria]
+  )
+
+  return (
+    <Accordion
+      key={categoriaKey}
+      title={label}
+      subtitle={`Con al menos ${minGoles} gol${minGoles > 1 ? 'es' : ''} ${sufijo} (${data.totalEncontradas})`}
+      className="w-full"
+    >
+      <CondicionTabs value={condicion} onChange={setCondicion} />
+      <div className="flex gap-2">
+        {[1, 2, 3].map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => setMinGoles(n)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
+              minGoles === n
+                ? 'bg-lime-400 text-zinc-900'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+            }`}
+          >
+            +{n}
+          </button>
+        ))}
+      </div>
+      <RachaCategoriaList ultimos5={data.ultimos5} mensajeVacio={data.mensajeVacio} categoria={categoriaKey} />
+    </Accordion>
+  )
+}
+
+function JugadoresAccordion({ matchesBase }) {
+  const [condicion, setCondicion] = useState('general')
+
+  const matchesCondicion = useMemo(() => filtrarPorCondicion(matchesBase, condicion), [matchesBase, condicion])
+  const jugadores = useMemo(() => buildRachasAvanzadas(matchesCondicion).jugadores, [matchesCondicion])
+
+  return (
+    <Accordion title="Jugadores en Racha Goleadora" className="w-full">
+      <CondicionTabs value={condicion} onChange={setCondicion} />
+      <JugadoresRachaGolTable rows={jugadores} />
+    </Accordion>
+  )
+}
 
 function RachasAvanzadasSection({ matches, allMatches }) {
   const [clubFiltro, setClubFiltro] = useState(TODOS)
-  const [condicion, setCondicion] = useState('general')
   const [torneoFiltro, setTorneoFiltro] = useState(TODOS)
   const [capitanFiltro, setCapitanFiltro] = useState(TODOS)
-  const [anotadoraMinGoles, setAnotadoraMinGoles] = useState(1)
-  const [recibeGolesMinGoles, setRecibeGolesMinGoles] = useState(1)
 
   const baseMatches = allMatches || matches
 
@@ -62,26 +128,13 @@ function RachasAvanzadasSection({ matches, allMatches }) {
   const torneoEfectivo = torneoFiltro && torneos.includes(torneoFiltro) ? torneoFiltro : TODOS
   const capitanEfectivo = capitanFiltro && capitanes.includes(capitanFiltro) ? capitanFiltro : TODOS
 
-  const matchesFiltrados = useMemo(() => {
+  const matchesBase = useMemo(() => {
     return matchesAmbito.filter((m) => {
       if (torneoEfectivo && m.torneo !== torneoEfectivo) return false
       if (capitanEfectivo && m.capitanNombre !== capitanEfectivo) return false
-      if (condicion !== 'general' && m.condicion !== condicion) return false
       return true
     })
-  }, [matchesAmbito, torneoEfectivo, capitanEfectivo, condicion])
-
-  const { equipo, jugadores } = useMemo(() => buildRachasAvanzadas(matchesFiltrados), [matchesFiltrados])
-
-  const anotadora = useMemo(
-    () => buildAnotadoraCategoria(matchesFiltrados, anotadoraMinGoles),
-    [matchesFiltrados, anotadoraMinGoles]
-  )
-
-  const recibeGoles = useMemo(
-    () => buildRecibeGolesCategoria(matchesFiltrados, recibeGolesMinGoles),
-    [matchesFiltrados, recibeGolesMinGoles]
-  )
+  }, [matchesAmbito, torneoEfectivo, capitanEfectivo])
 
   return (
     <Accordion title="Rachas Estadísticas Avanzadas" subtitle="Rachas récord y actuales del equipo y jugadores">
@@ -128,24 +181,7 @@ function RachasAvanzadasSection({ matches, allMatches }) {
         </div>
       </div>
 
-      <div className="flex overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-        {CONDICIONES.map(({ value, label }) => (
-          <button
-            key={value}
-            type="button"
-            onClick={() => setCondicion(value)}
-            className={`flex-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
-              condicion === value
-                ? 'bg-lime-400 text-zinc-900'
-                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {matchesFiltrados.length === 0 ? (
+      {matchesBase.length === 0 ? (
         <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
           No hay partidos para esta combinación de filtros.
         </p>
@@ -155,78 +191,43 @@ function RachasAvanzadasSection({ matches, allMatches }) {
             {CATEGORIAS_EQUIPO.map(({ key, label, descripcion }) => {
               if (key === 'anotadora') {
                 return (
-                  <Accordion
+                  <MinGolesCategoriaAccordion
                     key={key}
-                    title={label}
-                    subtitle={`Convirtiendo al menos ${anotadoraMinGoles} gol${anotadoraMinGoles > 1 ? 'es' : ''} (${anotadora.totalEncontradas})`}
-                    className="w-full"
-                  >
-                    <div className="flex gap-2">
-                      {[1, 2, 3].map((n) => (
-                        <button
-                          key={n}
-                          type="button"
-                          onClick={() => setAnotadoraMinGoles(n)}
-                          className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
-                            anotadoraMinGoles === n
-                              ? 'bg-lime-400 text-zinc-900'
-                              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                          }`}
-                        >
-                          +{n}
-                        </button>
-                      ))}
-                    </div>
-                    <RachaCategoriaList ultimos5={anotadora.ultimos5} mensajeVacio={anotadora.mensajeVacio} categoria={key} />
-                  </Accordion>
+                    matchesBase={matchesBase}
+                    categoriaKey={key}
+                    label={label}
+                    buildCategoria={buildAnotadoraCategoria}
+                    sufijo="convertidos"
+                  />
                 )
               }
 
               if (key === 'recibeGoles') {
                 return (
-                  <Accordion
+                  <MinGolesCategoriaAccordion
                     key={key}
-                    title={label}
-                    subtitle={`Con al menos ${recibeGolesMinGoles} gol${recibeGolesMinGoles > 1 ? 'es' : ''} en contra (${recibeGoles.totalEncontradas})`}
-                    className="w-full"
-                  >
-                    <div className="flex gap-2">
-                      {[1, 2, 3].map((n) => (
-                        <button
-                          key={n}
-                          type="button"
-                          onClick={() => setRecibeGolesMinGoles(n)}
-                          className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition ${
-                            recibeGolesMinGoles === n
-                              ? 'bg-lime-400 text-zinc-900'
-                              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                          }`}
-                        >
-                          +{n}
-                        </button>
-                      ))}
-                    </div>
-                    <RachaCategoriaList ultimos5={recibeGoles.ultimos5} mensajeVacio={recibeGoles.mensajeVacio} categoria={key} />
-                  </Accordion>
+                    matchesBase={matchesBase}
+                    categoriaKey={key}
+                    label={label}
+                    buildCategoria={buildRecibeGolesCategoria}
+                    sufijo="en contra"
+                  />
                 )
               }
 
               return (
-                <Accordion
+                <EquipoCategoriaAccordion
                   key={key}
-                  title={label}
-                  subtitle={`${descripcion} (${equipo[key].totalEncontradas})`}
-                  className="w-full"
-                >
-                  <RachaCategoriaList ultimos5={equipo[key].ultimos5} mensajeVacio={equipo[key].mensajeVacio} categoria={key} />
-                </Accordion>
+                  matchesBase={matchesBase}
+                  categoriaKey={key}
+                  label={label}
+                  descripcion={descripcion}
+                />
               )
             })}
           </div>
 
-          <Accordion title="Jugadores en Racha Goleadora" className="w-full">
-            <JugadoresRachaGolTable rows={jugadores} />
-          </Accordion>
+          <JugadoresAccordion matchesBase={matchesBase} />
         </>
       )}
     </Accordion>

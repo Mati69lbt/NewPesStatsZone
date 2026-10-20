@@ -22,6 +22,7 @@ import RachasSequiaPage from './pages/RachasSequiaPage'
 import VillanosPage from './pages/VillanosPage'
 import ExpulsionesPage from './pages/ExpulsionesPage'
 import PalmaresPage from './pages/PalmaresPage'
+import TitulosPage from './pages/TitulosPage'
 import RecordPersonalPage from './pages/RecordPersonalPage'
 import GoleadoresAsistenciasGlobalPage from './pages/GoleadoresAsistenciasGlobalPage'
 
@@ -51,6 +52,7 @@ function App() {
         <Route path="/villanos" element={<VillanosPage />} />
         <Route path="/expulsiones" element={<ExpulsionesPage />} />
         <Route path="/palmares" element={<PalmaresPage />} />
+        <Route path="/palmares/campeonatos" element={<TitulosPage />} />
         <Route path="/record" element={<RecordPersonalPage />} />
         <Route path="/goleadores-global" element={<GoleadoresAsistenciasGlobalPage />} />
       </Routes>

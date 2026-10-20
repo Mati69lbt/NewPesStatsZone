@@ -55,6 +55,8 @@ function buildRows(matches, condicion) {
     const filtered = condicion === 'general' ? capitanMatches : capitanMatches.filter((m) => m.condicion === condicion)
     const stats = computeStats(filtered)
     const pct = stats.ptsPosibles > 0 ? Math.round((stats.pts / stats.ptsPosibles) * 100) : 0
+    const promGf = stats.pj > 0 ? stats.gf / stats.pj : 0
+    const promGc = stats.pj > 0 ? stats.gc / stats.pj : 0
     return {
       key: capitan,
       capitan,
@@ -62,6 +64,8 @@ function buildRows(matches, condicion) {
       years: yearRange(capitanMatches),
       ...stats,
       pct,
+      promGf,
+      promGc,
     }
   })
 }
@@ -146,34 +150,36 @@ function CapitanesResumenPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
-            <div>
-              <label className={LABEL_CLASSES}>Condición</label>
-              <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-                {CONDICIONES.map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setCondicion(value)}
-                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
-                      condicion === value
-                        ? 'bg-lime-400 text-zinc-900'
-                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
+          <div className="mx-auto flex w-fit max-w-full flex-col gap-4">
+            <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
+              <div>
+                <label className={LABEL_CLASSES}>Condición</label>
+                <div className="flex w-fit flex-wrap overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+                  {CONDICIONES.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setCondicion(value)}
+                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                        condicion === value
+                          ? 'bg-lime-400 text-zinc-900'
+                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className={LABEL_CLASSES}>Ordenar por</label>
+                <CapitanesResumenSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
               </div>
             </div>
 
-            <div>
-              <label className={LABEL_CLASSES}>Ordenar por</label>
-              <CapitanesResumenSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
-            </div>
+            <CapitanesResumenTable rows={sortedRows} />
           </div>
-
-          <CapitanesResumenTable rows={sortedRows} />
         </div>
       </main>
     </div>

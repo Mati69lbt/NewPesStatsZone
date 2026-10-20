@@ -28,21 +28,23 @@ function CapitanCard({ capitan, stats }) {
     <div className="w-full max-w-full overflow-hidden rounded-xl border border-zinc-200 bg-white p-2 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:p-4">
       <h3 className="mb-3 text-sm font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">{capitan}</h3>
 
-      <table className="w-full table-fixed border-collapse text-[10px] sm:text-xs">
+      <table className="w-full table-fixed border-collapse text-[9px] sm:text-xs">
         <colgroup>
-          <col className="w-[16%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
-          <col className="w-[10%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
-          <col className="w-[10%]" />
-          <col className="w-[15%]" />
+          <col className="w-[18%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[8%]" />
+          <col className="w-[6%]" />
+          <col className="w-[6%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
+          <col className="w-[14%]" />
         </colgroup>
         <thead>
-          <tr className="text-[8px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 sm:text-[9px]">
+          <tr className="text-[7px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 sm:text-[9px]">
             <th className="px-1 py-1 text-left sm:py-1.5">Tipo</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">PJ</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">G</th>
@@ -51,6 +53,8 @@ function CapitanCard({ capitan, stats }) {
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">G/P</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">GF</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">GC</th>
+            <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">P.GF</th>
+            <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">P.GC</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">DIF</th>
             <th className="px-0.5 py-1 sm:px-1 sm:py-1.5">PTS/EF</th>
           </tr>
@@ -59,6 +63,8 @@ function CapitanCard({ capitan, stats }) {
           {FILAS.map(({ key, label }) => {
             const s = stats[key]
             const efec = s.ptsPosibles > 0 ? Math.round((s.pts / s.ptsPosibles) * 100) : 0
+            const promGf = s.pj > 0 ? (s.gf / s.pj).toFixed(2) : '0.00'
+            const promGc = s.pj > 0 ? (s.gc / s.pj).toFixed(2) : '0.00'
             return (
               <tr key={key} className="border-t border-zinc-100 text-center dark:border-zinc-700/50">
                 <td className="truncate px-1 py-1 text-left font-semibold text-zinc-700 dark:text-zinc-200 sm:py-1.5">
@@ -73,6 +79,8 @@ function CapitanCard({ capitan, stats }) {
                 </td>
                 <td className="px-0.5 py-1 text-zinc-600 dark:text-zinc-300 sm:px-1 sm:py-1.5">{s.gf}</td>
                 <td className="px-0.5 py-1 text-zinc-600 dark:text-zinc-300 sm:px-1 sm:py-1.5">{s.gc}</td>
+                <td className="px-0.5 py-1 text-zinc-600 dark:text-zinc-300 sm:px-1 sm:py-1.5">{promGf}</td>
+                <td className="px-0.5 py-1 text-zinc-600 dark:text-zinc-300 sm:px-1 sm:py-1.5">{promGc}</td>
                 <td className="px-0.5 py-1 sm:px-1 sm:py-1.5">
                   <ToneBadge value={s.df} />
                 </td>

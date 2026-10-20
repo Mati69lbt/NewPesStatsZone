@@ -43,9 +43,21 @@ function Badge({ value, label, labelPosition }) {
   )
 }
 
+function formatEfectividad(pts, ptsPosibles) {
+  if (ptsPosibles === 0) return '0'
+  const valor = (pts / ptsPosibles) * 100
+  return Number.isInteger(valor) ? `${valor}` : valor.toFixed(1)
+}
+
+function formatPromedio(valor) {
+  return valor.toFixed(2)
+}
+
 function VersusStatCell({ label, stats, showPoints = false, variant = 'general' }) {
   const { g, e, p, pj, gf, gc, df, gp, pts, ptsPosibles } = stats
   const titleClass = VARIANT_TITLES[variant] || VARIANT_TITLES.general
+  const promGf = pj > 0 ? gf / pj : 0
+  const promGc = pj > 0 ? gc / pj : 0
 
   if (pj === 0) {
     return (
@@ -82,14 +94,22 @@ function VersusStatCell({ label, stats, showPoints = false, variant = 'general' 
         <span className="text-red-400">GC {gc}</span>
       </p>
       {showPoints && (
-        <p className="mt-2 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-2 text-sm font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
-          <span>
-            {pts} / {ptsPosibles} -
-          </span>
-          <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-            {ptsPosibles > 0 ? Math.round((pts / ptsPosibles) * 100) : 0}%
-          </span>
-        </p>
+        <>
+          <p className="mt-2 flex items-center justify-center gap-1 border-t border-zinc-900/5 pt-2 text-xs font-bold text-zinc-700 dark:border-white/5 dark:text-zinc-200">
+            <span>
+              PTS: {pts} / {ptsPosibles}
+            </span>
+            <span className="text-zinc-500 dark:text-zinc-400">·</span>
+            <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              {formatEfectividad(pts, ptsPosibles)}%
+            </span>
+          </p>
+          <p className="mt-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="text-sky-400">{formatPromedio(promGf)} GF</span>
+            <span> · </span>
+            <span className="text-red-400">{formatPromedio(promGc)} GC</span>
+          </p>
+        </>
       )}
     </div>
   )

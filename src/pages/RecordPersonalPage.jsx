@@ -24,6 +24,8 @@ const HEADERS = [
   'G/P',
   'GOLES A FAVOR',
   'GOLES EN CONTRA',
+  'PROM GF',
+  'PROM GC',
   'DIF. DE GOLES',
   'PTS / EFEC',
 ]
@@ -118,7 +120,7 @@ function RecordPersonalPage() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="hidden grid-cols-[140px_repeat(9,minmax(0,1fr))] gap-2 px-2 md:grid">
+            <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] gap-1.5 px-2 md:grid">
               <span></span>
               {HEADERS.map((h) => (
                 <span

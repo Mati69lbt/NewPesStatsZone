@@ -72,6 +72,19 @@ function MejoresAniosTable({
     return [...rows].sort((a, b) => factor * (columna.getValue(a) - columna.getValue(b)))
   }, [rows, sortKey, sortDir, columnas])
 
+  const periodoActual = useMemo(() => {
+    let actual = null
+    let actualKey = -Infinity
+    for (const row of rows) {
+      const key = Number.parseInt(row.periodo, 10)
+      if (!Number.isNaN(key) && key > actualKey) {
+        actualKey = key
+        actual = row.periodo
+      }
+    }
+    return actual
+  }, [rows])
+
   if (rows.length === 0) {
     return (
       <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
@@ -132,7 +145,13 @@ function MejoresAniosTable({
                 <td className="w-8 px-1 py-2 text-center md:w-10 md:px-3 md:py-3">
                   <Posicion index={index} />
                 </td>
-                <td className="whitespace-nowrap px-1 py-2 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
+                <td
+                  className={`whitespace-nowrap px-1 py-2 text-left text-xs font-bold md:px-3 md:py-3 md:text-sm ${
+                    row.periodo === periodoActual
+                      ? 'text-lime-500 dark:text-lime-400'
+                      : 'text-zinc-900 dark:text-zinc-100'
+                  }`}
+                >
                   {row.periodo}
                 </td>
                 <td className={`${TD_NUM_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>

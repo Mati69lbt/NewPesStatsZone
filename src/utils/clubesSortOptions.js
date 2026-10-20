@@ -8,5 +8,7 @@ export const SORT_OPTIONS = [
   { key: 'gf', label: 'GF' },
   { key: 'gc', label: 'GC' },
   { key: 'df', label: 'DIF' },
+  { key: 'promGf', label: 'PROM GF' },
+  { key: 'promGc', label: 'PROM GC' },
   { key: 'pct', label: '%' },
 ]

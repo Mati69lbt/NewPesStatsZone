@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import PalmaresCard from '../components/PalmaresCard'
@@ -47,6 +48,13 @@ function PalmaresPage() {
           <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
             Historial de títulos y participaciones
           </p>
+
+          <Link
+            to="/palmares/campeonatos"
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-amber-500 shadow transition hover:bg-amber-500/20 dark:text-amber-400"
+          >
+            🏆 Ver Títulos Obtenidos
+          </Link>
         </div>
 
         {temporadas.length === 0 ? (
