@@ -178,7 +178,7 @@ function CapitanesResumenPage() {
               </div>
             </div>
 
-            <CapitanesResumenTable rows={sortedRows} />
+            <CapitanesResumenTable rows={sortedRows} sortKey={sortKey} />
           </div>
         </div>
       </main>

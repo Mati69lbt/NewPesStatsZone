@@ -51,7 +51,7 @@ function NextMatchCard({ match, temporada }) {
         <span className="truncate">CAP: {match.capitanNombre || '-'}</span>
       </div>
 
-      <div className="rounded-xl bg-zinc-100 p-3 text-center dark:bg-zinc-800">
+      <div className={`rounded-xl border bg-zinc-100 p-3 text-center dark:bg-zinc-800 ${BORDER_CLASSES[resultado]}`}>
         <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
           {nombreLocal}{' '}
           <span className="text-lg font-black">

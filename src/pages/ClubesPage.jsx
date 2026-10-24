@@ -150,7 +150,7 @@ function ClubesPage() {
             </div>
           </div>
 
-          <ClubesTable rows={sortedRows} />
+          <ClubesTable rows={sortedRows} sortKey={sortKey} />
         </div>
       </main>
     </div>

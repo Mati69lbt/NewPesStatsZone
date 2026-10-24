@@ -16,7 +16,9 @@ function StatBadge({ value }) {
   )
 }
 
-function CapitanesResumenTable({ rows }) {
+const HIGHLIGHT_CLASSES = 'text-amber-400'
+
+function CapitanesResumenTable({ rows, sortKey }) {
   if (rows.length === 0) {
     return (
       <p className="w-full text-center text-sm text-zinc-500 dark:text-zinc-400">
@@ -25,20 +27,22 @@ function CapitanesResumenTable({ rows }) {
     )
   }
 
+  const isActive = (key) => sortKey === key
+
   return (
-    <div className="w-fit max-w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
+    <div className="mx-auto w-fit max-w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
       <div className="overflow-x-auto">
         <table className="w-auto border-collapse text-xs">
             <thead>
               <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[9px] font-bold uppercase tracking-wide text-zinc-400">
                 <th className="px-2 py-1.5">Capitán</th>
-                <th className="px-1 py-1.5 text-center">PJ</th>
-                <th className="px-1 py-1.5 text-center">G</th>
-                <th className="px-1 py-1.5 text-center">E</th>
-                <th className="px-1 py-1.5 text-center">P</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('pj') ? HIGHLIGHT_CLASSES : ''}`}>PJ</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : ''}`}>G</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : ''}`}>E</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : ''}`}>P</th>
                 <th className="px-1 py-1.5 text-center">G/P</th>
-                <th className="px-1 py-1.5 text-center">GF</th>
-                <th className="px-1 py-1.5 text-center">GC</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : ''}`}>GF</th>
+                <th className={`px-1 py-1.5 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : ''}`}>GC</th>
                 <th className="px-1 py-1.5 text-center">DIF</th>
                 <th className="px-1 py-1.5 text-center">%</th>
                 <th className="px-2 py-1.5 text-center">Prom GF/GC</th>
@@ -57,15 +61,31 @@ function CapitanesResumenTable({ rows }) {
                     <p className="text-[9px] text-zinc-500">{row.club || 'Sin club'}</p>
                     <p className="text-[8px] text-zinc-600">{row.years || '—'}</p>
                   </td>
-                  <td className="px-1 py-1.5 text-center font-semibold text-zinc-200">{row.pj}</td>
-                  <td className="px-1 py-1.5 text-center text-zinc-300">{row.g}</td>
-                  <td className="px-1 py-1.5 text-center text-zinc-300">{row.e}</td>
-                  <td className="px-1 py-1.5 text-center text-zinc-300">{row.p}</td>
+                  <td
+                    className={`px-1 py-1.5 text-center font-semibold ${
+                      isActive('pj') ? HIGHLIGHT_CLASSES : 'text-zinc-200'
+                    }`}
+                  >
+                    {row.pj}
+                  </td>
+                  <td className={`px-1 py-1.5 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.g}
+                  </td>
+                  <td className={`px-1 py-1.5 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.e}
+                  </td>
+                  <td className={`px-1 py-1.5 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.p}
+                  </td>
                   <td className="px-1 py-1.5 text-center">
                     <StatBadge value={row.gp} />
                   </td>
-                  <td className="px-1 py-1.5 text-center text-zinc-300">{row.gf}</td>
-                  <td className="px-1 py-1.5 text-center text-zinc-300">{row.gc}</td>
+                  <td className={`px-1 py-1.5 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.gf}
+                  </td>
+                  <td className={`px-1 py-1.5 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.gc}
+                  </td>
                   <td className="px-1 py-1.5 text-center">
                     <StatBadge value={row.df} />
                   </td>
@@ -73,11 +93,21 @@ function CapitanesResumenTable({ rows }) {
                     <p className="text-xs font-bold text-emerald-400">
                       {row.pts} / {row.ptsPosibles}
                     </p>
-                    <p className="text-[9px] font-semibold text-zinc-500">{row.pct}%</p>
+                    <p
+                      className={`text-[9px] font-semibold ${
+                        isActive('pct') ? HIGHLIGHT_CLASSES : 'text-zinc-500'
+                      }`}
+                    >
+                      {row.pct}%
+                    </p>
                   </td>
                   <td className="px-2 py-1.5 text-center">
-                    <p className="text-emerald-400">{row.promGf.toFixed(2)}</p>
-                    <p className="text-rose-400">{row.promGc.toFixed(2)}</p>
+                    <p className={isActive('promGf') ? HIGHLIGHT_CLASSES : 'text-emerald-400'}>
+                      {row.promGf.toFixed(2)}
+                    </p>
+                    <p className={isActive('promGc') ? HIGHLIGHT_CLASSES : 'text-rose-400'}>
+                      {row.promGc.toFixed(2)}
+                    </p>
                   </td>
                 </tr>
               ))}

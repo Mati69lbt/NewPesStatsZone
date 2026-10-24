@@ -16,11 +16,19 @@ function StatBadge({ value }) {
   )
 }
 
-function StatMini({ label, value }) {
+const HIGHLIGHT_CLASSES = 'text-amber-400'
+
+function StatMini({ label, value, active }) {
   return (
     <div className="flex flex-shrink-0 flex-col items-center gap-1">
       <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">{label}</span>
-      <span className="flex h-7 items-center justify-center text-xs font-bold text-zinc-200">{value}</span>
+      <span
+        className={`flex h-7 items-center justify-center text-xs font-bold ${
+          active ? HIGHLIGHT_CLASSES : 'text-zinc-200'
+        }`}
+      >
+        {value}
+      </span>
     </div>
   )
 }
@@ -29,17 +37,19 @@ function formatProm(value) {
   return value.toFixed(2)
 }
 
-function PromGfGc({ promGf, promGc }) {
+function PromGfGc({ promGf, promGc, highlightGf, highlightGc }) {
   return (
     <span className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-bold">
-      <span className="text-emerald-400">{formatProm(promGf)}</span>
+      <span className={highlightGf ? HIGHLIGHT_CLASSES : 'text-emerald-400'}>{formatProm(promGf)}</span>
       <span className="text-zinc-600">/</span>
-      <span className="text-rose-400">{formatProm(promGc)}</span>
+      <span className={highlightGc ? HIGHLIGHT_CLASSES : 'text-rose-400'}>{formatProm(promGc)}</span>
     </span>
   )
 }
 
-function ClubCard({ row, index }) {
+function ClubCard({ row, index, sortKey }) {
+  const isActive = (key) => sortKey === key
+
   return (
     <div className="w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3">
       <div className="flex items-center justify-between gap-2">
@@ -54,7 +64,11 @@ function ClubCard({ row, index }) {
           <p className="text-base font-bold text-emerald-400">
             {row.pts} / {row.ptsPosibles}
           </p>
-          <span className="inline-flex items-center rounded-full border border-purple-500 bg-purple-500/10 px-2 py-0.5 text-xs font-extrabold text-purple-400">
+          <span
+            className={`inline-flex items-center rounded-full border border-purple-500 bg-purple-500/10 px-2 py-0.5 text-xs font-extrabold ${
+              isActive('pct') ? HIGHLIGHT_CLASSES : 'text-purple-400'
+            }`}
+          >
             {row.pct}%
           </span>
         </div>
@@ -62,16 +76,16 @@ function ClubCard({ row, index }) {
 
       <div className="mt-3 overflow-x-auto border-t border-zinc-800 pt-3">
         <div className="flex w-max min-w-full items-start justify-evenly gap-3">
-          <StatMini label="PJ" value={row.pj} />
-          <StatMini label="G" value={row.g} />
-          <StatMini label="E" value={row.e} />
-          <StatMini label="P" value={row.p} />
+          <StatMini label="PJ" value={row.pj} active={isActive('pj')} />
+          <StatMini label="G" value={row.g} active={isActive('g')} />
+          <StatMini label="E" value={row.e} active={isActive('e')} />
+          <StatMini label="P" value={row.p} active={isActive('p')} />
           <div className="flex flex-shrink-0 flex-col items-center gap-1">
             <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">G/P</span>
             <StatBadge value={row.gp} />
           </div>
-          <StatMini label="GF" value={row.gf} />
-          <StatMini label="GC" value={row.gc} />
+          <StatMini label="GF" value={row.gf} active={isActive('gf')} />
+          <StatMini label="GC" value={row.gc} active={isActive('gc')} />
           <div className="flex flex-shrink-0 flex-col items-center gap-1">
             <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">DIF</span>
             <StatBadge value={row.df} />
@@ -81,7 +95,12 @@ function ClubCard({ row, index }) {
               PROM GF/GC
             </span>
             <span className="flex h-7 items-center justify-center">
-              <PromGfGc promGf={row.promGf} promGc={row.promGc} />
+              <PromGfGc
+                promGf={row.promGf}
+                promGc={row.promGc}
+                highlightGf={isActive('promGf')}
+                highlightGc={isActive('promGc')}
+              />
             </span>
           </div>
         </div>
@@ -90,7 +109,8 @@ function ClubCard({ row, index }) {
   )
 }
 
-function ClubesTable({ rows }) {
+function ClubesTable({ rows, sortKey }) {
+  const isActive = (key) => sortKey === key
   if (rows.length === 0) {
     return (
       <p className="w-full text-center text-sm text-zinc-500 dark:text-zinc-400">
@@ -103,7 +123,7 @@ function ClubesTable({ rows }) {
     <>
       <div className="flex w-full flex-col gap-3 sm:hidden">
         {rows.map((row, index) => (
-          <ClubCard key={row.key} row={row} index={index} />
+          <ClubCard key={row.key} row={row} index={index} sortKey={sortKey} />
         ))}
       </div>
 
@@ -114,13 +134,13 @@ function ClubesTable({ rows }) {
               <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[11px] font-bold uppercase tracking-wide text-zinc-400">
                 <th className="px-2 py-3">#</th>
                 <th className="px-2 py-3">Club</th>
-                <th className="px-1.5 py-3 text-center">PJ</th>
-                <th className="px-1.5 py-3 text-center">G</th>
-                <th className="px-1.5 py-3 text-center">E</th>
-                <th className="px-1.5 py-3 text-center">P</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('pj') ? HIGHLIGHT_CLASSES : ''}`}>PJ</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : ''}`}>G</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : ''}`}>E</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : ''}`}>P</th>
                 <th className="px-1.5 py-3 text-center">G/P</th>
-                <th className="px-1.5 py-3 text-center">GF</th>
-                <th className="px-1.5 py-3 text-center">GC</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : ''}`}>GF</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : ''}`}>GC</th>
                 <th className="px-1.5 py-3 text-center">DIF</th>
                 <th className="px-1.5 py-3 text-center">PROM GF/GC</th>
                 <th className="px-2 py-3 text-center">%</th>
@@ -137,26 +157,53 @@ function ClubesTable({ rows }) {
                     <p className="font-bold text-zinc-100">{row.club}</p>
                     <p className="text-xs text-zinc-500">{row.temporada}</p>
                   </td>
-                  <td className="px-1.5 py-3 text-center font-semibold text-zinc-200">{row.pj}</td>
-                  <td className="px-1.5 py-3 text-center text-zinc-300">{row.g}</td>
-                  <td className="px-1.5 py-3 text-center text-zinc-300">{row.e}</td>
-                  <td className="px-1.5 py-3 text-center text-zinc-300">{row.p}</td>
+                  <td
+                    className={`px-1.5 py-3 text-center font-semibold ${
+                      isActive('pj') ? HIGHLIGHT_CLASSES : 'text-zinc-200'
+                    }`}
+                  >
+                    {row.pj}
+                  </td>
+                  <td className={`px-1.5 py-3 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.g}
+                  </td>
+                  <td className={`px-1.5 py-3 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.e}
+                  </td>
+                  <td className={`px-1.5 py-3 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.p}
+                  </td>
                   <td className="px-1.5 py-3 text-center">
                     <StatBadge value={row.gp} />
                   </td>
-                  <td className="px-1.5 py-3 text-center text-zinc-300">{row.gf}</td>
-                  <td className="px-1.5 py-3 text-center text-zinc-300">{row.gc}</td>
+                  <td className={`px-1.5 py-3 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.gf}
+                  </td>
+                  <td className={`px-1.5 py-3 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
+                    {row.gc}
+                  </td>
                   <td className="px-1.5 py-3 text-center">
                     <StatBadge value={row.df} />
                   </td>
                   <td className="px-1.5 py-3 text-center">
-                    <PromGfGc promGf={row.promGf} promGc={row.promGc} />
+                    <PromGfGc
+                      promGf={row.promGf}
+                      promGc={row.promGc}
+                      highlightGf={isActive('promGf')}
+                      highlightGc={isActive('promGc')}
+                    />
                   </td>
                   <td className="px-3 py-3 text-center">
                     <p className="text-sm font-bold text-emerald-400">
                       {row.pts} / {row.ptsPosibles}
                     </p>
-                    <p className="text-[10px] font-semibold text-zinc-500">{row.pct}%</p>
+                    <p
+                      className={`text-[10px] font-semibold ${
+                        isActive('pct') ? HIGHLIGHT_CLASSES : 'text-zinc-500'
+                      }`}
+                    >
+                      {row.pct}%
+                    </p>
                   </td>
                 </tr>
               ))}
