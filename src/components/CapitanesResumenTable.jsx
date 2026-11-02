@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+import { buildClubColorMap } from '../utils/clubColors'
+
 function getBadgeClasses(value) {
   if (value > 0) return 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
   if (value < 0) return 'border-rose-500 bg-rose-500/10 text-rose-400'
@@ -28,6 +31,7 @@ function CapitanesResumenTable({ rows, sortKey }) {
   }
 
   const isActive = (key) => sortKey === key
+  const clubColors = useMemo(() => buildClubColorMap(rows.map((row) => row.club)), [rows])
 
   return (
     <div className="mx-auto w-fit max-w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
@@ -58,7 +62,16 @@ function CapitanesResumenTable({ rows, sortKey }) {
                     <p className="font-bold text-zinc-100">
                       {index + 1} - {row.capitan}
                     </p>
-                    <p className="text-[9px] text-zinc-500">{row.club || 'Sin club'}</p>
+                    {row.club ? (
+                    <p
+                      className="inline-block rounded px-1 py-0.5 text-[9px] font-semibold"
+                      style={{ color: clubColors.get(row.club), backgroundColor: `${clubColors.get(row.club)}1a` }}
+                    >
+                      {row.club}
+                    </p>
+                  ) : (
+                    <p className="text-[9px] text-zinc-500">Sin club</p>
+                  )}
                     <p className="text-[8px] text-zinc-600">{row.years || '—'}</p>
                   </td>
                   <td

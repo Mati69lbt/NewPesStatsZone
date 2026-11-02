@@ -1,5 +1,6 @@
 import { formatDateDisplay } from '../utils/dateFormat'
 import { RESULT_CLASSES, buildGoleadoresLabel, getMatchResultado, getScoreboard } from '../utils/matchDisplay'
+import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
 
 const BORDER_CLASSES = {
   victoria: 'border-emerald-500/70 dark:border-emerald-500/60',
@@ -53,17 +54,17 @@ function NextMatchCard({ match, temporada }) {
 
       <div className={`rounded-xl border bg-zinc-100 p-3 text-center dark:bg-zinc-800 ${BORDER_CLASSES[resultado]}`}>
         <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-          {nombreLocal}{' '}
+          <span className={nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreLocal}</span>{' '}
           <span className="text-lg font-black">
             {golesLocal} - {golesVisitante}
           </span>{' '}
-          {nombreVisitante}
+          <span className={nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreVisitante}</span>
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div>
-          <p className="mb-1 truncate font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          <p className={`mb-1 truncate font-bold uppercase tracking-wide ${ACTIVE_CLUB_TEXT_CLASS}`}>
             {match.club}
           </p>
           <p className="text-zinc-700 dark:text-zinc-300">{goleadoresClub}</p>

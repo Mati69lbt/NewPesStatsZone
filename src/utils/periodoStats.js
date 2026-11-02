@@ -46,9 +46,14 @@ export function buildJugadoresRows(matches) {
     const incidencias = (match.incidenciasClub ?? []).filter((i) => i.goles > 0 || i.asistencias > 0)
     for (const incidencia of incidencias) {
       const key = incidencia.id ?? incidencia.nombre
-      const row = byPlayer.get(key) ?? { nombre: incidencia.nombre, goles: 0, asistencias: 0 }
+      const row =
+        byPlayer.get(key) ?? { nombre: incidencia.nombre, goles: 0, asistencias: 0, x2Goles: 0, x3Goles: 0, x2Asistencias: 0, x3Asistencias: 0 }
       row.goles += incidencia.goles ?? 0
       row.asistencias += incidencia.asistencias ?? 0
+      if (incidencia.goles === 2) row.x2Goles += 1
+      if (incidencia.goles >= 3) row.x3Goles += 1
+      if (incidencia.asistencias === 2) row.x2Asistencias += 1
+      if (incidencia.asistencias >= 3) row.x3Asistencias += 1
       byPlayer.set(key, row)
 
       // Si el jugador no figuró en titulares/suplentes pero registró una
@@ -67,6 +72,10 @@ export function buildJugadoresRows(matches) {
       pj,
       goles: row.goles,
       asistencias: row.asistencias,
+      x2Goles: row.x2Goles,
+      x3Goles: row.x3Goles,
+      x2Asistencias: row.x2Asistencias,
+      x3Asistencias: row.x3Asistencias,
       promedioGoles: pj > 0 ? row.goles / pj : 0,
       promedioAsistencias: pj > 0 ? row.asistencias / pj : 0,
     }

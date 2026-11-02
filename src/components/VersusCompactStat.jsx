@@ -18,7 +18,7 @@ function VersusCompactStat({ stats, onClick }) {
       <button
         type="button"
         onClick={onClick}
-        className="flex h-full min-w-[120px] items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 py-3 transition hover:border-lime-400/60 dark:border-zinc-700/50 dark:bg-zinc-800/40"
+        className="inline-flex h-full min-w-[120px] items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 py-3 transition hover:border-lime-400/60 dark:border-zinc-700/50 dark:bg-zinc-800/40"
       >
         <span className="text-base font-bold text-zinc-300 dark:text-zinc-600">—</span>
       </button>

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { buildJugadoresRows, getRowsForMetrica } from "../utils/periodoStats";
 import EstadisticaPeriodoTable from "./EstadisticaPeriodoTable";
 
-function EstadisticaPeriodoGroup({ periodo, matches, defaultOpen }) {
+function EstadisticaPeriodoGroup({ periodo, matches, defaultOpen, clubActivo }) {
   const [open, setOpen] = useState(defaultOpen);
   const rows = useMemo(() => buildJugadoresRows(matches), [matches]);
   const goleadoresRows = useMemo(
@@ -75,11 +75,13 @@ function EstadisticaPeriodoGroup({ periodo, matches, defaultOpen }) {
             titulo="Goleadores"
             rows={goleadoresRows}
             metrica="goleadores"
+            clubActivo={clubActivo}
           />
           <EstadisticaPeriodoTable
             titulo="Asistencias"
             rows={asistenciasRows}
             metrica="asistencias"
+            clubActivo={clubActivo}
           />
         </div>
       )}

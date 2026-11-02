@@ -12,7 +12,7 @@ function buildPlayerPeriodRows(matches, formato) {
     const key = `${nombre}__${periodo}`
     let row = byKey.get(key)
     if (!row) {
-      row = { nombre, periodo, club: new Set(), pj: 0, goles: 0, asistencias: 0 }
+      row = { nombre, periodo, club: new Set(), pj: 0, goles: 0, asistencias: 0, dobletes: 0, hattricks: 0 }
       byKey.set(key, row)
     }
     return row
@@ -42,6 +42,8 @@ function buildPlayerPeriodRows(matches, formato) {
       }
       row.goles += incidencia.goles > 0 ? incidencia.goles : 0
       row.asistencias += incidencia.asistencias > 0 ? incidencia.asistencias : 0
+      if (incidencia.goles === 2) row.dobletes += 1
+      if (incidencia.goles >= 3) row.hattricks += 1
       if (match.club) row.club.add(match.club)
     }
   }
@@ -53,6 +55,8 @@ function buildPlayerPeriodRows(matches, formato) {
     pj: row.pj,
     goles: row.goles,
     asistencias: row.asistencias,
+    dobletes: row.dobletes,
+    hattricks: row.hattricks,
     promedio: row.pj > 0 ? row.goles / row.pj : 0,
     promedioAsistencias: row.pj > 0 ? row.asistencias / row.pj : 0,
   }))

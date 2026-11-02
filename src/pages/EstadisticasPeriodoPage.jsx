@@ -166,6 +166,7 @@ function EstadisticasPeriodoPage() {
                 periodo={p.periodo}
                 matches={p.matches}
                 defaultOpen={index === 0}
+                clubActivo={club}
               />
             ))}
           </div>

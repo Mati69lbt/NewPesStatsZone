@@ -1,3 +1,5 @@
+import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
+
 function formatPromedio(value) {
   return value.toFixed(2)
 }
@@ -5,8 +7,15 @@ function formatPromedio(value) {
 const NUM_TH_CLASSES = 'w-8 px-1.5 py-1.5 text-center md:w-10 md:px-2 md:py-3'
 const NUM_TD_CLASSES = 'w-8 px-1.5 py-1.5 text-center text-xs md:w-10 md:px-2 md:py-3 md:text-sm'
 
-function AsistenciasTable({ rows }) {
-  const totals = rows.reduce((acc, row) => ({ asistencias: acc.asistencias + row.asistencias }), { asistencias: 0 })
+function AsistenciasTable({ rows, highlightActivo = false }) {
+  const totals = rows.reduce(
+    (acc, row) => ({
+      asistencias: acc.asistencias + row.asistencias,
+      x2: acc.x2 + row.x2,
+      x3: acc.x3 + row.x3,
+    }),
+    { asistencias: 0, x2: 0, x3: 0 }
+  )
 
   if (rows.length === 0) {
     return (
@@ -26,6 +35,8 @@ function AsistenciasTable({ rows }) {
               <th className="px-1.5 py-1.5 text-left md:px-3 md:py-3">Jugador</th>
               <th className={NUM_TH_CLASSES}>PJ</th>
               <th className={NUM_TH_CLASSES}>A</th>
+              <th className={NUM_TH_CLASSES}>DOB</th>
+              <th className={NUM_TH_CLASSES}>TRI</th>
               <th className={NUM_TH_CLASSES}>P</th>
             </tr>
           </thead>
@@ -38,11 +49,17 @@ function AsistenciasTable({ rows }) {
                 <td className="w-6 px-1.5 py-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 md:w-8 md:px-3 md:py-3 md:text-sm">
                   {index + 1}
                 </td>
-                <td className="px-1.5 py-1.5 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
+                <td
+                  className={`px-1.5 py-1.5 text-left text-xs font-bold md:px-3 md:py-3 md:text-sm ${
+                    highlightActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
+                  }`}
+                >
                   {row.nombre}
                 </td>
                 <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
                 <td className={`${NUM_TD_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>{row.asistencias}</td>
+                <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.x2 || '-'}</td>
+                <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.x3 || '-'}</td>
                 <td className={`${NUM_TD_CLASSES} font-semibold text-zinc-700 dark:text-zinc-200`}>{formatPromedio(row.promedio)}</td>
               </tr>
             ))}
@@ -53,6 +70,8 @@ function AsistenciasTable({ rows }) {
                 Totales
               </td>
               <td className={`${NUM_TD_CLASSES} text-lime-600 dark:text-lime-400`}>{totals.asistencias}</td>
+              <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{totals.x2}</td>
+              <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{totals.x3}</td>
               <td className={NUM_TD_CLASSES} />
             </tr>
           </tfoot>

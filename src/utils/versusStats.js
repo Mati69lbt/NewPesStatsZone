@@ -87,7 +87,7 @@ export function buildAssistsRows(matches, field) {
     const key = player.id ?? player.nombre
     let row = byPlayer.get(key)
     if (!row) {
-      row = { nombre: player.nombre, pj: 0, asistencias: 0 }
+      row = { nombre: player.nombre, pj: 0, asistencias: 0, x2: 0, x3: 0 }
       byPlayer.set(key, row)
     }
     return { key, row }
@@ -115,6 +115,8 @@ export function buildAssistsRows(matches, field) {
     for (const incidencia of incidencias) {
       const row = markPresente(incidencia)
       row.asistencias += incidencia.asistencias
+      if (incidencia.asistencias === 2) row.x2 += 1
+      else if (incidencia.asistencias >= 3) row.x3 += 1
     }
   }
 

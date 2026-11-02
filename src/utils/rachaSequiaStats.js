@@ -35,6 +35,8 @@ export function buildRachaSequiaRows(matches, condicion, plantelNombres = null) 
   for (const nombre of nombres) {
     let racha = null
     let rival = null
+    let fechaUltimoGol = null
+    let fechaUltimoPartido = null
 
     for (const match of sorted) {
       if (!isPresente(nombre, match)) continue
@@ -42,13 +44,15 @@ export function buildRachaSequiaRows(matches, condicion, plantelNombres = null) 
       if (convirtioGol(nombre, match)) {
         racha = 0
         rival = match.rival ?? null
+        fechaUltimoGol = match.fecha ?? null
       } else if (racha !== null) {
         racha += 1
+        fechaUltimoPartido = match.fecha ?? null
       }
     }
 
     if (racha !== null && racha >= 3) {
-      rows.push({ nombre, racha, rival: rival || '-' })
+      rows.push({ nombre, racha, rival: rival || '-', fechaUltimoGol, fechaUltimoPartido })
     }
   }
 

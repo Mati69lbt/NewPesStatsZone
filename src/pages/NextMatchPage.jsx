@@ -162,6 +162,7 @@ function NextMatchPage() {
                 title={`Goleadores ${clubActivo || "Mi club"}`}
                 rows={goleadoresClub}
                 showPJ
+                highlightTitle
               />
               <ScorersTable
                 title={`Goleadores ${rivalActivo}`}

@@ -1,4 +1,6 @@
-function ScorersTable({ title, rows, showPJ }) {
+import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
+
+function ScorersTable({ title, rows, showPJ, highlightTitle = false }) {
   const totals = rows.reduce(
     (acc, row) => ({
       goles: acc.goles + row.goles,
@@ -13,7 +15,11 @@ function ScorersTable({ title, rows, showPJ }) {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-zinc-200 shadow dark:border-zinc-700/50">
       <div className="border-b border-zinc-200 bg-zinc-100 px-4 py-2.5 dark:border-zinc-700/50 dark:bg-zinc-800">
-        <h3 className="truncate text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+        <h3
+          className={`truncate text-xs font-bold uppercase tracking-wider ${
+            highlightTitle ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-600 dark:text-zinc-300'
+          }`}
+        >
           {title}
         </h3>
       </div>

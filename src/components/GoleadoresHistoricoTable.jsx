@@ -1,8 +1,12 @@
+import { useMemo } from 'react'
+import { buildClubColorMap } from '../utils/clubColors'
+import { ACTIVE_CLUB_TEXT_CLASS, isActiveClub } from '../utils/activeClub'
+
 const TH_CLASSES =
   'whitespace-nowrap px-1 py-2 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-[11px]'
-const TH_NUM_CLASSES = `${TH_CLASSES} w-10 text-center md:w-14`
+const TH_NUM_CLASSES = `${TH_CLASSES} text-center`
 const TD_CLASSES = 'px-1 py-2 text-xs text-zinc-600 dark:text-zinc-300 md:px-3 md:py-3 md:text-sm'
-const TD_NUM_CLASSES = `${TD_CLASSES} w-10 text-center whitespace-nowrap md:w-14`
+const TD_NUM_CLASSES = `${TD_CLASSES} text-center whitespace-nowrap`
 
 const MEDALLAS = ['🥇', '🥈', '🥉']
 
@@ -27,7 +31,13 @@ function GoleadoresHistoricoTable({
   highlightColumn = 'value',
   highlightColorClass = 'text-lime-600 dark:text-lime-400',
   clubActivo,
+  showGoalBreakdown = valueKey === 'goles',
 }) {
+  const clubColors = useMemo(
+    () => buildClubColorMap(rows.flatMap((row) => (row.club ? row.club.split(', ') : []))),
+    [rows]
+  )
+
   if (rows.length === 0) {
     return (
       <p className="w-full py-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
@@ -43,21 +53,32 @@ function GoleadoresHistoricoTable({
   return (
     <div className="w-full overflow-x-auto">
       <div className="mx-auto w-fit overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
-        <table className="border-collapse text-xs md:text-sm">
+        <table className="table-fixed border-collapse text-xs md:text-sm">
+          <colgroup>
+            <col className="w-9 md:w-12" />
+            <col className="w-10 md:w-14" />
+            <col className="w-28 md:w-40" />
+            <col className="w-12 md:w-16" />
+            <col className="w-10 md:w-14" />
+            {showGoalBreakdown && <col className="w-10 md:w-14" />}
+            {showGoalBreakdown && <col className="w-10 md:w-14" />}
+            <col className="w-12 md:w-16" />
+          </colgroup>
           <thead>
             <tr className="border-b border-zinc-200 bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800">
               <th className={`${TH_CLASSES} text-center`}>Pos</th>
+              <th className={`${TH_NUM_CLASSES} ${valueHighlight ? highlightColorClass : ''}`}>{valueLabel}</th>
               <th className={TH_CLASSES}>Jugador</th>
               <th className={`${TH_CLASSES} text-center`}>Año</th>
-              <th className={`${TH_NUM_CLASSES} ${valueHighlight ? highlightColorClass : ''}`}>{valueLabel}</th>
               <th className={`${TH_NUM_CLASSES} ${pjHighlight ? highlightColorClass : ''}`}>PJ</th>
+              {showGoalBreakdown && <th className={TH_NUM_CLASSES}>Dob</th>}
+              {showGoalBreakdown && <th className={TH_NUM_CLASSES}>Tri</th>}
               <th className={`${TH_NUM_CLASSES} ${promedioHighlight ? highlightColorClass : ''}`}>Prom.</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {rows.map((row, index) => {
-              const esClubActivo =
-                Boolean(clubActivo) && row.club?.split(', ').includes(clubActivo)
+              const esClubActivo = isActiveClub(row.club, clubActivo)
 
               return (
                 <tr
@@ -67,31 +88,36 @@ function GoleadoresHistoricoTable({
                   <td className={`${TD_CLASSES} text-center`}>
                     <Posicion index={index} />
                   </td>
+                  <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
+                    {row[valueKey]}
+                  </td>
                   <td
                     className={`${TD_CLASSES} break-words font-bold ${
-                      esClubActivo ? 'text-lime-600 dark:text-lime-400' : 'text-zinc-900 dark:text-zinc-100'
+                      esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
                     }`}
                   >
                     {row.nombre}
                     {row.club && (
-                      <span
-                        className={`block truncate text-[10px] font-normal ${
-                          esClubActivo
-                            ? 'font-bold text-lime-600 dark:text-lime-400'
-                            : 'text-zinc-500 dark:text-zinc-500'
-                        }`}
-                      >
-                        {row.club}
+                      <span className="block truncate text-[10px] font-normal">
+                        {row.club.split(', ').map((club, clubIndex) => (
+                          <span key={club}>
+                            {clubIndex > 0 && <span className="text-zinc-500 dark:text-zinc-500">, </span>}
+                            <span style={{ color: clubColors.get(club) }}>{club}</span>
+                          </span>
+                        ))}
                       </span>
                     )}
                   </td>
                   <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
-                  <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
-                    {row[valueKey]}
-                  </td>
                   <td className={`${TD_NUM_CLASSES} font-semibold ${pjHighlight ? highlightColorClass : 'text-zinc-600 dark:text-zinc-300'}`}>
                     {row.pj}
                   </td>
+                  {showGoalBreakdown && (
+                    <td className={`${TD_NUM_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.dobletes || '-'}</td>
+                  )}
+                  {showGoalBreakdown && (
+                    <td className={`${TD_NUM_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.hattricks || '-'}</td>
+                  )}
                   <td
                     className={`${TD_NUM_CLASSES} font-semibold ${promedioHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}
                   >

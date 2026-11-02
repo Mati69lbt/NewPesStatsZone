@@ -62,6 +62,7 @@ function CapitanCard({ capitan, stats }) {
         <tbody>
           {FILAS.map(({ key, label }) => {
             const s = stats[key]
+            if (s.pj === 0) return null
             const efec = s.ptsPosibles > 0 ? Math.round((s.pts / s.ptsPosibles) * 100) : 0
             const promGf = s.pj > 0 ? (s.gf / s.pj).toFixed(2) : '0.00'
             const promGc = s.pj > 0 ? (s.gc / s.pj).toFixed(2) : '0.00'

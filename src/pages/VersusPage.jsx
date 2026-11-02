@@ -303,20 +303,20 @@ function VersusPage() {
                     <td className="sticky left-0 z-10 w-28 max-w-[120px] whitespace-normal break-words bg-white px-2 py-1.5 text-xs font-bold text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
                       {index + 1}. {rival}
                     </td>
-                    <td className="px-1 py-1.5">
+                    <td className="px-1 py-1.5 text-center">
                       <VersusCompactStat stats={general} onClick={() => openModal(rival, 'General', general)} />
                     </td>
-                    <td className="px-1 py-1.5">
+                    <td className="px-1 py-1.5 text-center">
                       <VersusCompactStat stats={local} onClick={() => openModal(rival, 'Local', local)} />
                     </td>
-                    <td className="px-1 py-1.5">
+                    <td className="px-1 py-1.5 text-center">
                       <VersusCompactStat
                         stats={visitante}
                         onClick={() => openModal(rival, 'Visitante', visitante)}
                       />
                     </td>
                     {porCapitan.map(({ capitan, stats }) => (
-                      <td key={capitan} className="px-1 py-1.5">
+                      <td key={capitan} className="px-1 py-1.5 text-center">
                         <VersusCompactStat stats={stats} onClick={() => openModal(rival, capitan, stats)} />
                       </td>
                     ))}

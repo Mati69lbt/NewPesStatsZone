@@ -7,6 +7,7 @@ import {
   getScoreboard,
   splitLabelLines,
 } from '../utils/matchDisplay'
+import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
 
 function MultilineLabel({ text, className }) {
   return splitLabelLines(text).map((line, index) => (
@@ -69,13 +70,15 @@ function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, on
         <span
           className={`flex-1 whitespace-normal break-words rounded-full px-2.5 py-1 text-center text-xs font-bold ${RESULT_CLASSES[resultado]}`}
         >
-          {nombreLocal} {golesLocal} - {golesVisitante} {nombreVisitante}
+          <span className={nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreLocal}</span>{' '}
+          {golesLocal} - {golesVisitante}{' '}
+          <span className={nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreVisitante}</span>
         </span>
       </div>
 
       <div className="mt-2 grid grid-cols-2 gap-2 text-center">
         <div className="whitespace-normal break-words">
-          <p className="whitespace-normal break-words text-[11px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+          <p className={`whitespace-normal break-words text-[11px] font-semibold uppercase tracking-wide ${ACTIVE_CLUB_TEXT_CLASS}`}>
             Goles {match.club}
           </p>
           <MultilineLabel

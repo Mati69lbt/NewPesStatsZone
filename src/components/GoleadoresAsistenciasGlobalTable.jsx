@@ -1,3 +1,7 @@
+import { useMemo } from "react";
+import { buildClubColorMap } from "../utils/clubColors";
+import { ACTIVE_CLUB_TEXT_CLASS } from "../utils/activeClub";
+
 const NUM_TH_CLASSES =
   "px-2 py-2 text-center text-[10px] md:px-4 md:py-3 md:text-[11px]";
 const NUM_TD_CLASSES =
@@ -63,6 +67,11 @@ function GoleadoresAsistenciasGlobalTable({
 }) {
   const isGoles = modo === "goleadores";
   const valorLabel = isGoles ? "G" : "A";
+
+  const clubColors = useMemo(
+    () => buildClubColorMap(rows.map((row) => row.club)),
+    [rows],
+  );
 
   const totales = rows.reduce(
     (acc, row) => ({
@@ -145,18 +154,12 @@ function GoleadoresAsistenciasGlobalTable({
                   <td className="break-words px-2 py-2 text-left md:px-3 md:py-3">
                     <div
                       className={`text-xs font-bold md:text-sm ${
-                        esClubActivo ? "text-lime-600 dark:text-lime-400" : "text-zinc-900 dark:text-zinc-100"
+                        esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : "text-zinc-900 dark:text-zinc-100"
                       }`}
                     >
                       {row.nombre}
                     </div>
-                    <div
-                      className={`text-[11px] md:text-xs ${
-                        esClubActivo
-                          ? "font-semibold text-lime-600 dark:text-lime-400"
-                          : "text-zinc-500 dark:text-zinc-400"
-                      }`}
-                    >
+                    <div className="text-[11px] md:text-xs" style={{ color: clubColors.get(row.club) }}>
                       {row.club}
                     </div>
                   </td>

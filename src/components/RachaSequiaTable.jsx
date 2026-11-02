@@ -1,5 +1,22 @@
+import { diffDays, formatDuracionDias } from '../utils/dateFormat'
+
 const NUM_TH_CLASSES = 'w-14 px-1 py-2 text-center md:w-16 md:px-2 md:py-3'
 const NUM_TD_CLASSES = 'w-14 px-1 py-2 text-center text-xs md:w-16 md:px-2 md:py-3 md:text-sm'
+
+function DuracionCell({ fechaUltimoGol, fechaUltimoPartido }) {
+  const dias = diffDays(fechaUltimoGol, fechaUltimoPartido)
+  const { desglose, total } = formatDuracionDias(dias)
+  return (
+    <td className="w-28 px-1.5 py-2 text-left md:w-32 md:px-3 md:py-3">
+      <span className="flex flex-col items-start gap-0.5 whitespace-nowrap leading-tight">
+        <span className="text-xs font-bold text-zinc-900 dark:text-white">{desglose}</span>
+        {total !== '' && (
+          <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">- {total}</span>
+        )}
+      </span>
+    </td>
+  )
+}
 
 function RachaSequiaTable({ rows }) {
   if (rows.length === 0) {
@@ -19,6 +36,7 @@ function RachaSequiaTable({ rows }) {
             <th className="w-28 px-1.5 py-2 text-left md:w-40 md:px-3 md:py-3">Jugador</th>
             <th className={NUM_TH_CLASSES}>Racha</th>
             <th className="w-24 px-1.5 py-2 text-left md:w-40 md:px-3 md:py-3">Último Rival</th>
+            <th className="w-28 px-1.5 py-2 text-left md:w-32 md:px-3 md:py-3">Duración</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -37,6 +55,7 @@ function RachaSequiaTable({ rows }) {
               <td className="break-words px-1.5 py-2 text-left text-[10px] text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-xs">
                 {row.rival}
               </td>
+              <DuracionCell fechaUltimoGol={row.fechaUltimoGol} fechaUltimoPartido={row.fechaUltimoPartido} />
             </tr>
           ))}
         </tbody>
