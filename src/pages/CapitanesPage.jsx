@@ -129,6 +129,12 @@ function CapitanesPage() {
               <span className="bg-lime-400 px-2 py-2 text-[11px] font-bold uppercase tracking-wide text-zinc-900 sm:px-4 sm:text-xs">
                 🖐️ Capitanes
               </span>
+              <Link
+                to="/capitanes/comparativa"
+                className="px-2 py-2 text-[11px] font-bold uppercase tracking-wide text-zinc-600 transition hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-600 sm:px-4 sm:text-xs"
+              >
+                ⚔️ Comparativa
+              </Link>
             </div>
           </div>
 

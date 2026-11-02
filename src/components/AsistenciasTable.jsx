@@ -1,5 +1,3 @@
-import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
-
 function formatPromedio(value) {
   return value.toFixed(2)
 }
@@ -7,7 +5,7 @@ function formatPromedio(value) {
 const NUM_TH_CLASSES = 'w-8 px-1.5 py-1.5 text-center md:w-10 md:px-2 md:py-3'
 const NUM_TD_CLASSES = 'w-8 px-1.5 py-1.5 text-center text-xs md:w-10 md:px-2 md:py-3 md:text-sm'
 
-function AsistenciasTable({ rows, highlightActivo = false }) {
+function AsistenciasTable({ rows }) {
   const totals = rows.reduce(
     (acc, row) => ({
       asistencias: acc.asistencias + row.asistencias,
@@ -49,11 +47,7 @@ function AsistenciasTable({ rows, highlightActivo = false }) {
                 <td className="w-6 px-1.5 py-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 md:w-8 md:px-3 md:py-3 md:text-sm">
                   {index + 1}
                 </td>
-                <td
-                  className={`px-1.5 py-1.5 text-left text-xs font-bold md:px-3 md:py-3 md:text-sm ${
-                    highlightActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
-                  }`}
-                >
+                <td className="px-1.5 py-1.5 text-left text-xs font-bold text-zinc-900 dark:text-zinc-100 md:px-3 md:py-3 md:text-sm">
                   {row.nombre}
                 </td>
                 <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>

@@ -12,9 +12,10 @@ import {
 import { formatDateDisplay } from '../utils/dateFormat'
 
 const FIELD_CLASSES =
-  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100'
+  'w-full rounded-lg border border-zinc-700 bg-zinc-100 px-1.5 py-1.5 text-[11px] text-zinc-900 outline-none transition focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:bg-zinc-800 dark:text-zinc-100 sm:px-3 sm:py-2 sm:text-sm'
 
-const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
+const LABEL_CLASSES =
+  'mb-1 block truncate text-[9px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 sm:text-xs'
 
 const TODOS = ''
 
@@ -22,7 +23,7 @@ function filtrarPorCondicion(matches, condicion) {
   return condicion === 'general' ? matches : matches.filter((m) => m.condicion === condicion)
 }
 
-function EquipoCategoriaAccordion({ matchesBase, categoriaKey, label, descripcion }) {
+function EquipoCategoriaAccordion({ matchesBase, categoriaKey, label, descripcion, clubActivo }) {
   const [condicion, setCondicion] = useState('general')
 
   const matchesCondicion = useMemo(() => filtrarPorCondicion(matchesBase, condicion), [matchesBase, condicion])
@@ -34,12 +35,17 @@ function EquipoCategoriaAccordion({ matchesBase, categoriaKey, label, descripcio
   return (
     <Accordion title={label} subtitle={`${descripcion} (${data.totalEncontradas})`} className="w-full">
       <CondicionTabs value={condicion} onChange={setCondicion} />
-      <RachaCategoriaList ultimos5={data.ultimos5} mensajeVacio={data.mensajeVacio} categoria={categoriaKey} />
+      <RachaCategoriaList
+        ultimos5={data.ultimos5}
+        mensajeVacio={data.mensajeVacio}
+        categoria={categoriaKey}
+        clubActivo={clubActivo}
+      />
     </Accordion>
   )
 }
 
-function MinGolesCategoriaAccordion({ matchesBase, categoriaKey, label, buildCategoria, sufijo }) {
+function MinGolesCategoriaAccordion({ matchesBase, categoriaKey, label, buildCategoria, sufijo, clubActivo }) {
   const [condicion, setCondicion] = useState('general')
   const [minGoles, setMinGoles] = useState(1)
 
@@ -73,12 +79,17 @@ function MinGolesCategoriaAccordion({ matchesBase, categoriaKey, label, buildCat
           </button>
         ))}
       </div>
-      <RachaCategoriaList ultimos5={data.ultimos5} mensajeVacio={data.mensajeVacio} categoria={categoriaKey} />
+      <RachaCategoriaList
+        ultimos5={data.ultimos5}
+        mensajeVacio={data.mensajeVacio}
+        categoria={categoriaKey}
+        clubActivo={clubActivo}
+      />
     </Accordion>
   )
 }
 
-function JugadoresAccordion({ matchesBase }) {
+function JugadoresAccordion({ matchesBase, clubActivo }) {
   const [condicion, setCondicion] = useState('general')
 
   const matchesCondicion = useMemo(() => filtrarPorCondicion(matchesBase, condicion), [matchesBase, condicion])
@@ -87,12 +98,12 @@ function JugadoresAccordion({ matchesBase }) {
   return (
     <Accordion title="Jugadores en Racha Goleadora" className="w-full">
       <CondicionTabs value={condicion} onChange={setCondicion} />
-      <JugadoresRachaGolTable rows={jugadores} />
+      <JugadoresRachaGolTable rows={jugadores} clubActivo={clubActivo} />
     </Accordion>
   )
 }
 
-function RachasAvanzadasSection({ matches, allMatches }) {
+function RachasAvanzadasSection({ matches, allMatches, clubActivo }) {
   const [clubFiltro, setClubFiltro] = useState(TODOS)
   const [torneoFiltro, setTorneoFiltro] = useState(TODOS)
   const [capitanFiltro, setCapitanFiltro] = useState(TODOS)
@@ -138,26 +149,19 @@ function RachasAvanzadasSection({ matches, allMatches }) {
 
   return (
     <Accordion title="Rachas Estadísticas Avanzadas" subtitle="Rachas récord y actuales del equipo y jugadores">
-      {ultimoPartido && (
-        <div className="rounded-lg border border-lime-400/40 bg-lime-50 px-3 py-2 text-center text-xs font-bold text-lime-700 dark:border-lime-400/30 dark:bg-lime-400/10 dark:text-lime-300">
-          Último partido registrado: {formatDateDisplay(ultimoPartido)}
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-4">
+        <div className="min-w-0">
+          <label className={LABEL_CLASSES}>Club / Equipo</label>
+          <select value={clubEfectivo} onChange={(e) => setClubFiltro(e.target.value)} className={FIELD_CLASSES}>
+            <option value={TODOS}>Todos los clubes</option>
+            {clubes.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
-
-      <div>
-        <label className={LABEL_CLASSES}>Club / Equipo</label>
-        <select value={clubEfectivo} onChange={(e) => setClubFiltro(e.target.value)} className={FIELD_CLASSES}>
-          <option value={TODOS}>Todos los clubes</option>
-          {clubes.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-        <div className="flex-1">
+        <div className="min-w-0">
           <label className={LABEL_CLASSES}>Torneo / Campeonato</label>
           <select value={torneoEfectivo} onChange={(e) => setTorneoFiltro(e.target.value)} className={FIELD_CLASSES}>
             <option value={TODOS}>Todos</option>
@@ -168,7 +172,7 @@ function RachasAvanzadasSection({ matches, allMatches }) {
             ))}
           </select>
         </div>
-        <div className="flex-1">
+        <div className="min-w-0">
           <label className={LABEL_CLASSES}>Capitán</label>
           <select value={capitanEfectivo} onChange={(e) => setCapitanFiltro(e.target.value)} className={FIELD_CLASSES}>
             <option value={TODOS}>Todos</option>
@@ -180,6 +184,12 @@ function RachasAvanzadasSection({ matches, allMatches }) {
           </select>
         </div>
       </div>
+
+      {ultimoPartido && (
+        <div className="rounded-lg border border-lime-400/40 bg-lime-50 px-3 py-2 text-center text-xs font-bold text-lime-700 dark:border-lime-400/30 dark:bg-lime-400/10 dark:text-lime-300">
+          Último partido registrado: {formatDateDisplay(ultimoPartido)}
+        </div>
+      )}
 
       {matchesBase.length === 0 ? (
         <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
@@ -198,6 +208,7 @@ function RachasAvanzadasSection({ matches, allMatches }) {
                     label={label}
                     buildCategoria={buildAnotadoraCategoria}
                     sufijo="convertidos"
+                    clubActivo={clubActivo}
                   />
                 )
               }
@@ -211,6 +222,7 @@ function RachasAvanzadasSection({ matches, allMatches }) {
                     label={label}
                     buildCategoria={buildRecibeGolesCategoria}
                     sufijo="en contra"
+                    clubActivo={clubActivo}
                   />
                 )
               }
@@ -222,12 +234,13 @@ function RachasAvanzadasSection({ matches, allMatches }) {
                   categoriaKey={key}
                   label={label}
                   descripcion={descripcion}
+                  clubActivo={clubActivo}
                 />
               )
             })}
           </div>
 
-          <JugadoresAccordion matchesBase={matchesBase} />
+          <JugadoresAccordion matchesBase={matchesBase} clubActivo={clubActivo} />
         </>
       )}
     </Accordion>

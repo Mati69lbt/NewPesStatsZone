@@ -123,7 +123,7 @@ function RachasSequiaPage() {
                 key={s.value}
                 title={s.titulo}
                 subtitle={`${s.rows.length} ${s.rows.length === 1 ? 'jugador en sequía' : 'jugadores en sequía'}`}
-                defaultOpen={index === 0}
+                defaultOpen={false}
                 className="mx-auto w-full max-w-2xl"
               >
                 <RachaSequiaTable rows={s.rows} />

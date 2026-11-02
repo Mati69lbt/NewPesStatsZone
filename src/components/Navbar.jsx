@@ -41,6 +41,7 @@ const DROPDOWNS = [
     label: 'Estadísticas',
     items: [
       { to: '/capitanes', label: 'Capitanes' },
+      { to: '/capitanes/comparativa', label: 'Comparativa Capitanes' },
       { to: '/temporadas', label: 'Temporadas' },
       { to: '/goleadores', label: 'Goleadores' },
       { to: '/asistencias', label: 'Asistencias' },

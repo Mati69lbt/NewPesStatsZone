@@ -34,7 +34,7 @@ function EstadisticasPeriodoPage() {
   const navigate = useNavigate()
 
   const [selectedClub, setSelectedClub] = useState(TODOS_CLUBES)
-  const [formato, setFormato] = useState('anual')
+  const [formato, setFormato] = useState('europeo')
   const [condicion, setCondicion] = useState('general')
 
   const clubes = useMemo(() => {
@@ -165,7 +165,7 @@ function EstadisticasPeriodoPage() {
                 key={p.periodo}
                 periodo={p.periodo}
                 matches={p.matches}
-                defaultOpen={index === 0}
+                defaultOpen={false}
                 clubActivo={club}
               />
             ))}

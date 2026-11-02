@@ -13,6 +13,7 @@ import ClubesPage from './pages/ClubesPage'
 import Ultimos10Page from './pages/Ultimos10Page'
 import CapitanesPage from './pages/CapitanesPage'
 import CapitanesResumenPage from './pages/CapitanesResumenPage'
+import CapitanesComparativaPage from './pages/CapitanesComparativaPage'
 import CampeonatosPage from './pages/CampeonatosPage'
 import GoleadoresPage from './pages/GoleadoresPage'
 import AsistenciasPage from './pages/AsistenciasPage'
@@ -43,6 +44,7 @@ function App() {
         <Route path="/ultimos-10" element={<Ultimos10Page />} />
         <Route path="/capitanes" element={<CapitanesPage />} />
         <Route path="/capitanes/resumen" element={<CapitanesResumenPage />} />
+        <Route path="/capitanes/comparativa" element={<CapitanesComparativaPage />} />
         <Route path="/campeonatos" element={<CampeonatosPage />} />
         <Route path="/goleadores" element={<GoleadoresPage />} />
         <Route path="/asistencias" element={<AsistenciasPage />} />

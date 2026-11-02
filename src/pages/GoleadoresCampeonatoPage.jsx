@@ -141,7 +141,7 @@ function GoleadoresCampeonatoPage() {
                   torneo={c.torneo}
                   temporada={c.temporada}
                   matches={c.matches}
-                  defaultOpen={index === 0}
+                  defaultOpen={false}
                 />
               ))}
             </div>

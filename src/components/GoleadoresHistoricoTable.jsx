@@ -6,6 +6,7 @@ const TH_CLASSES =
   'whitespace-nowrap px-1 py-2 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-[11px]'
 const TH_NUM_CLASSES = `${TH_CLASSES} text-center`
 const TD_CLASSES = 'px-1 py-2 text-xs text-zinc-600 dark:text-zinc-300 md:px-3 md:py-3 md:text-sm'
+const TD_BASE_CLASSES = 'px-1 py-2 text-xs md:px-3 md:py-3 md:text-sm'
 const TD_NUM_CLASSES = `${TD_CLASSES} text-center whitespace-nowrap`
 
 const MEDALLAS = ['🥇', '🥈', '🥉']
@@ -19,6 +20,16 @@ function Posicion({ index }) {
   return (
     <span className="flex items-center justify-center text-xs font-bold text-zinc-500 dark:text-zinc-400 md:text-sm">
       {medalla ?? index + 1}
+    </span>
+  )
+}
+
+function HighlightBadge({ value, colorClass }) {
+  return (
+    <span
+      className={`inline-flex min-w-[1.8em] items-center justify-center rounded-md bg-zinc-900/5 px-1.5 py-0.5 text-sm font-black dark:bg-white/10 md:text-base ${colorClass}`}
+    >
+      {value}
     </span>
   )
 }
@@ -56,7 +67,7 @@ function GoleadoresHistoricoTable({
         <table className="table-fixed border-collapse text-xs md:text-sm">
           <colgroup>
             <col className="w-9 md:w-12" />
-            <col className="w-10 md:w-14" />
+            <col className="w-14 md:w-16" />
             <col className="w-28 md:w-40" />
             <col className="w-12 md:w-16" />
             <col className="w-10 md:w-14" />
@@ -67,13 +78,13 @@ function GoleadoresHistoricoTable({
           <thead>
             <tr className="border-b border-zinc-200 bg-gray-50 dark:border-zinc-700 dark:bg-zinc-800">
               <th className={`${TH_CLASSES} text-center`}>Pos</th>
-              <th className={`${TH_NUM_CLASSES} ${valueHighlight ? highlightColorClass : ''}`}>{valueLabel}</th>
+              <th className={`${TH_NUM_CLASSES} ${valueHighlight ? `text-sm md:text-base ${highlightColorClass}` : ''}`}>{valueLabel}</th>
               <th className={TH_CLASSES}>Jugador</th>
               <th className={`${TH_CLASSES} text-center`}>Año</th>
-              <th className={`${TH_NUM_CLASSES} ${pjHighlight ? highlightColorClass : ''}`}>PJ</th>
+              <th className={`${TH_NUM_CLASSES} ${pjHighlight ? `text-sm md:text-base ${highlightColorClass}` : ''}`}>PJ</th>
               {showGoalBreakdown && <th className={TH_NUM_CLASSES}>Dob</th>}
               {showGoalBreakdown && <th className={TH_NUM_CLASSES}>Tri</th>}
-              <th className={`${TH_NUM_CLASSES} ${promedioHighlight ? highlightColorClass : ''}`}>Prom.</th>
+              <th className={`${TH_NUM_CLASSES} ${promedioHighlight ? `text-sm md:text-base ${highlightColorClass}` : ''}`}>Prom.</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -88,11 +99,15 @@ function GoleadoresHistoricoTable({
                   <td className={`${TD_CLASSES} text-center`}>
                     <Posicion index={index} />
                   </td>
-                  <td className={`${TD_NUM_CLASSES} font-bold ${valueHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}>
-                    {row[valueKey]}
+                  <td className={`${TD_NUM_CLASSES} ${valueHighlight ? '' : 'font-bold'}`}>
+                    {valueHighlight ? (
+                      <HighlightBadge value={row[valueKey]} colorClass={highlightColorClass} />
+                    ) : (
+                      <span className="text-zinc-700 dark:text-zinc-200">{row[valueKey]}</span>
+                    )}
                   </td>
                   <td
-                    className={`${TD_CLASSES} break-words font-bold ${
+                    className={`${TD_BASE_CLASSES} break-words font-bold ${
                       esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
                     }`}
                   >
@@ -109,8 +124,8 @@ function GoleadoresHistoricoTable({
                     )}
                   </td>
                   <td className={`${TD_CLASSES} whitespace-nowrap text-center text-zinc-500 dark:text-zinc-400`}>{row.periodo}</td>
-                  <td className={`${TD_NUM_CLASSES} font-semibold ${pjHighlight ? highlightColorClass : 'text-zinc-600 dark:text-zinc-300'}`}>
-                    {row.pj}
+                  <td className={`${TD_NUM_CLASSES} ${pjHighlight ? '' : 'font-semibold text-zinc-600 dark:text-zinc-300'}`}>
+                    {pjHighlight ? <HighlightBadge value={row.pj} colorClass={highlightColorClass} /> : row.pj}
                   </td>
                   {showGoalBreakdown && (
                     <td className={`${TD_NUM_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.dobletes || '-'}</td>
@@ -118,10 +133,12 @@ function GoleadoresHistoricoTable({
                   {showGoalBreakdown && (
                     <td className={`${TD_NUM_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.hattricks || '-'}</td>
                   )}
-                  <td
-                    className={`${TD_NUM_CLASSES} font-semibold ${promedioHighlight ? highlightColorClass : 'text-zinc-700 dark:text-zinc-200'}`}
-                  >
-                    {formatPromedio(row[promedioKey])}
+                  <td className={`${TD_NUM_CLASSES} ${promedioHighlight ? '' : 'font-semibold text-zinc-700 dark:text-zinc-200'}`}>
+                    {promedioHighlight ? (
+                      <HighlightBadge value={formatPromedio(row[promedioKey])} colorClass={highlightColorClass} />
+                    ) : (
+                      formatPromedio(row[promedioKey])
+                    )}
                   </td>
                 </tr>
               )

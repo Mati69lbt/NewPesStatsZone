@@ -236,7 +236,7 @@ function Ultimos10Page() {
                 )}
               </Accordion>
 
-              <RachasAvanzadasSection matches={clubMatches} allMatches={matches} />
+              <RachasAvanzadasSection matches={clubMatches} allMatches={matches} clubActivo={clubActivo} />
             </>
           )}
         </div>

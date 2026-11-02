@@ -1,4 +1,7 @@
+import { useMemo } from 'react'
 import { formatDateDisplay, diffDays, formatDuracionDias } from '../utils/dateFormat'
+import { buildClubColorMap } from '../utils/clubColors'
+import { ACTIVE_CLUB_TEXT_CLASS } from '../utils/activeClub'
 
 const GRID_COLS =
   'sm:grid sm:grid-cols-[1.25rem_minmax(0,1fr)_7rem_2.5rem_6rem_6.5rem] sm:items-center lg:grid-cols-[1.25rem_minmax(0,1fr)_6rem_2.25rem_5rem_6rem]'
@@ -18,7 +21,9 @@ function DuracionBadge({ dias, stacked = false, className = '' }) {
   )
 }
 
-function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
+function RachaCategoriaList({ ultimos5, mensajeVacio, categoria, clubActivo }) {
+  const clubColors = useMemo(() => buildClubColorMap((ultimos5 ?? []).map((r) => r.club)), [ultimos5])
+
   if (!ultimos5 || ultimos5.length === 0) {
     return (
       <p className="py-3 text-center text-xs text-zinc-400 dark:text-zinc-600">
@@ -46,6 +51,11 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
       <div className="mt-1.5 flex flex-col gap-1.5 text-xs">
         {ultimos5.map((racha, index) => {
           const dias = diffDays(racha.fechaInicio, racha.fechaFin)
+          const esClubActivo = Boolean(clubActivo) && racha.club === clubActivo
+          const clubClassName = esClubActivo
+            ? ACTIVE_CLUB_TEXT_CLASS
+            : ''
+          const clubStyle = esClubActivo ? undefined : { color: clubColors.get(racha.club) }
 
           return (
             <div
@@ -60,7 +70,10 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
               <div className="flex items-start justify-between gap-2 sm:hidden">
                 <div className="flex min-w-0 items-start gap-2">
                   <span className="shrink-0 font-black text-zinc-500 dark:text-zinc-400">#{index + 1}</span>
-                  <span className="min-w-0 break-words text-sm font-bold text-zinc-700 dark:text-zinc-200">
+                  <span
+                    className={`min-w-0 break-words text-sm font-bold ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
+                    style={clubStyle}
+                  >
                     {racha.club || '—'}
                   </span>
                 </div>
@@ -103,7 +116,10 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria }) {
                 #{index + 1}
               </span>
 
-              <span className="hidden min-w-0 break-words pr-1 text-left font-bold text-zinc-700 dark:text-zinc-200 sm:block">
+              <span
+                className={`hidden min-w-0 break-words pr-1 text-left font-bold sm:block ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
+                style={clubStyle}
+              >
                 {racha.club || '—'}
               </span>
 

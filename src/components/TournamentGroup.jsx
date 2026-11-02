@@ -4,7 +4,7 @@ import { getMatchResultado } from '../utils/matchDisplay'
 import MatchCardMobile from './MatchCardMobile'
 import MatchRow from './MatchRow'
 
-const RESULTADOS = ['En Curso', 'Campeón', 'Subcampeón', 'Semifinal', 'Cuartos de Final', 'Fase de Grupos', "Octavos de Final", "Fase de Grupos", "Tercero", "Cuarto", "Quinto", "Sexto", "Séptimo", "Octavo", "Noveno", "Décimo", "Lejos"]
+const RESULTADOS = ['En Curso', 'Campeón', 'Subcampeón', 'Semifinal', 'Cuartos de Final', 'Octavos de Final', 'Fase de Grupos', "Tercero", "Cuarto", "Quinto", "Sexto", "Séptimo", "Octavo", "Noveno", "Décimo", "Lejos"]
 
 const TIPOS = [
   { value: 'anual', label: 'Anual' },
@@ -107,8 +107,8 @@ function TournamentGroup({
                 className="rounded-lg border border-zinc-300 bg-zinc-100 px-3 py-1.5 text-sm font-semibold text-zinc-900 outline-none focus:border-lime-400 focus:ring-2 focus:ring-lime-400/40 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100"
               >
                 <option value="">Sin definir</option>
-                {RESULTADOS.map((r) => (
-                  <option key={r} value={r}>
+                {RESULTADOS.map((r, index) => (
+                  <option key={`${torneo}-${r}-${index}`} value={r}>
                     {r}
                   </option>
                 ))}

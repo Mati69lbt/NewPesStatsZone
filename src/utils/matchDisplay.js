@@ -12,6 +12,19 @@ export function getMatchResultado(match) {
   return 'empate'
 }
 
+export function getStreakBreakdown(matches) {
+  return matches.reduce(
+    (acc, match) => {
+      const resultado = getMatchResultado(match)
+      if (resultado === 'victoria') acc.g += 1
+      else if (resultado === 'empate') acc.e += 1
+      else acc.p += 1
+      return acc
+    },
+    { g: 0, e: 0, p: 0 }
+  )
+}
+
 export function getScoreboard(match) {
   const golesClub = match.golesClub ?? 0
   const golesRival = match.golesRival ?? 0

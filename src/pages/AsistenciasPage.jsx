@@ -164,7 +164,7 @@ function AsistenciasPage() {
             </div>
           </div>
 
-          <AsistenciasTable rows={sortedRows} highlightActivo={selectedClub === club} />
+          <AsistenciasTable rows={sortedRows} />
         </div>
       </main>
     </div>
