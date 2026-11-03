@@ -70,9 +70,13 @@ function MatchCardMobile({ match, jornada, isDuplicateDate, onEdit, onDelete, on
         <span
           className={`flex-1 whitespace-normal break-words rounded-full px-2.5 py-1 text-center text-xs font-bold ${RESULT_CLASSES[resultado]}`}
         >
-          <span className={nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreLocal}</span>{' '}
+          <span className={resultado !== 'empate' && nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>
+            {nombreLocal}
+          </span>{' '}
           {golesLocal} - {golesVisitante}{' '}
-          <span className={nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreVisitante}</span>
+          <span className={resultado !== 'empate' && nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>
+            {nombreVisitante}
+          </span>
         </span>
       </div>
 

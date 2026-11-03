@@ -28,9 +28,13 @@ function MatchRow({ match, isDuplicateDate, onEdit, onDelete, onDateChange }) {
         <span
           className={`inline-block whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold ${RESULT_CLASSES[resultado]}`}
         >
-          <span className={nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreLocal}</span>{' '}
+          <span className={resultado !== 'empate' && nombreLocal === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>
+            {nombreLocal}
+          </span>{' '}
           {golesLocal} - {golesVisitante}{' '}
-          <span className={nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>{nombreVisitante}</span>
+          <span className={resultado !== 'empate' && nombreVisitante === match.club ? ACTIVE_CLUB_TEXT_CLASS : ''}>
+            {nombreVisitante}
+          </span>
         </span>
       </td>
       <td className="px-3 py-3">

@@ -43,7 +43,7 @@ function GoleadoresPage() {
   const navigate = useNavigate()
 
   const [selectedClub, setSelectedClub] = useState(TODOS_CLUBES)
-  const [formato, setFormato] = useState('anual')
+  const [formato, setFormato] = useState('europeo')
 
   const clubes = useMemo(() => {
     const set = new Set(matches.map((m) => m.club).filter(Boolean))

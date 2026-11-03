@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
+import Accordion from '../components/Accordion'
 import RecordPersonalRow from '../components/RecordPersonalRow'
+import TablaResumenRow from '../components/TablaResumenRow'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
@@ -119,23 +121,33 @@ function RecordPersonalPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] gap-1.5 px-2 md:grid">
-              <span></span>
-              {HEADERS.map((h) => (
-                <span
-                  key={h}
-                  className="text-center text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
-                >
-                  {h}
-                </span>
+          <Accordion title="Tabla Actual" subtitle="Versión vigente">
+            <div className="flex flex-col gap-3">
+              <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] gap-1.5 px-2 md:grid">
+                <span></span>
+                {HEADERS.map((h) => (
+                  <span
+                    key={h}
+                    className="text-center text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
+                  >
+                    {h}
+                  </span>
+                ))}
+              </div>
+
+              {rows.map((row) => (
+                <RecordPersonalRow key={row.condicion} row={row} />
               ))}
             </div>
+          </Accordion>
 
-            {rows.map((row) => (
-              <RecordPersonalRow key={row.condicion} row={row} />
-            ))}
-          </div>
+          <Accordion title="Tabla Resumen" subtitle="Nuevo diseño propuesto">
+            <div className="flex flex-col gap-4">
+              {rows.map((row) => (
+                <TablaResumenRow key={row.condicion} row={row} />
+              ))}
+            </div>
+          </Accordion>
         </div>
       </main>
     </div>
