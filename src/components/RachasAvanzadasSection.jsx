@@ -33,7 +33,7 @@ function EquipoCategoriaAccordion({ matchesBase, categoriaKey, label, descripcio
   )
 
   return (
-    <Accordion title={label} subtitle={`${descripcion} (${data.totalEncontradas})`} className="w-full">
+    <Accordion title={label} subtitle={descripcion} badge={data.totalEncontradas} className="w-full">
       <CondicionTabs value={condicion} onChange={setCondicion} />
       <RachaCategoriaList
         ultimos5={data.ultimos5}
@@ -59,7 +59,8 @@ function MinGolesCategoriaAccordion({ matchesBase, categoriaKey, label, buildCat
     <Accordion
       key={categoriaKey}
       title={label}
-      subtitle={`Con al menos ${minGoles} gol${minGoles > 1 ? 'es' : ''} ${sufijo} (${data.totalEncontradas})`}
+      subtitle={`Con al menos ${minGoles} gol${minGoles > 1 ? 'es' : ''} ${sufijo}`}
+      badge={data.totalEncontradas}
       className="w-full"
     >
       <CondicionTabs value={condicion} onChange={setCondicion} />

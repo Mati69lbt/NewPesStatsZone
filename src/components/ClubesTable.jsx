@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+import { buildClubColorMap } from '../utils/clubColors'
+
 function getBadgeClasses(value) {
   if (value > 0) return 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
   if (value < 0) return 'border-rose-500 bg-rose-500/10 text-rose-400'
@@ -47,16 +50,18 @@ function PromGfGc({ promGf, promGc, highlightGf, highlightGc }) {
   )
 }
 
-function ClubCard({ row, index, sortKey }) {
+function ClubCard({ row, index, sortKey, clubColors }) {
   const isActive = (key) => sortKey === key
 
   return (
-    <div className="w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3">
-      <div className="flex items-center justify-between gap-2">
+    <div className="relative mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 pb-2 pt-2">
+      <div className="absolute -top-2.5 inset-x-2 flex items-center justify-between gap-2 bg-zinc-900 px-1">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex-shrink-0 text-base font-black text-zinc-500">{index + 1}</span>
           <p className="min-w-0 truncate">
-            <span className="text-base font-bold text-zinc-100">{row.club}</span>{' '}
+            <span className="text-base font-bold" style={{ color: clubColors.get(row.club) }}>
+              {row.club}
+            </span>{' '}
             <span className="text-sm font-normal text-zinc-500">· {row.temporada}</span>
           </p>
         </div>
@@ -74,7 +79,7 @@ function ClubCard({ row, index, sortKey }) {
         </div>
       </div>
 
-      <div className="mt-3 overflow-x-auto border-t border-zinc-800 pt-3">
+      <div className="mt-1.5 overflow-x-auto">
         <div className="flex w-max min-w-full items-start justify-evenly gap-3">
           <StatMini label="PJ" value={row.pj} active={isActive('pj')} />
           <StatMini label="G" value={row.g} active={isActive('g')} />
@@ -111,6 +116,8 @@ function ClubCard({ row, index, sortKey }) {
 
 function ClubesTable({ rows, sortKey }) {
   const isActive = (key) => sortKey === key
+  const clubColors = useMemo(() => buildClubColorMap(rows.map((row) => row.club)), [rows])
+
   if (rows.length === 0) {
     return (
       <p className="w-full text-center text-sm text-zinc-500 dark:text-zinc-400">
@@ -123,7 +130,7 @@ function ClubesTable({ rows, sortKey }) {
     <>
       <div className="flex w-full flex-col gap-3 sm:hidden">
         {rows.map((row, index) => (
-          <ClubCard key={row.key} row={row} index={index} sortKey={sortKey} />
+          <ClubCard key={row.key} row={row} index={index} sortKey={sortKey} clubColors={clubColors} />
         ))}
       </div>
 
@@ -154,7 +161,9 @@ function ClubesTable({ rows, sortKey }) {
                 >
                   <td className="px-2 py-3 text-sm font-black text-zinc-500">{index + 1}</td>
                   <td className="px-2 py-3">
-                    <p className="font-bold text-zinc-100">{row.club}</p>
+                    <p className="font-bold" style={{ color: clubColors.get(row.club) }}>
+                      {row.club}
+                    </p>
                     <p className="text-xs text-zinc-500">{row.temporada}</p>
                   </td>
                   <td

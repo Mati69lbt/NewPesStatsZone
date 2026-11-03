@@ -102,7 +102,7 @@ function TablaResumenRow({ row }) {
           </span>
         </span>
 
-        <div className="grid grid-cols-10 gap-x-px rounded-xl bg-zinc-50 dark:bg-zinc-900">
+        <div className="mt-3 grid grid-cols-10 gap-x-px rounded-xl border border-zinc-200/60 bg-gradient-to-b from-zinc-50 to-zinc-100 dark:border-zinc-700/40 dark:from-zinc-900/90 dark:to-zinc-950">
           <MobileCell label="PJ" value={metrics.pj} colorClass={METRICA_CLASSES.pj} />
           <MobileCell label="G" value={metrics.g} colorClass={METRICA_CLASSES.g} />
           <MobileCell label="E" value={metrics.e} colorClass={METRICA_CLASSES.e} />

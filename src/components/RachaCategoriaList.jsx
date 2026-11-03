@@ -66,21 +66,27 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria, clubActivo }) {
                   : 'bg-zinc-50 outline outline-1 outline-zinc-200 dark:bg-zinc-900 dark:outline-zinc-700'
               }`}
             >
-              {/* Mobile: renglón superior — índice + equipo + días */}
-              <div className="flex items-start justify-between gap-2 sm:hidden">
-                <div className="flex min-w-0 items-start gap-2">
+              {/* Mobile: renglón superior — índice + equipo | PJ | duración */}
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:hidden">
+                <div className="flex min-w-0 items-center gap-2 justify-self-start">
                   <span className="shrink-0 font-black text-zinc-500 dark:text-zinc-400">#{index + 1}</span>
                   <span
-                    className={`min-w-0 break-words text-sm font-bold ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
+                    className={`min-w-0 truncate text-sm font-bold ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
                     style={clubStyle}
                   >
                     {racha.club || '—'}
                   </span>
                 </div>
-                <DuracionBadge dias={dias} className="shrink-0" />
+                <span className="flex items-baseline gap-0.5 justify-self-center leading-none">
+                  <span className="text-base font-black text-lime-500 dark:text-lime-400">{racha.partidos}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wide text-lime-600 dark:text-lime-400/80">
+                    PJ
+                  </span>
+                </span>
+                <DuracionBadge dias={dias} className="shrink-0 justify-self-end" />
               </div>
 
-              {/* Mobile: renglón inferior — resultados, PJ y período */}
+              {/* Mobile: renglón inferior — resultados y período */}
               <div className="flex flex-wrap items-center justify-between gap-2 sm:hidden">
                 <div className="flex flex-wrap items-center gap-1">
                   <span className="whitespace-nowrap rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
@@ -102,9 +108,6 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria, clubActivo }) {
                   <span className="whitespace-nowrap rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
                     GC {racha.gc}
                   </span>
-                  <span className="whitespace-nowrap rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-bold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                    {racha.partidos} PJ
-                  </span>
                 </div>
                 <span className="whitespace-nowrap text-[10px] leading-tight text-zinc-500 dark:text-zinc-400">
                   {formatDateDisplay(racha.fechaInicio)} → {formatDateDisplay(racha.fechaFin)}
@@ -117,7 +120,7 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria, clubActivo }) {
               </span>
 
               <span
-                className={`hidden min-w-0 break-words pr-1 text-left font-bold sm:block ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
+                className={`hidden min-w-0 truncate pr-1 text-left font-bold sm:block ${clubClassName || 'text-zinc-700 dark:text-zinc-200'}`}
                 style={clubStyle}
               >
                 {racha.club || '—'}
@@ -149,11 +152,13 @@ function RachaCategoriaList({ ultimos5, mensajeVacio, categoria, clubActivo }) {
                 </div>
               </div>
 
-              <div className="hidden items-center justify-center gap-0.5 sm:flex">
-                <span className="whitespace-nowrap text-sm font-black text-zinc-900 dark:text-zinc-100">
+              <div className="hidden flex-col items-center justify-center leading-none sm:flex">
+                <span className="whitespace-nowrap text-2xl font-black text-lime-500 drop-shadow-[0_0_6px_rgba(163,230,53,0.45)] dark:text-lime-400">
                   {racha.partidos}
                 </span>
-                <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500">PJ</span>
+                <span className="text-[10px] font-bold uppercase tracking-wide text-lime-600 dark:text-lime-400/80">
+                  PJ
+                </span>
               </div>
 
               <div className="hidden flex-col items-start text-left text-[10px] leading-tight text-zinc-500 dark:text-zinc-400 sm:flex sm:text-xs">

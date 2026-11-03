@@ -4,7 +4,8 @@ import { ACTIVE_CLUB_TEXT_CLASS, isActiveClub } from '../utils/activeClub'
 
 const TH_CLASSES =
   'whitespace-nowrap px-1 py-2 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-[11px]'
-const TH_NUM_CLASSES = `${TH_CLASSES} text-center`
+const TH_NUM_CLASSES =
+  'whitespace-nowrap px-1 py-2 text-center text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 md:px-3 md:py-3 md:text-[11px]'
 const TD_CLASSES = 'px-1 py-2 text-xs text-zinc-600 dark:text-zinc-300 md:px-3 md:py-3 md:text-sm'
 const TD_BASE_CLASSES = 'px-1 py-2 text-xs md:px-3 md:py-3 md:text-sm'
 const TD_NUM_CLASSES = `${TD_CLASSES} text-center whitespace-nowrap`

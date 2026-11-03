@@ -19,21 +19,15 @@ function DuracionBadge({ dias }) {
 }
 
 function PeriodoCell({ fechaInicio, fechaFin }) {
-  return (
-    <td className="w-24 px-1.5 py-2 text-left md:w-28 md:px-3 md:py-3">
-      <span className="flex flex-col items-start whitespace-nowrap text-[10px] leading-tight text-zinc-500 dark:text-zinc-400 md:text-xs">
-        <span>{formatDateDisplay(fechaInicio)} →</span>
-        <span>{formatDateDisplay(fechaFin)}</span>
-      </span>
-    </td>
-  )
-}
-
-function DiasCell({ fechaInicio, fechaFin }) {
   const dias = diffDays(fechaInicio, fechaFin)
   return (
-    <td className="w-24 px-1.5 py-2 text-center md:w-28 md:px-3 md:py-3">
-      <DuracionBadge dias={dias} />
+    <td className="w-28 px-1.5 py-2 text-left md:w-32 md:px-3 md:py-3">
+      <div className="flex flex-col items-start gap-1">
+        <DuracionBadge dias={dias} />
+        <span className="whitespace-nowrap text-[10px] leading-tight text-zinc-500 dark:text-zinc-400 md:text-xs">
+          {formatDateDisplay(fechaInicio)} → {formatDateDisplay(fechaFin)}
+        </span>
+      </div>
     </td>
   )
 }
@@ -58,8 +52,7 @@ function JugadoresRachaGolTable({ rows, clubActivo }) {
             <th className="w-32 px-1.5 py-2 text-left md:w-44 md:px-3 md:py-3">Jugador</th>
             <th className={NUM_TH_CLASSES}>Racha</th>
             <th className={NUM_TH_CLASSES}>Goles</th>
-            <th className="w-24 px-1.5 py-2 text-left md:w-28 md:px-3 md:py-3">Período</th>
-            <th className="w-24 px-1.5 py-2 text-center md:w-28 md:px-3 md:py-3">Días</th>
+            <th className="w-28 px-1.5 py-2 text-left md:w-32 md:px-3 md:py-3">Período</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -94,7 +87,6 @@ function JugadoresRachaGolTable({ rows, clubActivo }) {
               <td className={`${NUM_TD_CLASSES} font-black text-lime-600 dark:text-lime-400`}>{row.partidos}</td>
               <td className={`${NUM_TD_CLASSES} font-black text-zinc-700 dark:text-zinc-200`}>{row.goles}</td>
               <PeriodoCell fechaInicio={row.fechaInicio} fechaFin={row.fechaFin} />
-              <DiasCell fechaInicio={row.fechaInicio} fechaFin={row.fechaFin} />
             </tr>
             )
           })}

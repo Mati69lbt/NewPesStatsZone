@@ -24,11 +24,6 @@ const CONDICIONES = [
   { value: 'visitante', label: 'Visitante' },
 ]
 
-function temporadaSortKey(temporada) {
-  const year = Number.parseInt(temporada, 10)
-  return Number.isNaN(year) ? 0 : year
-}
-
 function Ultimos10Page() {
   const user = useCurrentUser()
   const club = useClub(user?.uid)
@@ -80,10 +75,16 @@ function Ultimos10Page() {
         const capitanesTorneo = [...new Set(torneoMatches.map((m) => m.capitanNombre).filter(Boolean))].sort(
           (a, b) => a.localeCompare(b)
         )
+        const ultimaFecha = torneoMatches.reduce(
+          (max, m) => (new Date(m.fecha) > new Date(max) ? m.fecha : max),
+          torneoMatches[0].fecha
+        )
         return {
           key: `${torneo}::${temporada}`,
           torneo,
           temporada,
+          partidosJugados: torneoMatches.length,
+          ultimaFecha,
           ...buildStreakTrio(torneoMatches),
           capitanes: capitanesTorneo.map((capitan) => ({
             capitan,
@@ -91,10 +92,7 @@ function Ultimos10Page() {
           })),
         }
       })
-      .sort((a, b) => {
-        const diff = temporadaSortKey(b.temporada) - temporadaSortKey(a.temporada)
-        return diff !== 0 ? diff : a.torneo.localeCompare(b.torneo)
-      })
+      .sort((a, b) => new Date(b.ultimaFecha) - new Date(a.ultimaFecha))
   }, [clubMatches, tournamentResults])
 
   useEffect(() => {
@@ -190,9 +188,9 @@ function Ultimos10Page() {
                         onChange={(e) => setTorneoActivo(e.target.value)}
                         className={FIELD_CLASSES}
                       >
-                        {torneos.map(({ key, torneo, temporada }) => (
+                        {torneos.map(({ key, torneo, temporada, partidosJugados }) => (
                           <option key={key} value={key}>
-                            {torneo} {temporada}
+                            {torneo} {temporada} ({partidosJugados} PJ)
                           </option>
                         ))}
                       </select>
