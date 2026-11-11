@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function Accordion({ title, subtitle, badge, badgeLabel = 'PJ', defaultOpen = false, children, className = 'w-full' }) {
+function Accordion({ title, subtitle, badge, badgeLabel = 'REGISTROS', defaultOpen = false, children, className = 'w-full' }) {
   const [open, setOpen] = useState(defaultOpen)
 
   return (

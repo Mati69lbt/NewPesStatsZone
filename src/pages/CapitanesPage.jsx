@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import Accordion from '../components/Accordion'
-import CapitanCard from '../components/CapitanCard'
+import TablaResumenRow, { TablaResumenHeader } from '../components/TablaResumenRow'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
 import useTournamentResults from '../hooks/useTournamentResults'
-import { computeStats } from '../utils/versusStats'
+import { buildRecordPersonalRows } from '../utils/recordPersonalStats'
 import { getTemporadaLabel } from '../utils/dateFormat'
 
 const FIELD_CLASSES =
@@ -16,23 +16,30 @@ const FIELD_CLASSES =
 
 const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
 
-function buildCapitanStats(matches) {
-  return {
-    general: computeStats(matches),
-    local: computeStats(matches.filter((m) => m.condicion === 'local')),
-    visitante: computeStats(matches.filter((m) => m.condicion === 'visitante')),
-    neutral: computeStats(matches.filter((m) => m.condicion === 'neutral')),
-  }
-}
-
 function buildCapitanes(matches) {
   const nombres = [...new Set(matches.map((m) => m.capitanNombre).filter(Boolean))].sort((a, b) =>
     a.localeCompare(b)
   )
   return nombres.map((capitan) => ({
     capitan,
-    stats: buildCapitanStats(matches.filter((m) => m.capitanNombre === capitan)),
+    rows: buildRecordPersonalRows(matches.filter((m) => m.capitanNombre === capitan)),
   }))
+}
+
+function CapitanTablaResumen({ capitan, rows }) {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700/50 dark:bg-zinc-900/40">
+      <h3 className="mb-1 px-1 text-sm font-black uppercase tracking-wide text-zinc-700 dark:text-zinc-200">{capitan}</h3>
+      <div className="overflow-x-auto pt-3">
+        <div className="flex flex-col gap-4 md:min-w-[900px] md:gap-2">
+          <TablaResumenHeader />
+          {rows.map((row) => (
+            <TablaResumenRow key={row.condicion} row={row} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function CapitanesPage() {
@@ -154,9 +161,9 @@ function CapitanesPage() {
                 {capitanesGenerales.length === 0 ? (
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin capitanes registrados.</p>
                 ) : (
-                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    {capitanesGenerales.map(({ capitan, stats }) => (
-                      <CapitanCard key={capitan} capitan={capitan} stats={stats} />
+                  <div className="flex flex-col gap-4">
+                    {capitanesGenerales.map(({ capitan, rows }) => (
+                      <CapitanTablaResumen key={capitan} capitan={capitan} rows={rows} />
                     ))}
                   </div>
                 )}
@@ -178,9 +185,9 @@ function CapitanesPage() {
                       {capitanes.length === 0 ? (
                         <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin capitanes registrados.</p>
                       ) : (
-                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                          {capitanes.map(({ capitan, stats }) => (
-                            <CapitanCard key={capitan} capitan={capitan} stats={stats} />
+                        <div className="flex flex-col gap-4">
+                          {capitanes.map(({ capitan, rows }) => (
+                            <CapitanTablaResumen key={capitan} capitan={capitan} rows={rows} />
                           ))}
                         </div>
                       )}

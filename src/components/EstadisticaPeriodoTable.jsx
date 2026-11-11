@@ -50,20 +50,18 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
           <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
               <table className="w-full min-w-[360px] table-fixed border-collapse text-xs md:text-sm">
                 <colgroup>
-                  <col className="w-[7%]" />
-                  <col className="w-[24%]" />
-                  <col className="w-[15%]" />
-                  <col className="w-[10%]" />
-                  <col className="w-[10%]" />
-                  <col className="w-[7%]" />
-                  <col className="w-[7%]" />
-                  <col className="w-[20%]" />
+                  <col className="w-[8%]" />
+                  <col className="w-[32%]" />
+                  <col className="w-[13%]" />
+                  <col className="w-[13%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[12%]" />
                 </colgroup>
                 <thead>
                   <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
                     <th className="px-1.5 py-2 text-center md:px-3 md:py-3">Pos</th>
                     <th className="px-1.5 py-2 text-left md:px-3 md:py-3">Jugador</th>
-                    <th className="px-1.5 py-2 text-left md:px-3 md:py-3">Club</th>
                     <th className={NUM_TH_CLASSES}>PJ</th>
                     <th className={NUM_TH_CLASSES}>{isGoles ? 'G' : 'A'}</th>
                     <th className={COMPACT_TH_CLASSES}>x2</th>
@@ -85,26 +83,25 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
                         <td className="px-1.5 py-2 md:px-3 md:py-3">
                           <Posicion index={index} />
                         </td>
-                        <td
-                          className={`truncate overflow-hidden whitespace-nowrap px-1.5 py-2 text-left text-xs font-bold md:px-3 md:py-3 md:text-sm ${
-                            esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
-                          }`}
-                          title={row.nombre}
-                        >
-                          {row.nombre}
-                        </td>
-                        <td
-                          className="truncate overflow-hidden whitespace-nowrap px-1.5 py-2 text-left text-[10px] font-semibold md:px-3 md:py-3 md:text-xs"
-                          title={row.club ?? ''}
-                        >
-                          {row.club
-                            ? row.club.split(', ').map((club, clubIndex) => (
-                                <span key={club}>
-                                  {clubIndex > 0 && <span className="text-zinc-500 dark:text-zinc-500">, </span>}
-                                  <span style={{ color: clubColors.get(club) }}>{club}</span>
-                                </span>
-                              ))
-                            : '-'}
+                        <td className="break-words px-1.5 py-2 text-left md:px-3 md:py-3">
+                          <div
+                            className={`truncate text-xs font-bold md:text-sm ${
+                              esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
+                            }`}
+                            title={row.nombre}
+                          >
+                            {row.nombre}
+                          </div>
+                          <div className="truncate text-[10px] md:text-xs" title={row.club ?? ''}>
+                            {row.club
+                              ? row.club.split(', ').map((club, clubIndex) => (
+                                  <span key={club}>
+                                    {clubIndex > 0 && <span className="text-zinc-500 dark:text-zinc-500">, </span>}
+                                    <span style={{ color: clubColors.get(club) }}>{club}</span>
+                                  </span>
+                                ))
+                              : '-'}
+                          </div>
                         </td>
                         <td className={`${NUM_TD_CLASSES} text-zinc-600 dark:text-zinc-300`}>{row.pj}</td>
                         <td className={`${NUM_TD_CLASSES} font-bold text-lime-600 dark:text-lime-400`}>
@@ -121,7 +118,7 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
                 </tbody>
                 <tfoot>
                   <tr className="border-t-2 border-zinc-200 bg-gray-50 text-[10px] font-bold uppercase text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 md:text-xs">
-                    <td className="px-1.5 py-1.5 md:px-3 md:py-3" colSpan={4}>
+                    <td className="px-1.5 py-1.5 md:px-3 md:py-3" colSpan={3}>
                       Total
                     </td>
                     <td className={`${NUM_TD_CLASSES} text-lime-600 dark:text-lime-400`}>{total}</td>
