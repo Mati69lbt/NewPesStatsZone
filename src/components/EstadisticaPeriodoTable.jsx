@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 import { ACTIVE_CLUB_TEXT_CLASS, isActiveClub } from '../utils/activeClub'
 import { buildClubColorMap } from '../utils/clubColors'
 
-const NUM_TH_CLASSES = 'px-1 py-2 text-center md:px-2 md:py-3'
-const NUM_TD_CLASSES = 'px-1 py-2 text-center text-xs md:px-2 md:py-3 md:text-sm'
-const COMPACT_TH_CLASSES = 'px-0.5 py-2 text-center md:px-1.5 md:py-3'
-const COMPACT_TD_CLASSES = 'px-0.5 py-2 text-center text-xs md:px-1.5 md:py-3 md:text-sm'
+const NUM_TH_CLASSES = 'px-1 pt-1.5 pb-0.5 text-center md:px-2 md:pt-2 md:pb-1'
+const NUM_TD_CLASSES = 'px-1 pt-1.5 pb-0.5 text-center text-xs md:px-2 md:pt-2 md:pb-1 md:text-sm'
+const COMPACT_TH_CLASSES = 'px-0.5 pt-1.5 pb-0.5 text-center md:px-1.5 md:pt-2 md:pb-1'
+const COMPACT_TD_CLASSES = 'px-0.5 pt-1.5 pb-0.5 text-center text-xs md:px-1.5 md:pt-2 md:pb-1 md:text-sm'
 
 const MEDALLAS = ['🥇', '🥈', '🥉']
 
@@ -60,8 +60,8 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
                 </colgroup>
                 <thead>
                   <tr className="border-b border-zinc-200 bg-gray-50 text-left text-[10px] font-bold uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 md:text-[11px]">
-                    <th className="px-1.5 py-2 text-center md:px-3 md:py-3">Pos</th>
-                    <th className="px-1.5 py-2 text-left md:px-3 md:py-3">Jugador</th>
+                    <th className="px-1.5 pt-1.5 pb-0.5 text-center md:px-3 md:pt-2 md:pb-1">Pos</th>
+                    <th className="px-1.5 pt-1.5 pb-0.5 text-left md:px-3 md:pt-2 md:pb-1">Jugador</th>
                     <th className={NUM_TH_CLASSES}>PJ</th>
                     <th className={NUM_TH_CLASSES}>{isGoles ? 'G' : 'A'}</th>
                     <th className={COMPACT_TH_CLASSES}>x2</th>
@@ -80,10 +80,10 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
                         key={row.nombre}
                         className="odd:bg-white even:bg-gray-100 transition hover:bg-lime-50 dark:odd:bg-zinc-900 dark:even:bg-zinc-800 dark:hover:bg-zinc-700/70"
                       >
-                        <td className="px-1.5 py-2 md:px-3 md:py-3">
+                        <td className="px-1.5 pt-1.5 pb-0.5 md:px-3 md:pt-2 md:pb-1">
                           <Posicion index={index} />
                         </td>
-                        <td className="break-words px-1.5 py-2 text-left md:px-3 md:py-3">
+                        <td className="break-words px-1.5 pt-1.5 pb-0.5 text-left md:px-3 md:pt-2 md:pb-1">
                           <div
                             className={`truncate text-xs font-bold md:text-sm ${
                               esClubActivo ? ACTIVE_CLUB_TEXT_CLASS : 'text-zinc-900 dark:text-zinc-100'
@@ -118,7 +118,7 @@ function EstadisticaPeriodoTable({ titulo, rows, metrica, clubActivo }) {
                 </tbody>
                 <tfoot>
                   <tr className="border-t-2 border-zinc-200 bg-gray-50 text-[10px] font-bold uppercase text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 md:text-xs">
-                    <td className="px-1.5 py-1.5 md:px-3 md:py-3" colSpan={3}>
+                    <td className="px-1.5 py-1.5 md:px-3 md:py-2" colSpan={3}>
                       Total
                     </td>
                     <td className={`${NUM_TD_CLASSES} text-lime-600 dark:text-lime-400`}>{total}</td>

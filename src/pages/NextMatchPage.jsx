@@ -5,6 +5,7 @@ import VersusSummaryMatrix from "../components/VersusSummaryMatrix";
 import ScorersTable from "../components/ScorersTable";
 import NextMatchCard from "../components/NextMatchCard";
 import NextMatchSummaryTable from "../components/NextMatchSummaryTable";
+import Accordion from "../components/Accordion";
 import useCurrentUser from "../hooks/useCurrentUser";
 import useClub from "../hooks/useClub";
 import useMatches from "../hooks/useMatches";
@@ -155,9 +156,13 @@ function NextMatchPage() {
         </div>
 
         <div className="flex w-full max-w-6xl flex-col items-center gap-6">
-          <VersusSummaryMatrix stats={stats} showPoints />
+          <Accordion title="Resumen" className="w-full">
+            <VersusSummaryMatrix stats={stats} showPoints />
+          </Accordion>
 
-          <NextMatchSummaryTable stats={stats} />
+          <Accordion title="Tabla Resumen" className="w-full">
+            <NextMatchSummaryTable stats={stats} title={null} />
+          </Accordion>
 
           {rivalActivo && (
             <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">

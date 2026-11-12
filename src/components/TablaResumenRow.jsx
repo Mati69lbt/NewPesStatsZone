@@ -23,8 +23,14 @@ const NIVELES = {
 
 function signClasses(value) {
   if (value > 0) return 'text-emerald-400'
-  if (value < 0) return 'text-rose-400'
+  if (value < 0) return 'text-red-400'
   return 'text-amber-400'
+}
+
+function getRowClasses(g, p) {
+  if (g > p) return 'border-emerald-500/30 bg-emerald-500/10'
+  if (g < p) return 'border-rose-500/30 bg-rose-500/10'
+  return 'border-amber-500/30 bg-amber-500/10'
 }
 
 function formatEfec(efectividad) {
@@ -50,17 +56,25 @@ const METRICA_CLASSES = {
 
 const HEADER_LABELS = ['PJ', 'G', 'E', 'P', 'G/P', 'GF', 'GC', 'DF', 'PROM GF', 'PROM GC', 'PTS', '%EFEC']
 
-function DesktopCell({ value, colorClass }) {
+function DesktopCell({ value, colorClass, borderClass }) {
   return (
-    <div className="flex items-center justify-center rounded-lg bg-zinc-900 px-1 py-3 text-sm font-bold">
+    <div
+      className={`flex items-center justify-center rounded-lg bg-zinc-900 px-1 py-3 text-sm font-bold ${
+        borderClass ? `border ${borderClass}` : ''
+      }`}
+    >
       <span className={colorClass}>{value}</span>
     </div>
   )
 }
 
-function MobileCell({ label, value, colorClass }) {
+function MobileCell({ label, value, colorClass, borderClass }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-0.5 px-px">
+    <div
+      className={`flex flex-col items-center justify-center gap-0.5 rounded-md px-px py-0.5 ${
+        borderClass ? `border ${borderClass}` : ''
+      }`}
+    >
       <span className="text-[7px] font-semibold uppercase tracking-wide leading-none text-zinc-400 dark:text-zinc-500">
         {label}
       </span>
@@ -79,7 +93,7 @@ function TablaResumenRow({ row }) {
     <>
       {/* Desktop */}
       <div
-        className={`hidden md:grid grid-cols-[110px_repeat(12,1fr)] items-stretch gap-1.5 rounded-xl border bg-white p-3 shadow dark:bg-zinc-800 ${nivel.border} border-l-4`}
+        className={`hidden md:grid grid-cols-[110px_repeat(12,1fr)] items-stretch gap-1.5 rounded-xl border border-l-4 p-3 shadow ${getRowClasses(metrics.g, metrics.p)} ${nivel.border}`}
       >
         <div className="flex items-center text-xs font-black uppercase tracking-wide text-zinc-700 dark:text-zinc-200">
           {titulo}
@@ -100,9 +114,9 @@ function TablaResumenRow({ row }) {
 
       {/* Mobile */}
       <div
-        className={`relative rounded-xl border border-l-4 bg-white pt-0.5 dark:border-zinc-700/50 dark:bg-zinc-800 md:hidden ${nivel.border}`}
+        className={`relative rounded-xl border border-l-4 pt-0.5 md:hidden ${getRowClasses(metrics.g, metrics.p)} ${nivel.border}`}
       >
-        <span className="absolute -top-2.5 left-2 flex items-center gap-1.5 whitespace-nowrap bg-white px-1.5 dark:bg-zinc-800">
+        <span className="absolute -top-2.5 left-2 flex items-center gap-1.5 whitespace-nowrap bg-white px-1.5 dark:bg-zinc-900">
           <span className={`text-[11px] font-black uppercase tracking-wide ${nivel.text}`}>{nivel.abr}</span>
           <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">PTS: {ptsEfec}</span>
         </span>

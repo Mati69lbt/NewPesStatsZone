@@ -7,6 +7,7 @@ import FormacionPage from './pages/FormacionPage'
 import RegistrarPartidoPage from './pages/RegistrarPartidoPage'
 import PartidosPage from './pages/PartidosPage'
 import VersusPage from './pages/VersusPage'
+import RivalesFrecuentesPage from './pages/RivalesFrecuentesPage'
 import NextMatchPage from './pages/NextMatchPage'
 import TemporadasPage from './pages/TemporadasPage'
 import TemporadasTablaPage from './pages/TemporadasTablaPage'
@@ -39,6 +40,7 @@ function App() {
         <Route path="/registrar-partido" element={<RegistrarPartidoPage />} />
         <Route path="/partidos" element={<PartidosPage />} />
         <Route path="/versus" element={<VersusPage />} />
+        <Route path="/rivales-frecuentes" element={<RivalesFrecuentesPage />} />
         <Route path="/next-match" element={<NextMatchPage />} />
         <Route path="/temporadas" element={<TemporadasPage />} />
         <Route path="/temporadas-tabla" element={<TemporadasTablaPage />} />

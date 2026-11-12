@@ -38,6 +38,12 @@ const COLOR_CLASSES = {
   promGc: 'border-zinc-200 text-red-500 dark:border-zinc-700 dark:text-red-400',
 }
 
+function getRowClasses(g, p) {
+  if (g > p) return 'border-emerald-500/30 bg-emerald-500/10'
+  if (g < p) return 'border-rose-500/30 bg-rose-500/10'
+  return 'border-amber-500/30 bg-amber-500/10'
+}
+
 function signClasses(value) {
   if (value > 0) return 'border-emerald-500 text-emerald-600 dark:border-emerald-400 dark:text-emerald-300'
   if (value < 0) return 'border-rose-500 text-rose-600 dark:border-rose-400 dark:text-rose-300'
@@ -97,7 +103,7 @@ function DesktopTable({ stats }) {
             return (
               <div
                 key={key}
-                className={`grid grid-cols-[110px_repeat(12,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-l-4 bg-white p-1.5 dark:border-zinc-700/50 dark:bg-zinc-900 ${variant.border}`}
+                className={`grid grid-cols-[110px_repeat(12,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-l-4 p-1.5 ${getRowClasses(g, p)} ${variant.border}`}
               >
                 <div
                   className={`flex items-center justify-center rounded-lg bg-zinc-100 px-1 py-2.5 text-xs font-black uppercase tracking-wide dark:bg-zinc-800 ${variant.title}`}
@@ -163,14 +169,18 @@ function MobileCards({ stats }) {
         return (
           <div
             key={key}
-            className={`relative rounded-xl border border-l-4 bg-white pt-1 dark:border-zinc-700/50 dark:bg-zinc-800 ${variant.border}`}
+            className={`relative rounded-xl border border-l-4 pt-1 ${getRowClasses(g, p)} ${variant.border}`}
           >
             <span
-              className={`absolute -top-2.5 left-2 flex items-center gap-1.5 whitespace-nowrap bg-white px-1.5 dark:bg-zinc-800`}
+              className={`absolute -top-2.5 left-2 flex items-center gap-1.5 whitespace-nowrap bg-white px-1.5 dark:bg-zinc-900`}
             >
               <span className={`text-[11px] font-black uppercase tracking-wide ${variant.title}`}>{short}</span>
-              <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
-                PTS: {pts}/{ptsPosibles} - {formatEfectividad(pts, ptsPosibles)}%
+              <span className="text-[11px] font-bold text-zinc-700 dark:text-white">
+                PTS: <span className="text-cyan-500 dark:text-cyan-400">{pts}</span> /{' '}
+                <span className="text-cyan-500 dark:text-cyan-400">{ptsPosibles}</span> -{' '}
+                <span className="text-violet-500 dark:text-violet-400">
+                  {formatEfectividad(pts, ptsPosibles)}%
+                </span>
               </span>
             </span>
 
