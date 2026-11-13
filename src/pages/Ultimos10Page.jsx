@@ -5,6 +5,7 @@ import StreakCard from '../components/StreakCard'
 import StreakRow from '../components/StreakRow'
 import Accordion from '../components/Accordion'
 import CondicionTabs from '../components/CondicionTabs'
+import RachasActualesSection from '../components/RachasActualesSection'
 import RachasAvanzadasSection from '../components/RachasAvanzadasSection'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
@@ -233,6 +234,8 @@ function Ultimos10Page() {
                   </div>
                 )}
               </Accordion>
+
+              <RachasActualesSection matches={clubMatches} clubActivo={clubActivo} />
 
               <RachasAvanzadasSection matches={clubMatches} allMatches={matches} clubActivo={clubActivo} />
             </>
