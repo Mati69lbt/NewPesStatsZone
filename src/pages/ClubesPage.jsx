@@ -9,8 +9,6 @@ import useMatches from '../hooks/useMatches'
 import { computeStats } from '../utils/versusStats'
 import { getTemporadaLabel } from '../utils/dateFormat'
 
-const LABEL_CLASSES = 'mb-1 block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'
-
 const FORMATOS = [
   { value: 'anual', label: 'Anual' },
   { value: 'europeo', label: 'Europeo' },
@@ -86,29 +84,21 @@ function ClubesPage() {
     <div className="flex min-h-dvh w-full max-w-full flex-col overflow-x-hidden bg-zinc-100 dark:bg-zinc-950">
       <Navbar />
 
-      <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden py-10">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4">
-          <div>
-            <Link
-              to="/temporadas"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 transition hover:text-lime-500 dark:text-zinc-400 dark:hover:text-lime-400"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-              Volver a Temporadas
-            </Link>
-          </div>
+      <main className="flex w-full max-w-full flex-1 flex-col items-center overflow-x-hidden px-4 py-6">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
+          <Link
+            to="/temporadas-tabla"
+            className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-zinc-500 transition hover:text-lime-500 dark:text-zinc-400 dark:hover:text-lime-400"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+            Volver a Tabla Resumen
+          </Link>
 
-          <div className="text-center">
-            <h1 className="flex items-center justify-center gap-2 text-3xl font-black uppercase tracking-wide text-zinc-900 dark:text-zinc-100">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="h-7 w-7 text-lime-500"
-              >
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-lime-400/10 text-lime-500 dark:text-lime-400">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-6 w-6">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -116,26 +106,30 @@ function ClubesPage() {
                 />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.5a2.25 2.25 0 104.5 0 2.25 2.25 0 00-4.5 0z" />
               </svg>
-              Clubes
-            </h1>
-            <p className="text-sm font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
-              {sortedRows.length} {sortedRows.length === 1 ? 'entrada' : 'entradas'}
-            </p>
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-black leading-tight text-zinc-900 dark:text-zinc-100">Clubes</h1>
+              <p className="text-sm text-zinc-500 dark:text-zinc-500">
+                {sortedRows.length} {sortedRows.length === 1 ? 'club dirigido' : 'clubes dirigidos'}
+              </p>
+            </div>
           </div>
 
-          <div className="flex w-full flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
-            <div>
-              <label className={LABEL_CLASSES}>Formato</label>
-              <div className="flex w-fit overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
+          <div className="w-full overflow-hidden rounded-2xl border border-t-4 border-zinc-200 border-t-lime-400 bg-white shadow dark:border-zinc-700/60 dark:border-t-lime-400 dark:bg-zinc-800">
+            <div className="flex flex-wrap items-center gap-2.5 px-4 py-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                Formato
+              </span>
+              <div className="inline-flex rounded-lg bg-zinc-100 p-1 dark:bg-zinc-900/60">
                 {FORMATOS.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => setFormato(value)}
-                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wide transition ${
+                    className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${
                       formato === value
-                        ? 'bg-lime-400 text-zinc-900'
-                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+                        ? 'bg-lime-400 text-zinc-900 shadow-sm'
+                        : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                     }`}
                   >
                     {label}
@@ -144,8 +138,10 @@ function ClubesPage() {
               </div>
             </div>
 
-            <div>
-              <label className={LABEL_CLASSES}>Ordenar por</label>
+            <div className="flex flex-wrap items-center gap-2 border-t border-zinc-100 px-4 py-3 dark:border-zinc-700/60">
+              <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                Orden
+              </span>
               <ClubesSortBar sortKey={sortKey} sortDir={sortDir} onSort={handleSort} />
             </div>
           </div>

@@ -2,15 +2,15 @@ import { useMemo } from 'react'
 import { buildClubColorMap } from '../utils/clubColors'
 
 function getBadgeClasses(value) {
-  if (value > 0) return 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-  if (value < 0) return 'border-rose-500 bg-rose-500/10 text-rose-400'
-  return 'border-amber-500 bg-amber-500/10 text-amber-400'
+  if (value > 0) return 'text-emerald-400'
+  if (value < 0) return 'text-rose-400'
+  return 'text-amber-400'
 }
 
 function StatBadge({ value }) {
   return (
     <span
-      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-full border px-1.5 text-xs font-bold ${getBadgeClasses(
+      className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs font-bold ${getBadgeClasses(
         value
       )}`}
     >
@@ -26,7 +26,7 @@ function StatMini({ label, value, active }) {
     <div className="flex flex-shrink-0 flex-col items-center gap-1">
       <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">{label}</span>
       <span
-        className={`flex h-7 items-center justify-center text-xs font-bold ${
+        className={`flex h-6 items-center justify-center text-xs font-bold ${
           active ? HIGHLIGHT_CLASSES : 'text-zinc-200'
         }`}
       >
@@ -54,7 +54,7 @@ function CapitanCard({ row, index, sortKey, clubColors }) {
   const isActive = (key) => sortKey === key
 
   return (
-    <div className="relative mb-3 mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 pb-3 pt-2">
+    <div className="relative mb-1 mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 pb-1.5 pt-1.5">
       <div className="absolute -top-2.5 inset-x-2 flex items-center justify-between gap-2 bg-zinc-900 px-1">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex-shrink-0 text-base font-black text-zinc-500">{index + 1}</span>
@@ -78,7 +78,7 @@ function CapitanCard({ row, index, sortKey, clubColors }) {
       </div>
 
       <div className="mt-1.5 overflow-x-auto">
-        <div className="flex w-max min-w-full items-start justify-evenly gap-3">
+        <div className="flex w-max min-w-full items-start justify-evenly gap-2.5">
           <StatMini label="PJ" value={row.pj} active={isActive('pj')} />
           <StatMini label="G" value={row.g} active={isActive('g')} />
           <StatMini label="E" value={row.e} active={isActive('e')} />
@@ -97,7 +97,7 @@ function CapitanCard({ row, index, sortKey, clubColors }) {
             <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500 whitespace-nowrap">
               PROM GF/GC
             </span>
-            <span className="flex h-7 items-center justify-center">
+            <span className="flex h-6 items-center justify-center">
               <PromGfGc
                 promGf={row.promGf}
                 promGc={row.promGc}
@@ -109,13 +109,13 @@ function CapitanCard({ row, index, sortKey, clubColors }) {
         </div>
       </div>
 
-      <div className="absolute -bottom-2.5 inset-x-2 flex justify-center bg-zinc-900 px-1">
+      <div className="absolute -bottom-0.5 inset-x-2 flex justify-center bg-zinc-900 px-1 leading-none">
         {row.club ? (
-          <span className="truncate text-xs font-semibold" style={{ color: clubColors.get(row.club) }}>
+          <span className="truncate text-[11px] font-semibold leading-none" style={{ color: clubColors.get(row.club) }}>
             {row.club}
           </span>
         ) : (
-          <span className="truncate text-xs font-semibold text-zinc-500">Sin club</span>
+          <span className="truncate text-[11px] font-semibold leading-none text-zinc-500">Sin club</span>
         )}
       </div>
     </div>
@@ -136,7 +136,7 @@ function CapitanesResumenTable({ rows, sortKey }) {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-3 sm:hidden">
+      <div className="flex w-full flex-col gap-1.5 sm:hidden">
         {rows.map((row, index) => (
           <CapitanCard key={row.key} row={row} index={index} sortKey={sortKey} clubColors={clubColors} />
         ))}

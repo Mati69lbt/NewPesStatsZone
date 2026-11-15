@@ -38,7 +38,7 @@ function RivalResumenCard({ rival, matches, defaultOpen }) {
             <span className="text-rose-400">{general.p}D</span> · {formatEfec(general.efectividad)} efec.
           </p>
           <p className="truncate text-[10px] text-zinc-500">
-            Con: {clubesResumen.map(([clubName, count]) => `${clubName} (${count})`).join(', ')}
+            {clubesResumen.map(([clubName, count]) => `${clubName} (${count})`).join(', ')}
           </p>
         </div>
 

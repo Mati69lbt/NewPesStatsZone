@@ -1,36 +1,46 @@
 import { useMemo } from 'react'
 import { buildClubColorMap } from '../utils/clubColors'
 
-function getBadgeClasses(value) {
-  if (value > 0) return 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-  if (value < 0) return 'border-rose-500 bg-rose-500/10 text-rose-400'
-  return 'border-amber-500 bg-amber-500/10 text-amber-400'
-}
-
-function StatBadge({ value }) {
-  return (
-    <span
-      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-full border px-1.5 text-xs font-bold ${getBadgeClasses(
-        value
-      )}`}
-    >
-      {value > 0 ? `+${value}` : value}
-    </span>
-  )
+function signClasses(value) {
+  if (value > 0) return 'text-emerald-400'
+  if (value < 0) return 'text-rose-400'
+  return 'text-amber-400'
 }
 
 const HIGHLIGHT_CLASSES = 'text-amber-400'
 
-function StatMini({ label, value, active }) {
+const METRICA_CLASSES = {
+  pj: 'text-orange-400',
+  g: 'text-lime-400',
+  e: 'text-amber-400',
+  p: 'text-rose-400',
+  gf: 'text-sky-400',
+  gc: 'text-red-400',
+}
+
+function StatMini({ label, value, active, colorClass }) {
   return (
-    <div className="flex flex-shrink-0 flex-col items-center gap-1">
-      <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">{label}</span>
+    <div className="flex flex-shrink-0 flex-col items-center gap-0.5">
       <span
-        className={`flex h-7 items-center justify-center text-xs font-bold ${
-          active ? HIGHLIGHT_CLASSES : 'text-zinc-200'
-        }`}
+        className={`text-[9px] font-semibold uppercase tracking-wider ${active ? HIGHLIGHT_CLASSES : 'text-zinc-500'}`}
       >
-        {value}
+        {label}
+      </span>
+      <span className={`flex h-6 items-center justify-center text-xs font-bold ${colorClass}`}>{value}</span>
+    </div>
+  )
+}
+
+function SignStat({ label, value, active }) {
+  return (
+    <div className="flex flex-shrink-0 flex-col items-center gap-0.5">
+      <span
+        className={`text-[9px] font-semibold uppercase tracking-wider ${active ? HIGHLIGHT_CLASSES : 'text-zinc-500'}`}
+      >
+        {label}
+      </span>
+      <span className={`flex h-6 items-center justify-center text-xs font-bold ${signClasses(value)}`}>
+        {value > 0 ? `+${value}` : value}
       </span>
     </div>
   )
@@ -54,7 +64,7 @@ function ClubCard({ row, index, sortKey, clubColors }) {
   const isActive = (key) => sortKey === key
 
   return (
-    <div className="relative mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 pb-2 pt-2">
+    <div className="relative mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 pb-1 pt-2">
       <div className="absolute -top-2.5 inset-x-2 flex items-center justify-between gap-2 bg-zinc-900 px-1">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex-shrink-0 text-base font-black text-zinc-500">{index + 1}</span>
@@ -81,25 +91,19 @@ function ClubCard({ row, index, sortKey, clubColors }) {
 
       <div className="mt-1.5 overflow-x-auto">
         <div className="flex w-max min-w-full items-start justify-evenly gap-3">
-          <StatMini label="PJ" value={row.pj} active={isActive('pj')} />
-          <StatMini label="G" value={row.g} active={isActive('g')} />
-          <StatMini label="E" value={row.e} active={isActive('e')} />
-          <StatMini label="P" value={row.p} active={isActive('p')} />
-          <div className="flex flex-shrink-0 flex-col items-center gap-1">
-            <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">G/P</span>
-            <StatBadge value={row.gp} />
-          </div>
-          <StatMini label="GF" value={row.gf} active={isActive('gf')} />
-          <StatMini label="GC" value={row.gc} active={isActive('gc')} />
-          <div className="flex flex-shrink-0 flex-col items-center gap-1">
-            <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500">DIF</span>
-            <StatBadge value={row.df} />
-          </div>
-          <div className="flex flex-shrink-0 flex-col items-center gap-1">
+          <StatMini label="PJ" value={row.pj} active={isActive('pj')} colorClass={METRICA_CLASSES.pj} />
+          <StatMini label="G" value={row.g} active={isActive('g')} colorClass={METRICA_CLASSES.g} />
+          <StatMini label="E" value={row.e} active={isActive('e')} colorClass={METRICA_CLASSES.e} />
+          <StatMini label="P" value={row.p} active={isActive('p')} colorClass={METRICA_CLASSES.p} />
+          <SignStat label="G/P" value={row.gp} active={isActive('gp')} />
+          <StatMini label="GF" value={row.gf} active={isActive('gf')} colorClass={METRICA_CLASSES.gf} />
+          <StatMini label="GC" value={row.gc} active={isActive('gc')} colorClass={METRICA_CLASSES.gc} />
+          <SignStat label="DIF" value={row.df} active={isActive('df')} />
+          <div className="flex flex-shrink-0 flex-col items-center gap-0.5">
             <span className="text-[9px] font-semibold uppercase tracking-wider text-zinc-500 whitespace-nowrap">
               PROM GF/GC
             </span>
-            <span className="flex h-7 items-center justify-center">
+            <span className="flex h-6 items-center justify-center">
               <PromGfGc
                 promGf={row.promGf}
                 promGc={row.promGc}
@@ -145,10 +149,10 @@ function ClubesTable({ rows, sortKey }) {
                 <th className={`px-1.5 py-3 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : ''}`}>G</th>
                 <th className={`px-1.5 py-3 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : ''}`}>E</th>
                 <th className={`px-1.5 py-3 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : ''}`}>P</th>
-                <th className="px-1.5 py-3 text-center">G/P</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('gp') ? HIGHLIGHT_CLASSES : ''}`}>G/P</th>
                 <th className={`px-1.5 py-3 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : ''}`}>GF</th>
                 <th className={`px-1.5 py-3 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : ''}`}>GC</th>
-                <th className="px-1.5 py-3 text-center">DIF</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('df') ? HIGHLIGHT_CLASSES : ''}`}>DIF</th>
                 <th className="px-1.5 py-3 text-center">PROM GF/GC</th>
                 <th className="px-2 py-3 text-center">%</th>
               </tr>
@@ -166,33 +170,17 @@ function ClubesTable({ rows, sortKey }) {
                     </p>
                     <p className="text-xs text-zinc-500">{row.temporada}</p>
                   </td>
-                  <td
-                    className={`px-1.5 py-3 text-center font-semibold ${
-                      isActive('pj') ? HIGHLIGHT_CLASSES : 'text-zinc-200'
-                    }`}
-                  >
-                    {row.pj}
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.pj}`}>{row.pj}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.g}`}>{row.g}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.e}`}>{row.e}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.p}`}>{row.p}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${signClasses(row.gp)}`}>
+                    {row.gp > 0 ? `+${row.gp}` : row.gp}
                   </td>
-                  <td className={`px-1.5 py-3 text-center ${isActive('g') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
-                    {row.g}
-                  </td>
-                  <td className={`px-1.5 py-3 text-center ${isActive('e') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
-                    {row.e}
-                  </td>
-                  <td className={`px-1.5 py-3 text-center ${isActive('p') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
-                    {row.p}
-                  </td>
-                  <td className="px-1.5 py-3 text-center">
-                    <StatBadge value={row.gp} />
-                  </td>
-                  <td className={`px-1.5 py-3 text-center ${isActive('gf') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
-                    {row.gf}
-                  </td>
-                  <td className={`px-1.5 py-3 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : 'text-zinc-300'}`}>
-                    {row.gc}
-                  </td>
-                  <td className="px-1.5 py-3 text-center">
-                    <StatBadge value={row.df} />
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.gf}`}>{row.gf}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${METRICA_CLASSES.gc}`}>{row.gc}</td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${signClasses(row.df)}`}>
+                    {row.df > 0 ? `+${row.df}` : row.df}
                   </td>
                   <td className="px-1.5 py-3 text-center">
                     <PromGfGc
