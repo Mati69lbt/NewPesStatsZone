@@ -49,7 +49,7 @@ function RecordPersonalRow({ row }) {
   return (
     <>
       {/* Desktop */}
-      <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700/50 dark:bg-zinc-800 md:grid">
+      <div className="hidden grid-cols-[120px_repeat(12,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-700/50 dark:bg-zinc-800 md:grid">
         <div className="flex items-center justify-center rounded-lg bg-zinc-100 px-1 py-3 text-xs font-black uppercase tracking-wide text-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
           {titulo}
         </div>
@@ -68,6 +68,7 @@ function RecordPersonalRow({ row }) {
         >
           {ptsEfec}
         </div>
+        <DesktopCell value={metrics.puntosObtenidos - metrics.puntosPosibles} highlight />
       </div>
 
       {/* Mobile */}
@@ -88,7 +89,7 @@ function RecordPersonalRow({ row }) {
           <MobileCell label="PROM GF" value={formatProm(metrics.promGf)} />
           <MobileCell label="PROM GC" value={formatProm(metrics.promGc)} />
         </div>
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-3 gap-1.5">
           <MobileCell label="DIF" value={metrics.dif} highlight />
           <div
             className={`flex flex-col items-center justify-center gap-0.5 rounded-lg border bg-zinc-50 px-1 py-2 dark:bg-zinc-900/40 ${NEUTRAL_CELL_CLASSES}`}
@@ -98,6 +99,7 @@ function RecordPersonalRow({ row }) {
             </span>
             <span className="text-center text-xs font-bold">{ptsEfec}</span>
           </div>
+          <MobileCell label="DIF PTS" value={metrics.puntosObtenidos - metrics.puntosPosibles} highlight />
         </div>
       </fieldset>
     </>

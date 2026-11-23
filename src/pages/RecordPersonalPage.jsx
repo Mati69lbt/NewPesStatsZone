@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import Loader from '../components/Loader'
 import Accordion from '../components/Accordion'
 import RecordPersonalRow from '../components/RecordPersonalRow'
-import TablaResumenRow from '../components/TablaResumenRow'
+import TablaResumenRow, { TablaResumenHeader } from '../components/TablaResumenRow'
 import useCurrentUser from '../hooks/useCurrentUser'
 import useClub from '../hooks/useClub'
 import useMatches from '../hooks/useMatches'
@@ -30,6 +30,7 @@ const HEADERS = [
   'PROM GC',
   'DIF. DE GOLES',
   'PTS / EFEC',
+  'DIF. PTS',
 ]
 
 function RecordPersonalPage() {
@@ -123,7 +124,7 @@ function RecordPersonalPage() {
 
           <Accordion title="Tabla Actual" subtitle="Versión vigente">
             <div className="flex flex-col gap-3">
-              <div className="hidden grid-cols-[120px_repeat(11,minmax(0,1fr))] gap-1.5 px-2 md:grid">
+              <div className="hidden grid-cols-[120px_repeat(12,minmax(0,1fr))] gap-1.5 px-2 md:grid">
                 <span></span>
                 {HEADERS.map((h) => (
                   <span
@@ -143,6 +144,7 @@ function RecordPersonalPage() {
 
           <Accordion title="Tabla Resumen" subtitle="Nuevo diseño propuesto">
             <div className="flex flex-col gap-4">
+              <TablaResumenHeader />
               {rows.map((row) => (
                 <TablaResumenRow key={row.condicion} row={row} />
               ))}

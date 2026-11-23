@@ -68,6 +68,11 @@ function CapitanCard({ row, index, sortKey, clubColors }) {
             {row.pts} / {row.ptsPosibles}
           </p>
           <span
+            className={`text-xs font-bold ${isActive('difPts') ? HIGHLIGHT_CLASSES : 'text-rose-400'}`}
+          >
+            ({row.difPts > 0 ? `+${row.difPts}` : row.difPts})
+          </span>
+          <span
             className={`inline-flex items-center rounded-full border border-purple-500 bg-purple-500/10 px-2 py-0.5 text-xs font-extrabold ${
               isActive('pct') ? HIGHLIGHT_CLASSES : 'text-purple-400'
             }`}
@@ -218,6 +223,13 @@ function CapitanesResumenTable({ rows, sortKey }) {
                   <td className="px-3 py-3 text-center">
                     <p className="text-sm font-bold text-emerald-400">
                       {row.pts} / {row.ptsPosibles}
+                    </p>
+                    <p
+                      className={`text-[10px] font-semibold ${
+                        isActive('difPts') ? HIGHLIGHT_CLASSES : 'text-rose-400'
+                      }`}
+                    >
+                      ({row.difPts > 0 ? `+${row.difPts}` : row.difPts})
                     </p>
                     <p
                       className={`text-[10px] font-semibold ${

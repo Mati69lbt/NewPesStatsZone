@@ -10,7 +10,11 @@ function CampeonatoCard({ torneo, temporada, matches }) {
   )
 
   return (
-    <div className="flex w-full flex-col overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg">
+    <div
+      className={`flex w-full flex-col overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg ${
+        open ? 'md:col-span-2 lg:col-span-3' : ''
+      }`}
+    >
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -36,11 +40,13 @@ function CampeonatoCard({ torneo, temporada, matches }) {
       </button>
 
       {open && (
-        <div className="flex flex-col gap-4 bg-zinc-900 p-3 sm:gap-2 sm:p-4">
-          <TablaResumenHeader />
-          {rows.map((row) => (
-            <TablaResumenRow key={row.condicion} row={row} />
-          ))}
+        <div className="bg-zinc-900 p-3 sm:p-4 md:overflow-x-auto">
+          <div className="flex flex-col gap-4 sm:gap-2 md:min-w-[980px]">
+            <TablaResumenHeader />
+            {rows.map((row) => (
+              <TablaResumenRow key={row.condicion} row={row} />
+            ))}
+          </div>
         </div>
       )}
     </div>

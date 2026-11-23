@@ -35,7 +35,8 @@ function buildRows(matches, formato) {
     const pct = stats.ptsPosibles > 0 ? Math.round((stats.pts / stats.ptsPosibles) * 100) : 0
     const promGf = stats.pj > 0 ? stats.gf / stats.pj : 0
     const promGc = stats.pj > 0 ? stats.gc / stats.pj : 0
-    return { key: `${temporada}::${club}`, temporada, club, ...stats, pct, promGf, promGc }
+    const difPts = stats.pts - stats.ptsPosibles
+    return { key: `${temporada}::${club}`, temporada, club, ...stats, pct, promGf, promGc, difPts }
   })
 }
 

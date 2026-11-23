@@ -17,6 +17,7 @@ const CONDICIONES = [
   { value: 'general', label: 'General' },
   { value: 'local', label: 'Local' },
   { value: 'visitante', label: 'Visitante' },
+  { value: 'neutral', label: 'Neutral' },
 ]
 
 function buildCapitanStats(matches, capitan, condicion) {
@@ -50,8 +51,6 @@ function CapitanesComparativaPage() {
     [clubMatches]
   )
 
-  const [condicion, setCondicion] = useState('general')
-
   const capitanesPorPj = useMemo(() => {
     return capitanes
       .map((capitan) => ({ capitan, pj: clubMatches.filter((m) => m.capitanNombre === capitan).length }))
@@ -61,13 +60,15 @@ function CapitanesComparativaPage() {
   const capitanAActivo = capitanesPorPj[0]?.capitan || ''
   const capitanBActivo = capitanesPorPj[1]?.capitan || ''
 
-  const statsA = useMemo(
-    () => buildCapitanStats(clubMatches, capitanAActivo, condicion),
-    [clubMatches, capitanAActivo, condicion]
-  )
-  const statsB = useMemo(
-    () => buildCapitanStats(clubMatches, capitanBActivo, condicion),
-    [clubMatches, capitanBActivo, condicion]
+  const statsPorCondicion = useMemo(
+    () =>
+      CONDICIONES.map(({ value, label }) => ({
+        value,
+        label,
+        statsA: buildCapitanStats(clubMatches, capitanAActivo, value),
+        statsB: buildCapitanStats(clubMatches, capitanBActivo, value),
+      })),
+    [clubMatches, capitanAActivo, capitanBActivo]
   )
 
   if (!user) {
@@ -108,7 +109,7 @@ function CapitanesComparativaPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800 sm:flex-row sm:items-end sm:justify-center">
+          <div className="flex w-full flex-col items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
             <div className="w-full sm:w-64">
               <label className={LABEL_CLASSES}>Club</label>
               <select
@@ -124,26 +125,6 @@ function CapitanesComparativaPage() {
                 ))}
               </select>
             </div>
-
-            <div className="flex flex-col items-center gap-1">
-              <label className={LABEL_CLASSES}>Condición</label>
-              <div className="flex w-fit flex-wrap justify-center overflow-hidden rounded-lg border border-zinc-300 dark:border-zinc-600">
-                {CONDICIONES.map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setCondicion(value)}
-                    className={`px-6 py-2.5 text-sm font-bold uppercase tracking-wide transition ${
-                      condicion === value
-                        ? 'bg-lime-400 text-zinc-900'
-                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
 
           {capitanes.length < 2 ? (
@@ -151,7 +132,21 @@ function CapitanesComparativaPage() {
               Este club necesita al menos dos capitanes registrados para comparar.
             </p>
           ) : (
-            <CapitanComparativaTable capitanA={capitanAActivo} statsA={statsA} capitanB={capitanBActivo} statsB={statsB} />
+            <div className="flex w-full flex-col gap-6">
+              {statsPorCondicion.map(({ value, label, statsA, statsB }) => (
+                <div key={value} className="flex flex-col gap-2">
+                  <h2 className="text-center text-sm font-black uppercase tracking-widest text-lime-500 dark:text-lime-400">
+                    {label}
+                  </h2>
+                  <CapitanComparativaTable
+                    capitanA={capitanAActivo}
+                    statsA={statsA}
+                    capitanB={capitanBActivo}
+                    statsB={statsB}
+                  />
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </main>

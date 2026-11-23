@@ -112,6 +112,7 @@ function ClubCard({ row, index, sortKey, clubColors }) {
               />
             </span>
           </div>
+          <SignStat label="DIF PTS" value={row.difPts} active={isActive('difPts')} />
         </div>
       </div>
     </div>
@@ -140,7 +141,7 @@ function ClubesTable({ rows, sortKey }) {
 
       <div className="hidden w-full overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-lg sm:block">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] border-collapse text-sm">
+          <table className="w-full min-w-[940px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-zinc-700 bg-zinc-800 text-left text-[11px] font-bold uppercase tracking-wide text-zinc-400">
                 <th className="px-2 py-3">#</th>
@@ -154,6 +155,7 @@ function ClubesTable({ rows, sortKey }) {
                 <th className={`px-1.5 py-3 text-center ${isActive('gc') ? HIGHLIGHT_CLASSES : ''}`}>GC</th>
                 <th className={`px-1.5 py-3 text-center ${isActive('df') ? HIGHLIGHT_CLASSES : ''}`}>DIF</th>
                 <th className="px-1.5 py-3 text-center">PROM GF/GC</th>
+                <th className={`px-1.5 py-3 text-center ${isActive('difPts') ? HIGHLIGHT_CLASSES : ''}`}>DIF PTS</th>
                 <th className="px-2 py-3 text-center">%</th>
               </tr>
             </thead>
@@ -189,6 +191,9 @@ function ClubesTable({ rows, sortKey }) {
                       highlightGf={isActive('promGf')}
                       highlightGc={isActive('promGc')}
                     />
+                  </td>
+                  <td className={`px-1.5 py-3 text-center font-bold ${signClasses(row.difPts)}`}>
+                    {row.difPts > 0 ? `+${row.difPts}` : row.difPts}
                   </td>
                   <td className="px-3 py-3 text-center">
                     <p className="text-sm font-bold text-emerald-400">

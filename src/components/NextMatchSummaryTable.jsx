@@ -76,8 +76,8 @@ function Cell({ value, dynamic, colorKey }) {
 function DesktopTable({ stats }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white p-3 shadow dark:border-zinc-700/50 dark:bg-zinc-800">
-      <div className="min-w-[900px]">
-        <div className="mb-2 grid grid-cols-[110px_repeat(12,minmax(0,1fr))] gap-1.5 px-1 text-[10px] font-bold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+      <div className="min-w-[970px]">
+        <div className="mb-2 grid grid-cols-[110px_repeat(13,minmax(0,1fr))] gap-1.5 px-1 text-[10px] font-bold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
           <span />
           <span className="text-center">PJ</span>
           <span className="text-center">G</span>
@@ -90,6 +90,7 @@ function DesktopTable({ stats }) {
           <span className="text-center">PROM GF</span>
           <span className="text-center">PROM GC</span>
           <span className="text-center">PTS</span>
+          <span className="text-center">DIF PTS</span>
           <span className="text-center">%EFEC</span>
         </div>
 
@@ -103,7 +104,7 @@ function DesktopTable({ stats }) {
             return (
               <div
                 key={key}
-                className={`grid grid-cols-[110px_repeat(12,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-l-4 p-1.5 ${getRowClasses(g, p)} ${variant.border}`}
+                className={`grid grid-cols-[110px_repeat(13,minmax(0,1fr))] items-stretch gap-1.5 rounded-xl border border-l-4 p-1.5 ${getRowClasses(g, p)} ${variant.border}`}
               >
                 <div
                   className={`flex items-center justify-center rounded-lg bg-zinc-100 px-1 py-2.5 text-xs font-black uppercase tracking-wide dark:bg-zinc-800 ${variant.title}`}
@@ -125,6 +126,7 @@ function DesktopTable({ stats }) {
                 >
                   {pts}/{ptsPosibles}
                 </div>
+                <Cell value={pts - ptsPosibles} dynamic />
                 <div
                   className={`flex items-center justify-center rounded-lg border bg-zinc-50 px-1 py-2.5 text-xs font-bold dark:bg-zinc-900/40 sm:text-sm ${NEUTRAL_CELL_CLASSES}`}
                 >
@@ -177,9 +179,13 @@ function MobileCards({ stats }) {
               <span className={`text-[11px] font-black uppercase tracking-wide ${variant.title}`}>{short}</span>
               <span className="text-[11px] font-bold text-zinc-700 dark:text-white">
                 PTS: <span className="text-cyan-500 dark:text-cyan-400">{pts}</span> /{' '}
-                <span className="text-cyan-500 dark:text-cyan-400">{ptsPosibles}</span> -{' '}
+                <span className="text-cyan-500 dark:text-cyan-400">{ptsPosibles}</span>:{' '}
+                <span className="text-rose-500 dark:text-rose-400">
+                  ({pts - ptsPosibles > 0 ? `+${pts - ptsPosibles}` : pts - ptsPosibles})
+                </span>{' '}
+                -{' '}
                 <span className="text-violet-500 dark:text-violet-400">
-                  {formatEfectividad(pts, ptsPosibles)}%
+                  ({formatEfectividad(pts, ptsPosibles)}%)
                 </span>
               </span>
             </span>

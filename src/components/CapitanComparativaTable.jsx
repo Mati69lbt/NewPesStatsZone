@@ -13,6 +13,13 @@ const METRICS = [
     format: (row) => `${row.pts}/${row.ptsPosibles}`,
   },
   {
+    key: 'difPts',
+    label: 'Dif. Puntos',
+    compare: 'high',
+    value: (row) => row.pts - row.ptsPosibles,
+    format: (row) => row.pts - row.ptsPosibles,
+  },
+  {
     key: 'pct',
     label: 'Efectividad',
     compare: 'high',

@@ -10,5 +10,6 @@ export const SORT_OPTIONS = [
   { key: 'df', label: 'DIF' },
   { key: 'promGf', label: 'PROM GF' },
   { key: 'promGc', label: 'PROM GC' },
+  { key: 'difPts', label: 'DIF PTS' },
   { key: 'pct', label: '%' },
 ]

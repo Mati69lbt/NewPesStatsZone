@@ -54,7 +54,7 @@ const METRICA_CLASSES = {
   efec: 'text-purple-400',
 }
 
-const HEADER_LABELS = ['PJ', 'G', 'E', 'P', 'G/P', 'GF', 'GC', 'DF', 'PROM GF', 'PROM GC', 'PTS', '%EFEC']
+const HEADER_LABELS = ['PJ', 'G', 'E', 'P', 'G/P', 'GF', 'GC', 'DF', 'PROM GF', 'PROM GC', 'PTS', 'DIF PTS', '%EFEC']
 
 function DesktopCell({ value, colorClass, borderClass }) {
   return (
@@ -87,13 +87,14 @@ function TablaResumenRow({ row }) {
   const { condicion, titulo, metrics } = row
   const nivel = NIVELES[condicion] ?? NIVELES.general
   const ptsLabel = `${metrics.puntosObtenidos}/${metrics.puntosPosibles}`
+  const difPts = metrics.puntosObtenidos - metrics.puntosPosibles
   const ptsEfec = `${ptsLabel} (${formatEfec(metrics.efectividad)})`
 
   return (
     <>
       {/* Desktop */}
       <div
-        className={`hidden md:grid grid-cols-[110px_repeat(12,1fr)] items-stretch gap-1.5 rounded-xl border border-l-4 p-3 shadow ${getRowClasses(metrics.g, metrics.p)} ${nivel.border}`}
+        className={`hidden md:grid grid-cols-[110px_repeat(13,1fr)] items-stretch gap-1.5 rounded-xl border border-l-4 p-3 shadow ${getRowClasses(metrics.g, metrics.p)} ${nivel.border}`}
       >
         <div className="flex items-center text-xs font-black uppercase tracking-wide text-zinc-700 dark:text-zinc-200">
           {titulo}
@@ -109,6 +110,10 @@ function TablaResumenRow({ row }) {
         <DesktopCell value={formatProm(metrics.promGf)} colorClass={METRICA_CLASSES.promGf} />
         <DesktopCell value={formatProm(metrics.promGc)} colorClass={METRICA_CLASSES.promGc} />
         <DesktopCell value={ptsLabel} colorClass={METRICA_CLASSES.pts} />
+        <DesktopCell
+          value={metrics.puntosObtenidos - metrics.puntosPosibles}
+          colorClass={signClasses(metrics.puntosObtenidos - metrics.puntosPosibles)}
+        />
         <DesktopCell value={formatEfec(metrics.efectividad)} colorClass={METRICA_CLASSES.efec} />
       </div>
 
@@ -118,7 +123,14 @@ function TablaResumenRow({ row }) {
       >
         <span className="absolute -top-2.5 left-2 flex items-center gap-1.5 whitespace-nowrap bg-white px-1.5 dark:bg-zinc-900">
           <span className={`text-[11px] font-black uppercase tracking-wide ${nivel.text}`}>{nivel.abr}</span>
-          <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">PTS: {ptsEfec}</span>
+          <span className="text-[11px] font-bold">
+            <span className="text-zinc-500 dark:text-zinc-400">PTS: </span>
+            <span className="text-emerald-400">{metrics.puntosObtenidos}</span>
+            <span className="text-zinc-500 dark:text-zinc-400">/</span>
+            <span className="text-sky-400">{metrics.puntosPosibles}</span>{' '}
+            <span className="text-rose-400">({difPts > 0 ? `+${difPts}` : difPts})</span>{' '}-{' '}
+            <span className="text-purple-400">({formatEfec(metrics.efectividad)})</span>
+          </span>
         </span>
 
         <div className="grid grid-cols-10 gap-x-px rounded-xl bg-zinc-50 px-0.5 py-2 dark:bg-zinc-900/40">
@@ -140,7 +152,7 @@ function TablaResumenRow({ row }) {
 
 export function TablaResumenHeader() {
   return (
-    <div className="hidden grid-cols-[110px_repeat(12,1fr)] gap-1.5 px-3 md:grid">
+    <div className="hidden grid-cols-[110px_repeat(13,1fr)] gap-1.5 px-3 md:grid">
       <span></span>
       {HEADER_LABELS.map((label) => (
         <span
